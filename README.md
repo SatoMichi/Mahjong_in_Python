@@ -5,4 +5,4 @@ Trial for 麻雀 program using Python
 random 切牌function decideCut()　is added. Simulation canbe done from Game_Simulation.py
 
 **2020/02/18 00:24**
-added neural network for calcurating expectation of the hand in Mahjong, but since Mahjong Pai is discrete data it will not work without proper pre processing of the data.
+added neural network for calcurating expectation of the hand in Mahjong, but since Mahjong Pai is discrete data it will not work without proper pre processing of the data. 但如果得到了Data的话可以试一试。
