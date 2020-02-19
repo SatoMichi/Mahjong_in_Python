@@ -1,4 +1,5 @@
-from Pai import getFirstHand,originalYama
+from Pai import originalYama
+from Game_action import getFirstHand
 import tkinter
 
 if __name__ == "__main__":

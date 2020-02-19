@@ -60,17 +60,8 @@ class charPai(numPai):
         return "img/imgRight/" + path
 
 
-allPai = [numPai(num,suit) for num in range(1,10) for suit in range(1,4)] + [charPai(suit) for suit in range(4,10)]
+allPai = [numPai(num,suit) for num in range(1,10) for suit in range(1,4)] + [charPai(suit) for suit in range(4,11)]
 originalYama = np.random.permutation(allPai*4)
-
-def getFirstHand(yama):
-    return yama[0:13], yama[13:26], yama[26:39], yama[39:52], yama[52:]
-
-def decideCut(hand):
-    hand = np.random.permutation(hand)
-    cut = hand[-1]
-    hand = hand[:-1]
-    return hand,cut
 
 # Helper function for debug
 def showHand(hand):

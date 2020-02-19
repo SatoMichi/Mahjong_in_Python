@@ -1,4 +1,6 @@
-from Pai import originalYama, getFirstHand, decideCut
+from Pai import originalYama
+from Game_action import getFirstHand, decideCut
+from JudgeRon import Ron
 import tkinter
 import numpy as np
 
@@ -51,6 +53,9 @@ def displayHands(event):
         y_cord += 50
 
     # check the next stage of game cut or take
+    if len(yama) == 0:
+        finishGame(None)
+        
     if state != "cut":
         button = tkinter.Button(root, text=u'摸牌',width=15)
         button.bind("<Button-1>",takePai)
@@ -72,12 +77,20 @@ def takePai(event):
     # using turn to check the current player
     if turn == 0:
         h1 = np.append(h1, yama[0])
+        if Ron(h1):
+            ronGame()
     elif turn == 1:
         h2 = np.append(h2, yama[0])
+        if Ron(h2):
+            ronGame()
     elif turn == 2:
         h3 = np.append(h3, yama[0])
+        if Ron(h3):
+            ronGame()
     else:
         h4 = np.append(h4, yama[0])
+        if Ron(h4):
+            ronGame()
 
     yama = yama[1:]   # decrease yama
     state = "cut"     # change state to cut
@@ -112,6 +125,15 @@ def cutPai(event):
     button_cut.bind("<Button-1>",displayHands)
     button_cut.place(x=400,y=400)
 
+def ronGame():
+    canvas.clear("all")
+    button_cut = tkinter.Button(root, text="和",width=15)
+    button_cut.bind("<Button-1>",finishGame)
+    button_cut.place(x=400,y=400)
+
+def finishGame(event):
+    canvas.clear("all")
+    root.mainloop()
 
 if __name__ == "__main__":
     # prepare the things
