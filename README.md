@@ -11,6 +11,7 @@ added neural network for calcurating expectation of the hand in Mahjong, but sin
 Added function to judge Ron, which is in judgeRon.py
 
 **2020/05/13**
-  *Added "hand2Array" function to Pai.py for representing hand with 4x34 array list
-  *Added GameMaster class
+  * Added "hand2Array" function to Pai.py for representing hand with 4x34 array list
+  * Added GameMaster class
+
 Sato
