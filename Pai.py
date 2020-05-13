@@ -63,6 +63,22 @@ class charPai(numPai):
 allPai = [numPai(num,suit) for num in range(1,10) for suit in range(1,4)] + [charPai(suit) for suit in range(4,11)]
 originalYama = np.random.permutation(allPai*4)
 
+Hand = [numPai]
+
+def hand2Array(hand):
+    ref = dict(zip(map(str,allPai),range(34)))
+    handArr = np.zeros([4,34])
+    place = list(map(lambda pai: ref[str(pai)], hand))
+    place = dict(place)
+    for p in place:
+        for i in range(4):
+            if handArr[i,p] == 0:
+                handArr[i,p] = 1
+                break
+            else:
+                continue
+    return handArr
+
 # Helper function for debug
 def showHand(hand):
     return list(map(str,hand))
