@@ -18,8 +18,9 @@ Sato
 
 **2020/05/13**
  * Modefied class for Pai. numPai and charPai become one general class Pai
- * Added invrse function of "hand2Array", "array2Hand" to Pai.py. 
-   * <font color="Red"> hand2Array: [Pai] -> np.array (4x34) </font>
-   * <font color="Red"> array2Hand: np.array (4x34) -> [Pai] </font>
- 
+ * Added invrse function of "hand2Array", "array2Hand" to Pai.py.
+ '''diff
+   * -hand2Array: [Pai] -> np.array (4x34)
+   * -array2Hand: np.array (4x34) -> [Pai]
+ '''
 Sato
