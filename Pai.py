@@ -1,6 +1,11 @@
 import numpy as np
 from collections import Counter
 
+
+# Class representing Pais
+# for example:
+# p = Pai(0,0) -> p is 一萬
+# p = Pai(3)   -> p is 中
 class Pai:
     i = ["一","二","三","四","五","六","七","八","九"]
     s = ["萬","筒","索","中","發","白","東","西","南","北"]
@@ -26,6 +31,8 @@ class Pai:
         else:
             return self.i[self.num]+self.s[self.suit]
 
+    # due to this method, Pai can be sorted
+    # [Pai].sort() is defined by this method
     def __lt__(self, other):
         if self.suit != other.suit:
             return self.suit < other.suit
@@ -33,7 +40,9 @@ class Pai:
             return True
         else:
             return self.num < other.num
-
+    
+    # following methods are for Graphical User Interface (GUI)
+    # please ignore for now
     def imgPathU(self):
         if self.num == -1:
             path = self.img[3][self.suit-3]
@@ -79,11 +88,16 @@ class charPai(numPai):
         path = self.img[3][self.suit-3][:-5] +"4"+".gif"
         return "img/imgRight/" + path
 """
-
+# all kind of Pai
 allPai = [Pai(suit,num) for suit in range(0,3) for num in range(0,9)] + [Pai(suit) for suit in range(3,10)]
+# all the Pai
 originalYama = np.random.permutation(allPai*4)
 
+# type definition for Hand type
+# basically Hand is list of Pai
 Hand = [Pai]
+
+# By usinng following function hand can be translated between [Pai] and np.array(4x34)
 
 # [Pai] -> np.array(4x34)
 def hand2Array(hand):
