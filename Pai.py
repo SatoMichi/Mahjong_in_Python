@@ -1,4 +1,5 @@
 import numpy as np
+from collections import Counter
 
 class Pai:
     i = ["一","二","三","四","五","六","七","八","九"]
@@ -84,19 +85,32 @@ originalYama = np.random.permutation(allPai*4)
 
 Hand = [Pai]
 
+# [Pai] -> np.array(4x34)
 def hand2Array(hand):
     ref = dict(zip(map(str,allPai),range(34)))
     handArr = np.zeros([4,34])
+    
     place = list(map(lambda pai: ref[str(pai)], hand))
-    place = dict(place)
-    for p in place:
-        for i in range(4):
-            if handArr[i,p] == 0:
-                handArr[i,p] = 1
-                break
-            else:
-                continue
+    place = dict(Counter(place))
+
+    for pai in place:
+        for i in range(place[pai]):
+            handArr[i,pai] = 1
+    
     return handArr
+
+# np.array(4x34) -> [Pai]
+def array2Hand(array):
+    ref = dict(zip(range(34),allPai))
+    handPai = []
+    array = array.sum(axis=0)
+
+    for pai,num in enumerate(array):
+        for i in range(int(num)):
+            handPai.append(ref[pai])
+    
+    return handPai
+
 
 # Helper function for debug
 def showHand(hand):
