@@ -15,3 +15,11 @@ Added function to judge Ron, which is in judgeRon.py
   * Added GameManager class
 
 Sato
+
+**2020/05/13**
+ * Modefied class for Pai. numPai and charPai become one general class Pai
+ * Added invrse function of "hand2Array", "array2Hand" to Pai.py. 
+  * hand2Array: [Pai] -> np.array (4x34)
+  * array2Hand: np.array (4x34) -> [Pai]
+  
+Sato
