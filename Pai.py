@@ -67,6 +67,20 @@ class Pai:
         else:
             path = self.img[self.suit][self.num][:-5] +"4"+".gif"
         return "img/imgRight/" + path
+    
+    # index to Pai and Pai to index
+    @classmethod
+    def fromIndex(cls,index):
+        name = ref_str[index]
+        if len(name) > 1:
+            num = i.index(name[0])
+            suit = s.index(name[1])
+            return cls(suit,num)
+        else:
+            return cls(s.index(name))
+    
+    def toIndex(self):
+        return ref[str(self)]
 
 """
 class charPai(numPai):
@@ -93,10 +107,21 @@ allPai = [Pai(suit,num) for suit in range(0,3) for num in range(0,9)] + [Pai(sui
 # all the Pai
 originalYama = np.random.permutation(allPai*4)
 
+i = ["一","二","三","四","五","六","七","八","九"]
+s = ["萬","筒","索","中","發","白","東","西","南","北"]
+
+# str -> num
+ref = dict(zip(map(str,allPai),range(34)))
+# num -> str
+ref_str = {}
+for key, value in ref.items():
+    ref_str[value] = key
+
 # type definition for Hand type
 # basically Hand is list of Pai
 Hand = [Pai]
-
+testHand = originalYama[0:13]
+testHand.sort()
 # By usinng following function hand can be translated between [Pai] and np.array(4x34)
 
 # [Pai] -> np.array(4x34)
