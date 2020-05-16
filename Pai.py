@@ -69,6 +69,12 @@ class Pai:
         return "img/imgRight/" + path
     
     # index to Pai and Pai to index
+    # example
+    # p = Pai.fromIndex(33)                                                                                  
+    # In [53]: str(p)                                                                                                 
+    # Out[53]: '北'
+    # In [54]: p.toIndex()                                                                                            
+    # Out[54]: 33
     @classmethod
     def fromIndex(cls,index):
         name = ref_str[index]
