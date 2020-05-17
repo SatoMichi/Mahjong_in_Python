@@ -20,7 +20,7 @@ class Player:
         self.hand = hand
         self.score = score
         self.draw = draw
-        self.openHand = {}
+        self.openHand = {'pon':[]}
 
     # name reference:
     # https://www.wikiwand.com/en/Japanese_Mahjong#/General_mahjong_rules
@@ -30,6 +30,8 @@ class Player:
     # 18-26: 一索 - 九索
     # 27，28，29: 中，發，白
     # 30-33: 东西南北
+    
+    # can be improved using bisect
     def draw(self,p):
         self.draw = p
         self.hand.append(p)
@@ -57,9 +59,30 @@ class Player:
         Perform pon.
         
         Args:
-            paiCut (int): index of Pai cut by other Players.
+            paiCut (t,n): Pai cut by other Players.
         
         """
+        t,n = paiCut
+        a = pai.hand2Array(self.hand)
+        assert(np.sum(a[t]) >= 2)
+        # search for tile in hand
+        tile = []
+        for i in range(4):
+            if len(tile) >=2 :
+                break
+            
+            if a[t,i] == 1:
+                a[t,i] = 0
+                tile.append((t,i))
+        # add at the end to indicate the pai taken from others
+        tile.append(paiCut)
+        # record in openHand
+        openHand['pon'].append(tile)
+        self.hand = pai.array2Hand(a)
+        return 'pon'
+            
+            
+            
         pass
     def kan():
         pass
