@@ -2,6 +2,12 @@ import numpy as np
 from collections import Counter 
 from random import shuffle
 
+""" 
+All Pai are initialized once in this module.
+
+hand and Yama are represented using [tuple(t,n)]. paiSet[t,n] gives the corresponding Pai object.
+""" 
+
 # Class representing Pais
 # for example:
 # p = Pai(0,0) -> p is 一萬
