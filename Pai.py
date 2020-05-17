@@ -103,16 +103,15 @@ paiSet = np.tile(allPai,(4,1)).T
 originalYama = [(t,n) for t in range(34) for n in range(4)]
 shuffle(originalYama)
 
-i = ["一","二","三","四","五","六","七","八","九"]
-s = ["萬","筒","索","中","發","白","東","西","南","北"]
-
+'''
+old reference
 # str -> num
 ref = dict(zip(map(str,allPai),range(34)))
 # num -> str
 ref_str = {}
 for key, value in ref.items():
     ref_str[value] = key
-
+'''
 # type definition for Hand type
 # basically Hand is list of Pai
 # Hand = [(t,n)]
@@ -120,31 +119,17 @@ testHand = originalYama[0:13]
 testHand.sort()
 # By usinng following function hand can be translated between [Pai] and np.array(4x34)
 
-# [Pai] -> np.array(4x34)
+# [(t,n)] -> np.array(34x4)
 def hand2Array(hand):
-    ref = dict(zip(map(str,allPai),range(34)))
-    handArr = np.zeros([4,34])
-    
-    place = list(map(lambda pai: ref[str(pai)], hand))
-    place = dict(Counter(place))
+    a = np.zeros((34,4))
+    for p in hand:
+        a[p] = 1
+    return a
 
-    for pai in place:
-        for i in range(place[pai]):
-            handArr[i,pai] = 1
-    
-    return handArr
-
-# np.array(4x34) -> [Pai]
+# np.array(34x4) -> [(t,n)]
 def array2Hand(array):
-    ref = dict(zip(range(34),allPai))
-    handPai = []
-    array = array.sum(axis=0)
-
-    for pai,num in enumerate(array):
-        for i in range(int(num)):
-            handPai.append(ref[pai])
-    
-    return handPai
+    index = np.argwhere(array == 1)
+    return list(map(tuple,index))
 
 
 # Helper function for debug
