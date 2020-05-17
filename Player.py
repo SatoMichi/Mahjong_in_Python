@@ -6,7 +6,7 @@ class Player:
     
     def __init__(self,name,cut,hand,score,draw):
         """
-        cut : [Pai] All Pai cut
+        river : [(t,n)] All Pai cut
         
         hand: [(t,n)] t is the index for pai type, n distinguish pai of the same type
         
@@ -16,7 +16,7 @@ class Player:
         draw: Pai the one Pai drawn
         """
         self.name = name
-        self.cut = []
+        self.river = []
         self.hand = hand
         self.score = score
         self.draw = draw
@@ -40,6 +40,7 @@ class Player:
         cut a Pai given the position
         """
         p = self.hand.pop(target)
+        river.append(p)
         return p
 
     def chi(self,paiCut,order):
