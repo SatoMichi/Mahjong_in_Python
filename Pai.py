@@ -1,12 +1,21 @@
 import numpy as np
-from collections import Counter
+from collections import Counter 
+from random import shuffle
 
+""" 
+All Pai are initialized once in this module.
+
+hand and Yama are represented using [tuple(t,n)]. paiSet[t,n] gives the corresponding Pai object.
+""" 
 
 # Class representing Pais
 # for example:
 # p = Pai(0,0) -> p is 一萬
 # p = Pai(3)   -> p is 中
 class Pai:
+    '''
+    represent Pai using num and suit. Should not be intialized outside pai.py
+    '''
     i = ["一","二","三","四","五","六","七","八","九"]
     s = ["萬","筒","索","中","發","白","東","西","南","北"]
     img = [['p_ms1_1.gif', 'p_ms2_1.gif', 'p_ms3_1.gif', 'p_ms4_1.gif',
@@ -68,19 +77,7 @@ class Pai:
             path = self.img[self.suit][self.num][:-5] +"4"+".gif"
         return "img/imgRight/" + path
     
-    # index to Pai and Pai to index
-    @classmethod
-    def fromIndex(cls,index):
-        name = ref_str[index]
-        if len(name) > 1:
-            num = i.index(name[0])
-            suit = s.index(name[1])
-            return cls(suit,num)
-        else:
-            return cls(s.index(name))
-    
-    def toIndex(self):
-        return ref[str(self)]
+
 
 """
 class charPai(numPai):
@@ -104,56 +101,46 @@ class charPai(numPai):
 """
 # all kind of Pai
 allPai = [Pai(suit,num) for suit in range(0,3) for num in range(0,9)] + [Pai(suit) for suit in range(3,10)]
-# all the Pai
-originalYama = np.random.permutation(allPai*4)
+# create 4x34 matrix with all the Pai objects as a static reference
+# in current version different rows refer to same objects
+# ex. paiSet[0,0] is paiSet[1,0] returns True
+paiSet = np.tile(allPai,(4,1)).T
+# represent Pai as index, reference paiSet to show Pai
+originalYama = [(t,n) for t in range(34) for n in range(4)]
+shuffle(originalYama)
 
-i = ["一","二","三","四","五","六","七","八","九"]
-s = ["萬","筒","索","中","發","白","東","西","南","北"]
-
+'''
+old reference
 # str -> num
 ref = dict(zip(map(str,allPai),range(34)))
 # num -> str
 ref_str = {}
 for key, value in ref.items():
     ref_str[value] = key
-
+'''
 # type definition for Hand type
 # basically Hand is list of Pai
-Hand = [Pai]
+# Hand = [(t,n)]
 testHand = originalYama[0:13]
 testHand.sort()
 # By usinng following function hand can be translated between [Pai] and np.array(4x34)
 
-# [Pai] -> np.array(4x34)
+# [(t,n)] -> np.array(34x4)
 def hand2Array(hand):
-    ref = dict(zip(map(str,allPai),range(34)))
-    handArr = np.zeros([4,34])
-    
-    place = list(map(lambda pai: ref[str(pai)], hand))
-    place = dict(Counter(place))
+    a = np.zeros((34,4))
+    for p in hand:
+        a[p] = 1
+    return a
 
-    for pai in place:
-        for i in range(place[pai]):
-            handArr[i,pai] = 1
-    
-    return handArr
-
-# np.array(4x34) -> [Pai]
+# np.array(34x4) -> [(t,n)]
 def array2Hand(array):
-    ref = dict(zip(range(34),allPai))
-    handPai = []
-    array = array.sum(axis=0)
-
-    for pai,num in enumerate(array):
-        for i in range(int(num)):
-            handPai.append(ref[pai])
-    
-    return handPai
+    index = np.argwhere(array == 1)
+    return list(map(tuple,index))
 
 
 # Helper function for debug
 def showHand(hand):
-    return list(map(str,hand))
+    return [ str(paiSet[p]) for p in hand]
 
 def compPai(p1,p2):
     if p1.suit > p2.suit:
