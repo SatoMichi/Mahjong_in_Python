@@ -1,6 +1,13 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/05/18**
+ * the function in Pai, showHand modified for GameManager class. It will return str instead of list
+ * TestPlayer class added. 
+ * Gamemanager class works with TestPlayer
+ 
+Sato
+
 **2020/05/16**
  * modified GameManager as Finite State Machine
  
