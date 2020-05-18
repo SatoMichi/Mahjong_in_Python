@@ -4,7 +4,7 @@ from collections import Counter
 
 class Player:
     
-    def __init__(self,name,cut,hand,score,draw):
+    def __init__(self,name,score):
         """
         river : [(t,n)] All Pai cut
         
@@ -17,9 +17,9 @@ class Player:
         """
         self.name = name
         self.river = []
-        self.hand = hand
+        self.hand = None
         self.score = score
-        self.draw = draw
+        self.draw = None
         self.openHand = {}
 
     # name reference:
@@ -30,18 +30,31 @@ class Player:
     # 18-26: 一索 - 九索
     # 27，28，29: 中，發，白
     # 30-33: 东西南北
-    def draw(self,p):
+    def setHand(self,hand):
+        self.hand = hand
+    
+    def givePai(self,p):
+        self.hand.sort()
         self.draw = p
         self.hand.append(p)
-        self.hand.sort()
         
-    def cut(self,target):
+        
+    def cut(self):
         """
         cut a Pai given the position
         """
+        target = int(input("Please SELECT the Pai to CUT\n")) -1
         p = self.hand.pop(target)
-        river.append(p)
         return p
+
+    def checkTumo(self):
+        return False, "Nothing"
+
+    def checkRon(self):
+        return False, "Nothing"
+
+    def askMin(self):
+        return None, []
 
     def chi(self,paiCut,order):
         """Perform chi. Add with hand and show in openHand

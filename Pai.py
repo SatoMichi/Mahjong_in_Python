@@ -140,8 +140,9 @@ def array2Hand(array):
 
 # Helper function for debug
 def showHand(hand):
-    return [ str(paiSet[p]) for p in hand]
+    return str([ str(paiSet[p]) for p in hand])
 
+"""
 def compPai(p1,p2):
     if p1.suit > p2.suit:
         return p2
@@ -154,3 +155,4 @@ def compPai(p1,p2):
             return p1
         else:
             return p2
+"""

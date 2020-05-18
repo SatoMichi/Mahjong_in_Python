@@ -1,4 +1,5 @@
 import Pai
+from TestPlayer import Player
 
 # this class is Finite State Machine
 class GameManager:
@@ -10,36 +11,36 @@ class GameManager:
         self.yama = Pai.originalYama
     
     # give 13 pai to each players
-    def startGame():
+    def startGame(self):
         for player in self.players:
             hand = self.yama[:13]
             self.yama = self.yama[13:]
             # call player's method
-            player.giveHand(hand)
+            player.setHand(hand)
         self.cutPai = None
         self.state = "SET_PLAYER"
-        print("Prepared")
+        print("Prepared\nLet's Start the GAME !!\n")
 
     # check yama is empty or not
-    def zeroYama():
-        if len(self.yama) <= 0:
+    def zeroYama(self):
+        if len(self.yama) <= 14:
             return True
         return False
 
     # show information for player playing his turn   
-    def printPlayerTurn(player):
-        content += ""
+    def printPlayerTurn(self,player):
+        content = ""
         # print each players River (already cut Pais)
         for p in self.players:
             # player.river is Pais player already cut
-            content += "Player "+p.name+"'s River is "+Pai.showHand(p.cut)+"\n"
+            content += "Player "+p.name+"'s River is "+Pai.showHand(p.river)+"\n"
         for p in self.players:
             # player.min is player's min Pai already got
             if p == player:
                 content += "----------------------------------------------------\n"
                 content += "Main Player :"+player.name+"\n"
                 content += "Min Pai :"+Pai.showHand(Pai.array2Hand(player.openHand))+"\n"
-                content += "Player's Hand: "+Pai.showHand(Pai.array2Hand(player.hand))+"\n"
+                content += "Player's Hand: "+Pai.showHand(player.hand)+"\n"
                 content += "----------------------------------------------------\n"
                 continue
             content += "Player "+p.name+"'s Hand is "+"SECRET"+"\n"
@@ -47,28 +48,28 @@ class GameManager:
         print(content)
 
     # set state, cutPai and nextPlayer
-    def playerCutPai(player, cutPai):
+    def playerCutPai(self,player,cutPai):
         self.cutPai = cutPai
-        content += "Player "+player.name+" cut "+str(self.cutPai)+"\n"
+        content = ""
+        content += "Player "+player.name+" cut "+str(Pai.paiSet[self.cutPai])+"\n"
         print(content)
 
-
     # print winner's information
-    def printWinner(player,yaku):
+    def printWinner(self,player,yaku):
         content = ""
         content += "###############################################################################################\n"
         content += "Player "+player.name+" Win!!\n"
         content += "Points: "+str(player.score)+"\n"
         content += "役: "+yaku+"\n"
         player.hand.sort()
-        content += str(Pai.showHand(Pai.array2Hand(player.hand)))+"\n"
+        content += str(Pai.showHand(player.hand))+"\n"
         content += "################################################################################################\n"
-        content += "WINNER is "+player.name+"\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!"
+        content += "WINNER is "+player.name+"\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
         print(content)
 
 
     # these functions will print the info and call the corresponding method in Player class
-    def playerChi(player):
+    def playerChi(self,player):
         minSet = player.chi()
         content = ""
         content += "################################################################################################\n"
@@ -77,7 +78,7 @@ class GameManager:
         content += "#################################################################################################\n"
         print(content)
     
-    def playerPon(player):
+    def playerPon(self,player):
         minSet = player.pon()
         content = ""
         content += "################################################################################################\n"
@@ -86,7 +87,7 @@ class GameManager:
         content += "#################################################################################################\n"
         print(content)
 
-    def playerKan(player):
+    def playerKan(self,player):
         minSet = player.kan()
         content = ""
         content += "################################################################################################\n"
@@ -96,16 +97,16 @@ class GameManager:
         print(content)
 
     # select player with highest priority Min
-    def selectMinPlayers(minPlayers):
+    def selectMinPlayers(self,minPlayers):
             player = None
             for args in minPlayers:
                 if "Kan" in args:
                     player = args
                     break
-                else if "Pon" in args:
+                elif "Pon" in args:
                     player = args
                     break
-                else if "Chi" in args:
+                elif "Chi" in args:
                     player = args
                     break
                 else:
@@ -114,7 +115,7 @@ class GameManager:
 
 
     # Game modeled by FSM
-    def GameFSM():
+    def GameFSM(self):
 
         self.startGame()
         player = self.players[-1]
@@ -128,7 +129,7 @@ class GameManager:
                 self.state = "GIVE_PAI"
 
             # STATE "GIVE_PAI_TO_PLAYER"
-            else if self.state == "GIVE_PAI" or self.state == "KAN":
+            elif self.state == "GIVE_PAI" or self.state == "KAN":
                 pai = self.yama[0]
                 self.yama = self.yama[1:]
                 player.givePai(pai)
@@ -141,7 +142,7 @@ class GameManager:
                 self.state = "CUT"
 
             # STATE "PLAYER_CUT_PAI"
-            else if self.state == "CUT" or self.state == "CHI/PON"
+            elif self.state == "CUT" or self.state == "CHI/PON":
                 self.printPlayerTurn(player)
 
                 cut = player.cut()
@@ -157,14 +158,15 @@ class GameManager:
                 self.state = "MIN"
             
             # STATE "PLAYER_MIN"
-            else if self.state == "MIN":
+            elif self.state == "MIN":
                 # check the players who want to Min and select player who could Min
                 minPlayers = []
                 for p in self.players:
                     # player who want to Kan shoule return ("Kan",minSet)
                     # player who do not Min should return (None,None)
                     minType, minSet = p.askMin()
-                    minPlayers.append([p, minType, minSet])
+                    if not minType==None:
+                        minPlayers.append([p, minType, minSet])
                 
                 if not len(minPlayers) == 0:
                     # select player with highest priority
@@ -176,7 +178,7 @@ class GameManager:
                         self.playerKan(player)
                         self.state = "Kan"
 
-                    else if minPlayer[1] == "Pon":
+                    elif minPlayer[1] == "Pon":
                         self.playerPon(player)
                         self.state = "CHI/PON"
 
@@ -185,7 +187,7 @@ class GameManager:
                         self.state = "CHI/PON"
                 else:
                     # add cutPai to the player's river
-                    player.cut.append(self.cutPai)
+                    player.river.append(self.cutPai)
                     # Go to Next turn
                     self.state = "SET_PLAYER"
             
@@ -279,3 +281,10 @@ class GameManager:
             pass
     """
 
+if __name__ == "__main__":
+    p1 = Player("Gundam Exia",25000)
+    p2 = Player("Gundam Dynames",25000) 
+    p3 = Player("Gundam Kyrios",25000)
+    p4 = Player("Gundam Virtue",25000)
+    game = GameManager([p1,p2,p3,p4])
+    game.GameFSM()
