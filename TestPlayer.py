@@ -39,11 +39,10 @@ class Player:
         self.hand.append(p)
         
         
-    def cut(self):
+    def cut(self, target):
         """
         cut a Pai given the position
         """
-        target = int(input("Please SELECT the Pai to CUT\n")) -1
         p = self.hand.pop(target)
         return p
 

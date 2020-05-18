@@ -145,7 +145,8 @@ class GameManager:
             elif self.state == "CUT" or self.state == "CHI/PON":
                 self.printPlayerTurn(player)
 
-                cut = player.cut()
+                target = int(input("Please SELECT the Pai to CUT\n")) -1
+                cut = player.cut(target)
                 self.playerCutPai(player,cut)
                 # check Ron
                 for p in self.players:
