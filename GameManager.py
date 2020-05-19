@@ -12,10 +12,11 @@ class GameManager:
     
     # give 13 pai to each players
     def startGame(self):
-        for player in self.players:
+        for wind, player in zip(["東","南","西","北"], self.players):
             hand = self.yama[:13]
             self.yama = self.yama[13:]
             # call player's method
+            player.setWind(wind)
             player.setHand(hand)
         self.cutPai = None
         self.state = "SET_PLAYER"
@@ -125,7 +126,7 @@ class GameManager:
             # STATE "SET_NEXT_PLAYER"
             if self.state == "SET_PLAYER":
                 player = self.players[(self.players.index(player)+1) % 4]
-                print("----------------------MAIN PLAYER: ",player.name,"----------------------")
+                print("----------------------MAIN PLAYER: ",player.name," | WIND: ",player.wind,"----------------------")
                 self.state = "GIVE_PAI"
 
             # STATE "GIVE_PAI_TO_PLAYER"
