@@ -1,5 +1,7 @@
 import Pai
+from TestPlayer import Player
 
+# this class is Finite State Machine
 class GameManager:
     # prepared all the Pai and 4 players
     def __init__(self,players):
@@ -9,132 +11,281 @@ class GameManager:
         self.yama = Pai.originalYama
     
     # give 13 pai to each players
-    def startGame():
+    def startGame(self):
         for player in self.players:
             hand = self.yama[:13]
             self.yama = self.yama[13:]
-            player.giveHand(hand)
-        self.nextPlayer = 0
+            # call player's method
+            player.setHand(hand)
         self.cutPai = None
-        print("Prepared")
+        self.state = "SET_PLAYER"
+        print("Prepared\nLet's Start the GAME !!\n")
 
-    def zeroYama():
-        if len(self.yama) <= 0:
-            print("Yama is empty")
-            print("Finish game")
+    # check yama is empty or not
+    def zeroYama(self):
+        if len(self.yama) <= 14:
             return True
         return False
-    
-    # player class will call this function when they Ron.
-    # then this function will prit the result
-    def playerWin(player):
-        content = ""
-        content += "###############################################################################################\n"
-        content += "Player "+player.name+" Win!!\n"
-        content += "Points: "+str(player.point)+"\n"
-        content += "役: "+player.yaku+"\n"  # player.yaku : str = players hand type name 平和 etc.
-        player.hand.sort()
-        content += str(Pai.showHand(player.hand))+"\n"
-        content += "################################################################################################\n"
-        print(content)
 
-    # expect palyer will return MinType and minSet and cutPai
-    # player : player class
-    # minType : str representing "chi" "pon" or "kan"
-    # minSet : [Pai] which represent 3 or 4 Pais with "chi" "pon" or "kan"
-    # cutPai: Pai which player will cut
-    def playerMin(player,minType,minSet,cutPai):
+    # show information for player playing his turn   
+    def printPlayerTurn(self,player):
         content = ""
-        content += "################################################################################################\n"
-        content += "Player "+player.name+" did "+minType+"\n"
-        content += "Set is "+str(Pai.showHand(minSet))+"\n"
-        content += "#################################################################################################\n"
-        self.cutPai = cutPai
-        self.nextPlayer = (self.players.index(player)+1) % 4
-        content += "Player "+player.name+"cut "+str(self.cutPai)+"\n"
-        content += "next Player: "+self.nextPlayer.name+"\n"
-        print(content)
-    
-    # player will call this function when cut the pai
-    def cutPai(player, cutPai):
-        self.cutPai = cutPai
-        self.nextPlayer = (self.players.index(player)+1) % 4
-        content += "Player "+player.name+"cut "+str(self.cutPai)+"\n"
-        content += "next Player: "+self.nextPlayer.name+"\n"
-        print(content)
-    
-    # show information for player   
-    def playerShow(player):
-        content += ""
         # print each players River (already cut Pais)
         for p in self.players:
             # player.river is Pais player already cut
             content += "Player "+p.name+"'s River is "+Pai.showHand(p.river)+"\n"
-            content += "Player "+p.name+"'s hand is secret"
         for p in self.players:
             # player.min is player's min Pai already got
-            # player.gotPai is the Pai Player got now 
             if p == player:
                 content += "----------------------------------------------------\n"
                 content += "Main Player :"+player.name+"\n"
-                content += "Min Pai :"+Pai.showHand(player.min)+"\n"
+                content += "Min Pai :"+Pai.showHand(Pai.array2Hand(player.openHand))+"\n"
                 content += "Player's Hand: "+Pai.showHand(player.hand)+"\n"
-                content += "Player get "+str(player.gotPai)+"\n"
                 content += "----------------------------------------------------\n"
                 continue
             content += "Player "+p.name+"'s Hand is "+"SECRET"+"\n"
-            content += "Player "+p.name+"'s Min Pai is "+Pai.showHand(p.min)+"\n"
+            content += "Player "+p.name+"'s Min Pai is "+Pai.showHand(Pai.array2Hand(p.openHand))+"\n"
         print(content)
+
+    # set state, cutPai and nextPlayer
+    def playerCutPai(self,player,cutPai):
+        self.cutPai = cutPai
+        content = ""
+        content += "Player "+player.name+" cut "+str(Pai.paiSet[self.cutPai])+"\n"
+        print(content)
+
+    # print winner's information
+    def printWinner(self,player,yaku):
+        content = ""
+        content += "###############################################################################################\n"
+        content += "Player "+player.name+" Win!!\n"
+        content += "Points: "+str(player.score)+"\n"
+        content += "役: "+yaku+"\n"
+        player.hand.sort()
+        content += str(Pai.showHand(player.hand))+"\n"
+        content += "################################################################################################\n"
+        content += "WINNER is "+player.name+"\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
+        print(content)
+
+
+    # these functions will print the info and call the corresponding method in Player class
+    def playerChi(self,player):
+        minSet = player.chi()
+        content = ""
+        content += "################################################################################################\n"
+        content += "Player "+player.name+" did 吃 \n"
+        content += "Set is "+str(Pai.showHand(minSet))+"\n"
+        content += "#################################################################################################\n"
+        print(content)
+    
+    def playerPon(self,player):
+        minSet = player.pon()
+        content = ""
+        content += "################################################################################################\n"
+        content += "Player "+player.name+" did PON \n"
+        content += "Set is "+str(Pai.showHand(minSet))+"\n"
+        content += "#################################################################################################\n"
+        print(content)
+
+    def playerKan(self,player):
+        minSet = player.kan()
+        content = ""
+        content += "################################################################################################\n"
+        content += "Player "+player.name+" did KAN \n"
+        content += "Set is "+str(Pai.showHand(minSet))+"\n"
+        content += "#################################################################################################\n"
+        print(content)
+
+    # select player with highest priority Min
+    def selectMinPlayers(self,minPlayers):
+            player = None
+            for args in minPlayers:
+                if "Kan" in args:
+                    player = args
+                    break
+                elif "Pon" in args:
+                    player = args
+                    break
+                elif "Chi" in args:
+                    player = args
+                    break
+                else:
+                    pass
+            return player
+
+
+    # Game modeled by FSM
+    def GameFSM(self):
+
+        self.startGame()
+        player = self.players[-1]
+
+        while not self.zeroYama():
+
+            # STATE "SET_NEXT_PLAYER"
+            if self.state == "SET_PLAYER":
+                player = self.players[(self.players.index(player)+1) % 4]
+                print("----------------------MAIN PLAYER: ",player.name,"----------------------")
+                self.state = "GIVE_PAI"
+
+            # STATE "GIVE_PAI_TO_PLAYER"
+            elif self.state == "GIVE_PAI" or self.state == "KAN":
+                pai = self.yama[0]
+                self.yama = self.yama[1:]
+                player.givePai(pai)
+                # check Tumo
+                win, yaku = player.checkTumo()
+                if win:
+                    self.state = "WIN"
+                    self.printWinner(player,yaku)
+                    break
+                self.state = "CUT"
+
+            # STATE "PLAYER_CUT_PAI"
+            elif self.state == "CUT" or self.state == "CHI/PON":
+                self.printPlayerTurn(player)
+
+                target = int(input("Please SELECT the Pai to CUT\n")) -1
+                cut = player.cut(target)
+                self.playerCutPai(player,cut)
+                # check Ron
+                for p in self.players:
+                    win, yaku = p.checkRon()
+                    if win:
+                        self.state = "WIN"
+                        self.printWinner(p,yaku)
+                if self.state == "WIN":
+                    break
+                self.state = "MIN"
             
+            # STATE "PLAYER_MIN"
+            elif self.state == "MIN":
+                # check the players who want to Min and select player who could Min
+                minPlayers = []
+                for p in self.players:
+                    # player who want to Kan shoule return ("Kan",minSet)
+                    # player who do not Min should return (None,None)
+                    minType, minSet = p.askMin()
+                    if not minType==None:
+                        minPlayers.append([p, minType, minSet])
+                
+                if not len(minPlayers) == 0:
+                    # select player with highest priority
+                    minPlayer = self.selectMinPlayers(minPlayers)
+                    # player change to MinPlayer
+                    player = minPlayer[0]
+
+                    if minPlayer[1] == "Kan":
+                        self.playerKan(player)
+                        self.state = "Kan"
+
+                    elif minPlayer[1] == "Pon":
+                        self.playerPon(player)
+                        self.state = "CHI/PON"
+
+                    else:
+                        self.playerChi(player)
+                        self.state = "CHI/PON"
+                else:
+                    # add cutPai to the player's river
+                    player.river.append(self.cutPai)
+                    # Go to Next turn
+                    self.state = "SET_PLAYER"
+            
+            # STATE "BLACK_HALL"
+            else:
+                self.state = "BLACK_HALL"
+
+        # GameEnd
+        if not self.state == "WIN":
+            print("***************************流局***************************")
+        else:
+            print("FINISH GAME")
+
+
+    """
     def mainGame():
         # prepare game
         self.startGame()
         
-        # check whether yama is empty or not 
-        while self.zeroYama()
-            # give Pai to the player and check win
-            player = self.players[self.nextPlayer]
-            print("----------------------MAIN PLAYER: ",player.name,"----------------------")
-            pai = self.yama[0]
-            self.yama = self.yama[1:]
+        # check whether yama is empty or not and winner exist or not
+        while (not self.zeroYama()) and (not self.winner):
             
-            player.givePai(pai)
-            # player.checkWin() should call GameMaster.playerWin(player) if Roned
-            player.checkWin()
+            # STATE SET_PLAYER
+            if self.state == "SET_PLAYER":
+                player = self.players[self.nextPlayer]
+                print("----------------------MAIN PLAYER: ",player.name,"----------------------")
+                self.state = "GIVE_PAI"
+            
+            # STATE GIVE_PAI
+            if self.state == "GIVE_PAI" or self.state == "KAN":
+                pai = self.yama[0]
+                self.yama = self.yama[1:]
+                player.givePai(pai)
+                # check Tumo
+                win, yaku = player.checkTumo()
+                if win:
+                    self.state = "WIN"
+                    self.winner = player
+                    self.printWinner(player,yaku)
+                    break
+                self.printPlayerTurn(player, pai)
+                self.state = "CUT/MIN"
             
             # show info and get cut pai from player
-            self.playerShow(player)
-            # player should call GameMaster.cutPai for set self.cutPai
-            player.askCut()
+            self.printPlayerTurn(player, pai)
             
-            # check the player who want to Min and select player who could Min
-            minPlayers = []
-            for p in self.players:
-                # player who want to Min have to declear in this stage
-                minType, MinSet, cutPai = p.askMin()
-                minPlayers.append([p, minType, minSet, cutPai])
+            # STATE CUT/MIN
+            if self.state == "CUT/MIN" or self.state == "CHI/PON"
+                cut = player.cut()
+                self.playerCutPai(player,cut)
+                
+                # check Ron
+                for p in self.players:
+                    win, yaku = p.checkRon()
+                    if win:
+                        self.state = "WIN"
+                        self.winner = p
+                        self.printWinner(p,yaku)
+                if self.state == "WIN":
+                    break
+
+                # check the players who want to Min and select player who could Min
+                minPlayers = []
+                for p in self.players:
+                    # player who want to Min have to declear in this stage
+                    # player who want to Kan shoule return ("Kan",minSet)
+                    # player who do not Min should return (None,None)
+                    minType, minSet = p.askMin()
+                    minPlayers.append([p, minType, minSet])
+                
+                # select player with highest priority
+                if not len(minPlayers) == 0:
+                    # player change to MinPlayer
+                    minPlayer = self.selectMinPlayers(minPlayers)
+                    player = minPlayer[0]
+                    if minPlayer[1] == "Kan":
+                        self.playerKan(minPlayer)
+                        continue
+                    else:
+                        self.playerChiPon(minPlayer)
+                        continue
             
-            if not len(minPlayers) == 0:
-                minPlayer = self.selectMinPlayers(minPlayers)
-                # excecute Min
-                self.playerMin(minPlayer)
+            # STATE NEXT_TURN
+            self.state = "SET_PLAYER"
             print("To Next Turn >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
-    def selectMinPlayers(minPlayers):
-        player = None
-        for args in minPlayers:
-            if "Kan" in args:
-                player = args
-                break
-            else if "Pon" in args:
-                player = args
-                break
-            else if "Chi" in args:
-                player = args
-                break
-            else:
-                pass
-        return player
+        # GameEnd
+        if self.winner == None:
+            print("***************************流局***************************")
+        else:
+            pass
+    """
 
-
-
+if __name__ == "__main__":
+    p1 = Player("Gundam Exia",25000)
+    p2 = Player("Gundam Dynames",25000) 
+    p3 = Player("Gundam Kyrios",25000)
+    p4 = Player("Gundam Virtue",25000)
+    game = GameManager([p1,p2,p3,p4])
+    game.GameFSM()
