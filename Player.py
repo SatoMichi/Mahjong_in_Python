@@ -81,4 +81,5 @@ class Player:
         pass
     def tenpai():
         pass
-        
+    
+    
