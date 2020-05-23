@@ -1,6 +1,12 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/05/19**
+ * modified GameManager class for player's wind(風) and Riichi（立直）
+ * added score calculation table in Data with npy and csv version
+ 
+Sato
+
 **2020/05/18**
  * the function in Pai, showHand modified for GameManager class. It will return str instead of list
  * TestPlayer class added. 

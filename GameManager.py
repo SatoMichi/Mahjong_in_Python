@@ -12,10 +12,11 @@ class GameManager:
     
     # give 13 pai to each players
     def startGame(self):
-        for player in self.players:
+        for wind, player in zip(["東","南","西","北"], self.players):
             hand = self.yama[:13]
             self.yama = self.yama[13:]
             # call player's method
+            player.setWind(wind)
             player.setHand(hand)
         self.cutPai = None
         self.state = "SET_PLAYER"
@@ -96,6 +97,13 @@ class GameManager:
         content += "#################################################################################################\n"
         print(content)
 
+    def printRiichi(self,player):
+        content = ""
+        content += "################################################################################################\n"
+        content += "Player "+player.name+" did RIICHI \n"
+        content += "#################################################################################################\n"
+        print(content)
+
     # select player with highest priority Min
     def selectMinPlayers(self,minPlayers):
             player = None
@@ -125,7 +133,7 @@ class GameManager:
             # STATE "SET_NEXT_PLAYER"
             if self.state == "SET_PLAYER":
                 player = self.players[(self.players.index(player)+1) % 4]
-                print("----------------------MAIN PLAYER: ",player.name,"----------------------")
+                print("----------------------MAIN PLAYER: ",player.name," | WIND: ",player.wind,"----------------------")
                 self.state = "GIVE_PAI"
 
             # STATE "GIVE_PAI_TO_PLAYER"
@@ -139,15 +147,24 @@ class GameManager:
                     self.state = "WIN"
                     self.printWinner(player,yaku)
                     break
+                # check Riici
+                riichi = player.askRiichi()
+                if riichi:
+                    self.printRiichi(player)
                 self.state = "CUT"
 
             # STATE "PLAYER_CUT_PAI"
             elif self.state == "CUT" or self.state == "CHI/PON":
                 self.printPlayerTurn(player)
 
-                target = int(input("Please SELECT the Pai to CUT\n")) -1
-                cut = player.cut(target)
+                if player.riichi:
+                    cut = player.autoCut()
+                else:
+                    target = int(input("Please SELECT the Pai to CUT\n")) -1
+                    cut = player.cut(target)
+                
                 self.playerCutPai(player,cut)
+                
                 # check Ron
                 for p in self.players:
                     win, yaku = p.checkRon()

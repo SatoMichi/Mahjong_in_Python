@@ -16,6 +16,7 @@ class Player:
         draw: Pai the one Pai drawn
         """
         self.name = name
+        self.wind = None
         self.river = []
         self.hand = None
         self.score = score
@@ -32,6 +33,9 @@ class Player:
     # 30-33: 东西南北
     def setHand(self,hand):
         self.hand = hand
+
+    def setWind(self,wind):
+        self.wind = wind
     
     def givePai(self,p):
         self.hand.sort()
@@ -51,6 +55,17 @@ class Player:
 
     def checkRon(self):
         return False, "Nothing"
+
+    def askRiichi(self):
+        self.riichi = False
+        return False
+
+    def autoCut(self):
+        """
+        cut a Pai given
+        """
+        p = self.hand.pop(-1)
+        return p
 
     def askMin(self):
         return None, []
