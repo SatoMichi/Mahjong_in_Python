@@ -46,6 +46,11 @@ def dfs(hand,begin, melds, single, adj_tiles, pairs, split,result):
                 split.append([hand[begin],hand[begin+1]])
                 dfs(hand,begin+2,melds,single,adj_tiles,pairs+1,split,result)
                 split.pop()
+    # 复合型(被隔开的顺子)
+    while(begin <= len(hand) - 2):
+        # find first different
+        # find second different
+        # copy hand and pop these, recurse on new hand
     
 
 
@@ -55,6 +60,9 @@ def tenpai(melds,single,adj_tiles,pairs):
     if melds == 4:
         return single == 1
     return False
+
+def is_shuntsu˜(hand,indexs):
+    
 
 if __name__ == "__main__":
     hand = [2,3,4,4,4,4,5,6,6,6,6,7,8]
