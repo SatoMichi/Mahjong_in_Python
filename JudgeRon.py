@@ -11,34 +11,8 @@ import numpy as np
 #        ron = ron and p in [str(h) for h in hand]
 #    return ron
 
+#非门前役(下列和牌方式不需要门前清,只要满足和牌规则即可加番)
 
-#飘Ron hand and openHand are list[list[(int,int)]]
-#检测规则:手牌与副露中均为刻子
-def piao(hand,openHand):
-    ron = True
-    #检查展开的手牌是否均为碰牌
-    for oph in openHand:
-        #[(28,0),(28,2),(28,3)]
-        if(not (oph[0][0]==oph[1][0] and oph[1][0]==oph[2][0])):
-            ron = ron and False
-    #检查手中的牌是否满足飘的条件
-    #如果手中是一个雀头则一定满足条件
-    if(len(openHand)==1 and len(openHand[0])==2):
-        ron = ron and True
-    #如果手中是一个雀头加任意数量的刻子则也满足条件,但需要注意可能出现一杯口或七对子误判的情况
-    else:
-        quetou = 0
-        for h in hand:
-            #刻子
-            if(len(h)==3):
-                if(not (h[0][0]==h[1][0] and h[1][0]==h[2][0])):
-                    ron = ron and False
-            #雀头
-            if(len(h)==2):
-                quetou = quetou + 1
-        if(not quetou == 1):
-            ron = ron and False
-    return ron
 
 #大三元Ron hand and openHand are list[list[(int,int)]]
 def dasanyuan(hand,openHand):
@@ -51,17 +25,18 @@ def dasanyuan(hand,openHand):
         if(len(h)==3 and h[0][0]==29):
             ron[2]=True
     for oph in openHand:
-        if(len(oph)==3 and oph[0][0]==27):
+        if(oph[0][0]==27):
             ron[0]=True
-        if(len(oph)==3 and oph[0][0]==28):
+        if(oph[0][0]==28):
             ron[1]=True
-        if(len(oph)==3 and oph[0][0]==29):
+        if(oph[0][0]==29):
             ron[2]=True
     if(not False in ron):
         return True
     else:
         return False
 
+#一番役(非门前清限定！！！)
 
 #役牌 自风 hand and openHand are list[list[(int,int)]]
 def zifeng(hand,openHand,zifeng):
@@ -75,7 +50,7 @@ def zifeng(hand,openHand,zifeng):
     return ron
 
 #役牌 场风 hand and openHand are list[list[(int,int)]]
-def zifeng(hand,openHand,changfeng):
+def changfeng(hand,openHand,changfeng):
     ron = False
     for oph in openHand:
         if(oph[0][0]==changfeng):
@@ -118,9 +93,214 @@ def sanyuan_bai(hand,openHand):
             ron = True
     return ron
 
+#役牌 断幺九 hand and openHand are list[list[(int,int)]]
+def noyaojiu(hand,openHand):
+    ron = True
+    yao13 = [0,8,9,17,18,26,27,28,29,30,31,32,33]
+    for i in yao13:
+        for h in hand:
+            for s_h in h:
+                if(i==s_h[0]):
+                    ron = ron and False
+        for oph in openHand:
+            for s_oph in oph:
+                if(i==s_oph[0]):
+                    ron = ron and False
+    return ron
+
+#二番役(非门前清限定！！！)
+
+#役牌 三色同刻 万,筒,索都有相同的数字刻子(E.g. 三万刻子,三索刻子,三筒刻子) hand and openHand are list[list[(int,int)]]
+def sansetk(hand,openHand):
+    ron = False
+    for oph in openHand:
+        if(oph[0][0]==oph[1][0] and oph[1][0]==oph[2][0] and oph[0][0]<27):
+            rons=[False,False]
+            if(oph[0][0]<9):
+                s1 = oph[0][0] + 9
+                s2 = oph[0][0] + 18
+            elif(oph[0][0]<18):
+                s1 = oph[0][0] - 9
+                s2 = oph[0][0] + 9
+            else:
+                s1 = oph[0][0] - 18
+                s2 = oph[0][0] - 9
+            for oph in openHand:
+                if(oph[0][0]==s1 and oph[1][0]==s1 and oph[2][0]==s1):
+                    rons[0] = True
+                if(oph[0][0]==s2 and oph[1][0]==s2 and oph[2][0]==s2):
+                    rons[1] = True
+            for h in hand:
+                if(len(h)==3):
+                    if(h[0][0]==s1 and h[1][0]==s1 and h[2][0]==s1):
+                        rons[0] = True
+                    if(h[0][0]==s2 and h[1][0]==s2 and h[2][0]==s2):
+                        rons[1] = True
+            if(not (False in rons)):
+                ron = True
+        if(ron):
+            break
+    if(not ron):
+        for h in hand:
+            if(len(h)==3):
+                if(h[0][0]==h[1][0] and h[1][0]==h[2][0] and h[0][0]<27):
+                    rons=[False,False]
+                    if(h[0][0]<9):
+                        s1 = h[0][0] + 9
+                        s2 = h[0][0] + 18
+                    elif(h[0][0]<18):
+                        s1 = h[0][0] - 9
+                        s2 = h[0][0] + 9
+                    else:
+                        s1 = h[0][0] - 18
+                        s2 = h[0][0] - 9
+                    for h in hand:
+                        if(len(h)==3):
+                            if(h[0][0]==s1 and h[1][0]==s1 and h[2][0]==s1):
+                                rons[0] = True
+                            if(h[0][0]==s2 and h[1][0]==s2 and h[2][0]==s2):
+                                rons[1] = True
+                    if(not (False in rons)):
+                        ron = True
+            if(ron):
+                break
+    return ron
+
+#役牌 三杠子 一人开杠三次 hand and openHand are list[list[(int,int)]]
+def sangangzi(hand,openHand):
+    gang = 0
+    for oph in openHand:
+        if(len(oph)==4):
+            gang = gang + 1
+    if(gang == 3):
+        return True
+    return False
+
+#役牌 三暗刻 拥有三组没有碰的刻子 hand and openHand are list[list[(int,int)]]
+def sananke(hand,openHand):
+    k = 0
+    for h in hand:
+        if(len(h)==3):
+            if(h[0][0]==h[1][0] and h[1][0]==h[2][0]):
+                k = k + 1
+    if(k==3):
+        return True
+    return False
+
+#役牌 飘 hand and openHand are list[list[(int,int)]]
+#检测规则:手牌与副露中均为刻子
+def piao(hand,openHand):
+    ron = True
+    #检查展开的手牌是否均为碰牌
+    for oph in openHand:
+        #[(28,0),(28,2),(28,3)]
+        if(not (oph[0][0]==oph[1][0] and oph[1][0]==oph[2][0])):
+            ron = ron and False
+    #检查手中的牌是否满足飘的条件
+    #如果手中是一个雀头则一定满足条件
+    if(len(openHand)==1 and len(openHand[0])==2):
+        ron = ron and True
+    #如果手中是一个雀头加任意数量的刻子则也满足条件,但需要注意可能出现一杯口或七对子误判的情况
+    else:
+        quetou = 0
+        for h in hand:
+            #刻子
+            if(len(h)==3):
+                if(not (h[0][0]==h[1][0] and h[1][0]==h[2][0])):
+                    ron = ron and False
+            #雀头
+            if(len(h)==2):
+                quetou = quetou + 1
+        if(not quetou == 1):
+            ron = ron and False
+    return ron
+
+#役牌 小三元 包含中发白其中两种的刻子以及其中一种的雀头 hand and openHand are list[list[(int,int)]]
+def xiaosanyuan(hand,openHand):
+    ron = [False,False,False]
+    for oph in openHand:
+        if(oph[0][0]==27 or oph[0][0]==28 or oph[0][0]==29):
+            if(not ron[0]):
+                ron[0]=True
+            elif(not ron[1]):
+                ron[1]=True
+    for h in hand:
+        if(len(h)==2):
+            if(h[0][0]==27 or h[0][0]==28 or h[0][0]==29):
+                ron[2]=True
+        if(len(h)==3):
+            if(oph[0][0]==27 or oph[0][0]==28 or oph[0][0]==29):
+                if(not ron[0]):
+                    ron[0]=True
+                elif(not ron[1]):
+                    ron[1]=True
+    if(not False in ron):
+        return True
+    return False
+
+#役牌 混老头 胡牌时只包含老头牌和字牌 hand and openHand are list[list[(int,int)]]
+def hunlaotou(hand,openHand):
+    ron = True
+    laotou = [0,8,9,17,18,26,27,28,29,30,31,32,33]
+    for oph in openHand:
+        if( not (oph[0][0]==oph[1][0] and oph[1][0]==oph[2][0] and (oph[0][0] in laotou))):
+            ron = ron and False
+    for h in hand:
+        if(len(h)==2):
+            if(not h[0][0] in laotou):
+                ron = ron and False
+        else:
+            if( not (h[0][0]==h[1][0] and h[1][0]==h[2][0] and (h[0][0] in laotou))):
+                ron = ron and False
+    return ron
+
+#役牌 混全带幺九 包含老头牌加上字牌的4组顺子和刻子+幺九牌的雀头 hand and openHand are list[list[(int,int)]]
+def hqdyj(hand,openHand):
+    ron = True
+    yao13 = [0,8,9,17,18,26,27,28,29,30,31,32,33]
+    for h in hand:
+        if(len(h)==2):
+            if(not (h[0][0] in yao13 or h[1][0] in yao13)):
+                ron = ron and False
+        if(len(h)==3):
+            if(not (h[0][0] in yao13 or h[1][0] in yao13 or h[2][0] in yao13)):
+                ron = ron and False
+    for oph in openHand:
+        if(not (oph[0][0] in yao13 or oph[1][0] in yao13 or oph[2][0] in yao13)):
+            ron = ron and False
+    return ron
+
+#役牌 一气贯通 同种数牌组成123,456,789的顺子 hand and openHand are list[list[(int,int)]]
+def yiqiguantong(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    for i in range(3):
+        ron_judge = [[0+i*9,1+i*9,2+i*9],[3+i*9,4+i*9,5+i*9],[6+i*9,7+i*9,8+i*9]]
+        ron = [False,False,False]
+        for j,r in enumerate(ron_judge):
+            if(r in hand_no or r in openHand_no):
+                ron[j] = True
+        if(not False in ron):
+            return True
+    return False
+
+#役牌 三色同顺 万,筒,索都有相同数字的顺子 hand and openHand are list[list[(int,int)]]
+def sansets(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    for i in range(7):
+        ron_judge = [[0+i,1+i,2+i],[9+i,10+i,11+i],[18+i,19+i,20+i]]
+        ron = [False,False,False]
+        for j,r in enumerate(ron_judge):
+            if(r in hand_no or r in openHand_no):
+                ron[j] = True
+        if(not False in ron):
+            return True
+    return False
+
 #门前役(指在门前清听牌为条件下，和牌才成立的役种)
 
-#一番役
+#一番役(门前清限定！！！)
 #役牌 一杯口 hand and openHand are list[list[(int,int)]]
 #判断方法:判断要将其与二杯口区分开(若是二杯口则不和一杯口)
 def yibeikou(hand):
@@ -134,18 +314,7 @@ def yibeikou(hand):
         ron = True
     return ron
 
-#役牌 断幺九 hand and openHand are list[list[(int,int)]]
-def noyaojiu(hand):
-    ron = True
-    yao13 = [0,8,9,17,18,26,27,28,29,30,31,32,33]
-    for i in yao13:
-        for h in hand:
-            for s_h in h:
-                if(i==s_h[0]):
-                    ron = ron and False
-    return ron
-
-#二番役
+#二番役(门前清限定！！！)
 
 #役牌 七对子 hand and openHand are list[list[(int,int)]]
 def chitoi(hand):
@@ -183,7 +352,7 @@ def sianke(hand):
         return True
     return False
 
-#役牌 九莲宝灯 hand and openHand are list[list[(int,int)]]
+#役牌 九莲宝灯 hand and openHand are list[list[(int,int)]] unfinished
 def jiulianbaodeng(hand):
     return True
 
@@ -197,6 +366,8 @@ def jiulianbaodeng(hand):
 def pai2onlyno(hand):
     honlyno = []
     for h in hand:
+        if(len(h)==4):
+            new_h = [h[0][0],h[1][0],h[2][0],h[3][0]]
         if(len(h)==3):
             new_h = [h[0][0],h[1][0],h[2][0]]
         if(len(h)==2):
@@ -299,7 +470,7 @@ def pai2onlyno(hand):
 #lichi为booolean,为了判断Player是否立直
 #zifeng和changfeng均为int,[30--33](表示本场游戏的自风与场风)
 def JapanRon(hand,openHand,lichi,zifeng,changfeng):
-    kokusi = kokusi13machi(hand,openHand)
-    chitois = chitoi(hand,openHand)
-    piao = piao(hand,openHand,hand_num)
-    return (kokusi + chitois + normal_who)
+   # kokusi = kokusi13machi(hand,openHand)
+   # chitois = chitoi(hand,openHand)
+   # piao = piao(hand,openHand,hand_num)
+    return True
