@@ -1,0 +1,22 @@
+Bug Report from JudgeRonTest.py
+
+*   dasanyuan(hand,openHand):
+
+    It will not work for case[0] (the case, hand exist and openHand is empty)
+    Passed other cases
+
+*   zifeng(hand,openHand,zifeng):
+    
+    Passed All the test cases
+
+*   changfeng(hand,openHand,changfeng):
+
+    Passed All the test cases
+
+*   sanyuan_zhong(hand,openHand):
+*   sanyuan_fa(hand,openHand):
+*   sanyuan_bai(hand,openHand):
+
+    Passed all the test cases
+
+
