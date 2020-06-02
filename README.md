@@ -1,6 +1,12 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/06/02**
+  * Added JudgeRonTest.py which is Unit Tests for functions in JudgeRon (Tests is not yet completed)
+  * Added the results of unit tests as "JudgeRon_Test_Report.txt" (again this is not yet completed)
+
+Sato
+
 **2020/05/19**
  * modified GameManager class for player's wind(風) and Riichi（立直）
  * added score calculation table in Data with npy and csv version
