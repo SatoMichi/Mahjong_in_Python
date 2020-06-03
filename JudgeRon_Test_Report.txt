@@ -2,21 +2,40 @@ Bug Report from JudgeRonTest.py
 
 *   dasanyuan(hand,openHand):
 
-    It will not work for case[0] (the case, hand exist and openHand is empty)
-    Passed other cases
+    It will not work for case[0] (the case, hand exist and openHand is empty).
+    Passed other cases.
 
 *   zifeng(hand,openHand,zifeng):
     
-    Passed All the test cases
+    Passed All the test cases.
 
 *   changfeng(hand,openHand,changfeng):
 
-    Passed All the test cases
+    Passed All the test cases.
 
 *   sanyuan_zhong(hand,openHand):
 *   sanyuan_fa(hand,openHand):
 *   sanyuan_bai(hand,openHand):
 
-    Passed all the test cases
+    Passed all the test cases.
+
+*   noyaojiu(hand,openHand):
+
+    Basically passed all the test cases (Last case[7] with empty input returned True).
+
+*   sansetk(hand,openHand):
+
+    Passed all the test cases.
+
+*   sangangzi(hand,openHand):
+
+    Passed all the test cases.
+
+*   sananke(hand,openHand):
+
+    For test case[2] and [3], if they are 暗杠, it should return True, if they are 明杠, it should return False.
+    Other test cases are passed.
 
 
+
+*   xiaosanyuan(hand,openHand):
