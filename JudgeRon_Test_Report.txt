@@ -36,6 +36,4 @@ Bug Report from JudgeRonTest.py
     For test case[2] and [3], if they are 暗杠, it should return True, if they are 明杠, it should return False.
     Other test cases are passed.
 
-
-
-*   xiaosanyuan(hand,openHand):
+*   
