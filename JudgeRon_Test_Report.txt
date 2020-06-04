@@ -54,4 +54,18 @@ Bug Report from JudgeRonTest.py
     Case[6] should be False since, it is 清老頭 (清老頭 != 混老头)
     Other test cases are passed.
 
-*
+*   hqdyj(hand,openHand):
+
+    case[2] should return False since it is 純全带幺九 (純全带幺九 != 混全带幺九)
+    case[3] should return False since it is 混老头 (混老头 != 混全带幺九)
+    case[4] should return False since it is 混老头 and 七对子 (七对子 != 混全带幺九)
+    case[5] should return False since it is 清老頭 (清老頭 != 混全带幺九)
+    Other test cases are passed.
+
+*   yiqiguantong(hand,openHand):
+
+    Passed all the test cases.
+
+*   sansets(hand,openHand):
+
+    Passed all the test cases.
