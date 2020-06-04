@@ -21,6 +21,7 @@ Bug Report from JudgeRonTest.py
 
 *   noyaojiu(hand,openHand):
 
+    Passed the case with 七对子 (case[7])
     Basically passed all the test cases (Last case[7] with empty input returned True).
 
 *   sansetk(hand,openHand):
@@ -36,4 +37,21 @@ Bug Report from JudgeRonTest.py
     For test case[2] and [3], if they are 暗杠, it should return True, if they are 明杠, it should return False.
     Other test cases are passed.
 
-*   
+*   piao(hand,openHand):
+
+    Passes all the test cases.
+
+*   xiaosanyuan(hand,openHand):
+
+    It will not work for case[0] (the case, hand exist and openHand is empty).
+    In addition, it should retrun True for Case[1] (['中', '中', '中', '七萬', '八萬', '九萬', '白', '白', '白', '發', '發']['九萬', '九萬', '九萬'])
+    Other test cases are passed.
+
+*   hunlaotou(hand,openHand):
+
+    Passed the case with 七对子 (case[4]) 
+    Case[4] should be False since, it is 字一色 (字一色 != 混老头)
+    Case[6] should be False since, it is 清老頭 (清老頭 != 混老头)
+    Other test cases are passed.
+
+*
