@@ -69,3 +69,11 @@ Bug Report from JudgeRonTest.py
 *   sansets(hand,openHand):
 
     Passed all the test cases.
+
+*   yibeikou(hand):
+
+    case[2] should return True since it is 七对子 and 一杯口
+    case[6] should return False since it is not 门前清
+    Other test cases are passed.
+
+*
