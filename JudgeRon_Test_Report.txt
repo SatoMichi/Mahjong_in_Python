@@ -83,4 +83,15 @@ Bug Report from JudgeRonTest.py
     case[4] should return False since it is not 门前清
     Other test cases are passed.
 
-*   
+*   erbeikou(hand):
+
+    case[1] should return True
+    case[4] should return True since it is 七对子 and 二杯口
+    Other test cases are passed.
+
+*   sianke(hand):
+
+    case[1] should return True if they are 暗杠, however, if they are 明杠, it should return False since it is 四槓子
+    case[2] should return True
+    Other test cases are passed.
+
