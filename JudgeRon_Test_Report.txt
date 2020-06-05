@@ -76,4 +76,11 @@ Bug Report from JudgeRonTest.py
     case[6] should return False since it is not 门前清
     Other test cases are passed.
 
-*
+*   chitoi(hand):
+
+    case[1] should return True although it is not devided as pair
+    case[2] should return False since it includes two same pair ([('四筒', '四筒'), ('四筒', '四筒')])
+    case[4] should return False since it is not 门前清
+    Other test cases are passed.
+
+*   
