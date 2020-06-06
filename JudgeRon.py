@@ -435,7 +435,7 @@ def xiaosixi(hand,openHand):
 def sigangzi(hang,openHand):
     gz = 0 
     for oph in openHand:
-        if(len(openHand)==4):
+        if(len(oph)==4):
             gz = gz + 1
     if(gz == 4):
         return True
