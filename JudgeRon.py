@@ -164,7 +164,7 @@ def sananke(hand,openHand):
         return True
     return False
 
-#役牌 飘 hand and openHand are list[list[(int,int)]]
+#役牌 飘(対々和) hand and openHand are list[list[(int,int)]]
 #检测规则:手牌与副露中均为刻子
 def piao(hand,openHand):
     ron = True

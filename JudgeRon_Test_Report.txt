@@ -2,21 +2,96 @@ Bug Report from JudgeRonTest.py
 
 *   dasanyuan(hand,openHand):
 
-    It will not work for case[0] (the case, hand exist and openHand is empty)
-    Passed other cases
+    It will not work for case[0] (the case, hand exist and openHand is empty).
+    Passed other cases.
 
 *   zifeng(hand,openHand,zifeng):
     
-    Passed All the test cases
+    Passed All the test cases.
 
 *   changfeng(hand,openHand,changfeng):
 
-    Passed All the test cases
+    Passed All the test cases.
 
 *   sanyuan_zhong(hand,openHand):
 *   sanyuan_fa(hand,openHand):
 *   sanyuan_bai(hand,openHand):
 
-    Passed all the test cases
+    Passed all the test cases.
 
+*   noyaojiu(hand,openHand):
+
+    Passed the case with 七对子 (case[7])
+    Basically passed all the test cases (Last case[7] with empty input returned True).
+
+*   sansetk(hand,openHand):
+
+    Passed all the test cases.
+
+*   sangangzi(hand,openHand):
+
+    Passed all the test cases.
+
+*   sananke(hand,openHand):
+
+    For test case[2] and [3], if they are 暗杠, it should return True, if they are 明杠, it should return False.
+    Other test cases are passed.
+
+*   piao(hand,openHand):
+
+    Passes all the test cases.
+
+*   xiaosanyuan(hand,openHand):
+
+    It will not work for case[0] (the case, hand exist and openHand is empty).
+    In addition, it should retrun True for Case[1] (['中', '中', '中', '七萬', '八萬', '九萬', '白', '白', '白', '發', '發']['九萬', '九萬', '九萬'])
+    Other test cases are passed.
+
+*   hunlaotou(hand,openHand):
+
+    Passed the case with 七对子 (case[4]) 
+    Case[4] should be False since, it is 字一色 (字一色 != 混老头)
+    Case[6] should be False since, it is 清老頭 (清老頭 != 混老头)
+    Other test cases are passed.
+
+*   hqdyj(hand,openHand):
+
+    case[2] should return False since it is 純全带幺九 (純全带幺九 != 混全带幺九)
+    case[3] should return False since it is 混老头 (混老头 != 混全带幺九)
+    case[4] should return False since it is 混老头 and 七对子 (七对子 != 混全带幺九)
+    case[5] should return False since it is 清老頭 (清老頭 != 混全带幺九)
+    Other test cases are passed.
+
+*   yiqiguantong(hand,openHand):
+
+    Passed all the test cases.
+
+*   sansets(hand,openHand):
+
+    Passed all the test cases.
+
+*   yibeikou(hand):
+
+    case[2] should return True since it is 七对子 and 一杯口
+    case[6] should return False since it is not 门前清
+    Other test cases are passed.
+
+*   chitoi(hand):
+
+    case[1] should return True although it is not devided as pair
+    case[2] should return False since it includes two same pair ([('四筒', '四筒'), ('四筒', '四筒')])
+    case[4] should return False since it is not 门前清
+    Other test cases are passed.
+
+*   erbeikou(hand):
+
+    case[1] should return True
+    case[4] should return True since it is 七对子 and 二杯口
+    Other test cases are passed.
+
+*   sianke(hand):
+
+    case[1] should return True if they are 暗杠, however, if they are 明杠, it should return False since it is 四槓子
+    case[2] should return True
+    Other test cases are passed.
 
