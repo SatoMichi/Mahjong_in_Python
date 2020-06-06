@@ -13,29 +13,6 @@ import numpy as np
 
 #非门前役(下列和牌方式不需要门前清,只要满足和牌规则即可加番)
 
-
-#大三元Ron hand and openHand are list[list[(int,int)]]
-def dasanyuan(hand,openHand):
-    ron = [False,False,False]
-    for h in hand:
-        if(len(h)==3 and h[0][0]==27):
-            ron[0]=True
-        if(len(h)==3 and h[0][0]==28):
-            ron[1]=True
-        if(len(h)==3 and h[0][0]==29):
-            ron[2]=True
-    for oph in openHand:
-        if(oph[0][0]==27):
-            ron[0]=True
-        if(oph[0][0]==28):
-            ron[1]=True
-        if(oph[0][0]==29):
-            ron[2]=True
-    if(not False in ron):
-        return True
-    else:
-        return False
-
 #一番役(非门前清限定！！！)
 
 #役牌 自风 hand and openHand are list[list[(int,int)]]
@@ -298,6 +275,192 @@ def sansets(hand,openHand):
             return True
     return False
 
+#三番役(非门前清限定！！！)
+
+#役牌 混一色 只包含一种数牌,并且含有字牌的刻子或者雀头 hand and openHand are list[list[(int,int)]]
+def hunyise(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    ron = [False,False,False]
+    qingyise = [0,1,2,3,4,5,6,7,8]
+    for i in range(3):
+        qingyisepai = [qys + 9*i for qys in qingyise]
+        hunyisepai = qingyisepai + [27,28,29,30,31,32,33]
+        if_ron = True
+        for oph in openHand_no:
+            for op in oph:
+                if(not op in hunyisepai):
+                    if_ron = False
+        for ha in hand_no:
+            for h in ha:
+                if(not h in hunyisepai):
+                    if_ron = False
+        if(if_ron):
+            ron[i]= True
+    if(True in ron):
+        return True
+    return False
+
+#役牌 纯全带幺九 只包含老头牌的四组顺子和刻子+老头牌的雀头
+def cqdyj(hand,openHand):
+    ron = True
+    laotou = [0,8,9,17,18,26]
+    for h in hand:
+        if(len(h)==2):
+            if(not (h[0][0] in laotou or h[1][0] in laotou)):
+                ron = ron and False
+        if(len(h)==3):
+            if(not (h[0][0] in laotou or h[1][0] in laotou or h[2][0] in laotou)):
+                ron = ron and False
+    for oph in openHand:
+        if(not (oph[0][0] in laotou or oph[1][0] in laotou or oph[2][0] in laotou)):
+            ron = ron and False
+    return ron
+
+#六番役(非门前清限定！！！)
+
+#役牌 清一色 只包含一种数牌,不能包含字牌  hand and openHand are list[list[(int,int)]]
+def qingyise(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    ron = [False,False,False]
+    qingyise = [0,1,2,3,4,5,6,7,8]
+    for i in range(3):
+        qingyisepai = [qys + 9*i for qys in qingyise]
+        if_ron = True
+        for oph in openHand_no:
+            for op in oph:
+                if(not op in qingyisepai):
+                    if_ron = False
+        for ha in hand_no:
+            for h in ha:
+                if(not h in qingyisepai):
+                    if_ron = False
+        if(if_ron):
+            ron[i]= True
+    if(True in ron):
+        return True
+    return False
+
+#役满机会(非门前清限定！！！)
+
+#役牌 大三元 包含中发白三组刻子 hand and openHand are list[list[(int,int)]]
+def dasanyuan(hand,openHand):
+    ron = [False,False,False]
+    for h in hand:
+        if(len(h)==3 and h[0][0]==27):
+            ron[0]=True
+        if(len(h)==3 and h[0][0]==28):
+            ron[1]=True
+        if(len(h)==3 and h[0][0]==29):
+            ron[2]=True
+    for oph in openHand:
+        if(oph[0][0]==27):
+            ron[0]=True
+        if(oph[0][0]==28):
+            ron[1]=True
+        if(oph[0][0]==29):
+            ron[2]=True
+    if(not False in ron):
+        return True
+    else:
+        return False
+
+#役牌 字一色 只包含字牌 hand and openHand are list[list[(int,int)]]
+def ziyise(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    zipai = [27,28,29,30,31,32,33]
+    for oph in openHand_no:
+        for op in oph:
+            if(not op in zipai):
+                return False
+    for hand in hand_no:
+        for h in hand:
+            if(not h in zipai):
+                return False
+    return True
+
+#役牌 绿一色 只包含索子的23468以及发 hand and openHand are list[list[(int,int)]]
+def lvyise(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    lvpai = [19,20,21,23,25,28]
+    for oph in openHand_no:
+        for op in oph:
+            if(not op in lvpai):
+                return False
+    for hand in hand_no:
+        for h in hand:
+            if(not h in lvpai):
+                return False
+    return True
+
+#役牌 清老头 手牌中只有老头牌 hand and openHand are list[list[(int,int)]]
+def qinglaotou(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    laotou = [0,8,9,17,18,26]
+    for oph in openHand_no:
+        for op in oph:
+            if(not op in laotou):
+                return False
+    for hand in hand_no:
+        for h in hand:
+            if(not h in laotou):
+                return False
+    return True
+
+#役牌 小四喜 包含三种风牌的刻子+剩下一种风牌的雀头 hand and openHand are list[list[(int,int)]]
+def xiaosixi(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    fengpai = [30,31,32,33]
+    xiaosixi = [0,0]
+    for oph in openHand_no:
+        if(oph[0] in fengpai):
+            xiaosixi[0] = xiaosixi[0] + 1
+    for hand in hand_no:
+        if(len(hand)==3):
+            if(hand[0] in fengpai):
+                xiaosixi[0] = xiaosixi[0] + 1
+        if(len(hand)==2):
+            if(hand[0] in fengpai):
+                xiaosixi[1] = xiaosixi[1] + 1
+    if(xiaosixi[0]==3 and xiaosixi[1]==1):
+        return True
+    return False
+
+#役牌 四杠子 hand and openHand are list[list[(int,int)]]
+def sigangzi(hang,openHand):
+    gz = 0 
+    for oph in openHand:
+        if(len(openHand)==4):
+            gz = gz + 1
+    if(gz == 4):
+        return True
+    return False
+
+#双倍役满机会(非门前清限定！！！)
+
+#役牌 大四喜 包含四种风牌的刻子 hand and openHand are list[list[(int,int)]]
+def dasixi(hand,openHand):
+    hand_no = pai2onlyno(hand)
+    openHand_no = pai2onlyno(openHand)
+    fengpai = [30,31,32,33]
+    dsx = 0
+    for oph in openHand_no:
+        if(oph[0] in fengpai):
+            dsx = dsx + 1
+    for hand in hand_no:
+        if(len(hand)==3):
+            if(hand[0] in fengpai):
+                dsx = dsx + 1
+    if(dsx == 4):
+        return True
+    return False
+
+
 #门前役(指在门前清听牌为条件下，和牌才成立的役种)
 
 #一番役(门前清限定！！！)
@@ -352,11 +515,10 @@ def sianke(hand):
         return True
     return False
 
-#役牌 九莲宝灯 hand and openHand are list[list[(int,int)]] unfinished
+#役牌 九莲宝灯 hand and openHand are list[list[(int,int)]] 
+#unfinished
 def jiulianbaodeng(hand):
     return True
-
-
 
 
 
