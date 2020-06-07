@@ -1,10 +1,5 @@
 Bug Report from JudgeRonTest.py
 
-*   dasanyuan(hand,openHand):
-
-    It will not work for case[0] (the case, hand exist and openHand is empty).
-    Passed other cases.
-
 *   zifeng(hand,openHand,zifeng):
     
     Passed All the test cases.
@@ -70,9 +65,40 @@ Bug Report from JudgeRonTest.py
 
     Passed all the test cases.
 
+*   hunyise(hand,openHand):
+
+    case[4] should return False since it is 清一色
+    case[5] should return True however, case[6] should return False since it is 緑一色 (混一色 != 緑一色)
+    case[7] should return False since it is 清一色 and 七对子 (混一色 != 清一色)
+    Other test cases are passed.
+
+*   cqdyj(hand,openHand):
+
+    case[3] should return True since it is 七对子 or 纯全带幺九
+    Other test cases are passed.
+
+*   qingyise(hand,openHand):
+
+    case[3] should return False since it is 四暗刻 (四暗刻 != 清一色)
+    case[5] should return False since it is 四杠子 (四杠子 != 清一色)
+    Other test cases are passed.
+
+*   dasanyuan(hand,openHand):
+
+    It will not work for case[0] (the case, hand exist and openHand is empty).
+    Passed other cases.
+
+*   ziyise(hand,openHand):
+
+    Passed all the test cases.
+
+*   lvyise(hand,openHand):
+
+    Passed all the test cases.
+
 *   yibeikou(hand):
 
-    case[2] should return True since it is 七对子 and 一杯口
+    case[2] should return True since it is 七对子 or 一杯口
     case[6] should return False since it is not 门前清
     Other test cases are passed.
 
@@ -86,7 +112,7 @@ Bug Report from JudgeRonTest.py
 *   erbeikou(hand):
 
     case[1] should return True
-    case[4] should return True since it is 七对子 and 二杯口
+    case[4] should return True since it is 七对子 or 二杯口
     Other test cases are passed.
 
 *   sianke(hand):
