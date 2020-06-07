@@ -464,7 +464,33 @@ def dasixi(hand,openHand):
 #门前役(指在门前清听牌为条件下，和牌才成立的役种)
 
 #一番役(门前清限定！！！)
-#役牌 一杯口 hand and openHand are list[list[(int,int)]]
+
+#役牌 门前清自摸和 门前清的状态下自摸和牌
+
+#役牌 平和 四组顺子+非役牌的雀头+最后是顺子的两面听牌 hand is list[list[(int,int)]] hepai is (int,int)
+def pinghe(beforehand,hepai,zifeng,changfeng):
+    hand_no = pai2onlyno(beforehand)
+    shunzi = 0
+    liangmian = False
+    yipai = True
+    sanyuan = [27,28,29]
+    for hand in hand_no:
+        if(len(hand)==3):
+            if(hand[0]==hand[1]-1):
+                shunzi = shunzi + 1
+        if(len(hand)==2):
+            if(not hand[0] == hand[1]):
+                if(hepai[0]==hand[0]-1 or hepai[0]==hand[0]+1):
+                    liangmian = True
+                    shunzi = shunzi + 1
+            else:
+                if(hand[0] == zifeng or hand[0] == changfeng or hand[0] in sanyuan):
+                    yipai = False
+    if(shunzi == 4 and liangmian and yipai):
+        return True       
+    return False
+
+#役牌 一杯口 hand is list[list[(int,int)]]
 #判断方法:判断要将其与二杯口区分开(若是二杯口则不和一杯口)
 def yibeikou(hand):
     ron = False
@@ -631,8 +657,11 @@ def pai2onlyno(hand):
 #hand 为 list[list[(int,int)]],openHand 为 list[list[(int,int)]]
 #lichi为booolean,为了判断Player是否立直
 #zifeng和changfeng均为int,[30--33](表示本场游戏的自风与场风)
-def JapanRon(hand,openHand,lichi,zifeng,changfeng):
-   # kokusi = kokusi13machi(hand,openHand)
-   # chitois = chitoi(hand,openHand)
-   # piao = piao(hand,openHand,hand_num)
+def JapanRon(player):
+    hand = player.hand
+    openHand = player.openHand
+    changfeng = player.changfeng
+    a = changfeng(hand,openHand,changfeng)
+    if(a):
+        return True
     return True
