@@ -1,15 +1,17 @@
 from Pai import originalYama,allPai,showHand
 import numpy as np
+import yaml
+import math
 
 
 #十三幺//国士无双Ron hand and openHand are list[list[(int,int)]]
 #十三幺分牌规则有待商榷****
-#def kokusi13machi(hand,openHand):
+def kokusi13machi(hand):
 #    yao13 = [0,8,9,17,18,26,27,28,29,30,31,32,33]
 #    ron = (len(hand) == 14) and (len(openHand)==0)
 #    for p in yao13:
 #        ron = ron and p in [str(h) for h in hand]
-#    return ron
+   return False
 
 #非门前役(下列和牌方式不需要门前清,只要满足和牌规则即可加番)
 
@@ -513,7 +515,7 @@ def chitoi(hand):
             ron = False
     return ron
 
-#三番役
+#三番役(门前清限定！！！)
 
 #役牌 二杯口 hand and openHand are list[list[(int,int)]]
 #判断方法:判断要将其与一杯口区分开来(若是二杯口则不和一杯口)
@@ -652,16 +654,140 @@ def pai2onlyno(hand):
 #                return False
 #    return True
 
+class Rondong:
+    def __init__(self):
+        self.zj = 0
+        self.xj = 0
+        self.judgeRon = ""
+        self.fan = 0
+        self.fu = 0
+        self.levelrep = ""
+    def addfan(self,n):
+        self.fan = self.fan + n
+    def setJudgeRon(self,stri):
+        self.judgeRon = self.judgeRon + " " + stri
+    def calcultatefu(self,hand,openHand,wh,zifeng,changfeng):
+        yaojiu = [0,8,9,17,18,26,27,28,29,30,31,32,33]
+        sanyuan = [27,28,29]
+        #符底一定会有二十符
+        self.fu = 20
+        hand_no = pai2onlyno(hand)
+        openHand_no = pai2onlyno(openHand)
+        for oph in openHand_no:
+            if(len(oph)==4):
+                if(oph[2]==oph[3]):
+                    if(oph[0] in yaojiu):
+                        self.fu = self.fu + 16
+                    else:
+                        self.fu = self.fu + 8
+                else:
+                    if(oph[0] in yaojiu):
+                        self.fu = self.fu + 32
+                    else:
+                        self.fu = self.fu + 16
+            if(len(oph)==3 and oph[0]==oph[1] and oph[1]==oph[2]):
+                if(oph[0] in yaojiu):
+                    self.fu = self.fu + 4
+                else:
+                    self.fu = self.fu + 2
+        for hand in hand_no:
+            if(len(hand)==3):
+                if(hand[0]==hand[1] and hand[1]==hand[2]):
+                    if(hand[0] in yaojiu):
+                        self.fu = self.fu + 8
+                    else:
+                        self.fu = self.fu + 4
+            if(len(hand)==2):
+                if(hand[0] in sanyuan):
+                    self.fu = self.fu + 2
+                if(hand[0] == zifeng or hand[0] == changfeng):
+                    self.fu = self.fu + 2
+                    if(zifeng == changfeng):
+                        self.fu = self.fu + 2
+        if(wh == 1):
+            if(not chitoi(hand)):
+                self.fu = self.fu + 2
+        if(wh == 0):
+            if(openHand == None):
+                self.fu = self.fu + 10
+        fus = self.fu / 10
+        fus = math.ceil(fus)
+        self.fu = fus * 10
+    def setallup(self):
+        file = open("roncalculate.yml",'r',encoding="utf-8")
+        file_data = file.read()
+        file.close()
+        data = yaml.load(file_data,Loader=yaml.FullLoader)
+        if(self.fan == 5 or (self.fan == 4 and self.fu>30) or (self.fan == 3 and self.fu>60)):
+            self.zj = 12000
+            self.xj = 4000
+            self.levelrep = "满贯"
+        elif(self.fan == 6 or self.fan == 7):
+            self.zj = 18000
+            self.xj = 6000
+            self.levelrep = "跳满" 
+        elif(self.fan == 8 or self.fan == 9 or self.fan == 10):
+            self.zj = 24000
+            self.xj = 8000
+            self.levelrep = "倍满"
+        elif(self.fan == 11 or self.fan == 12):
+            self.zj = 36000
+            self.xj = 12000
+            self.levelrep = "三倍满"
+        elif(self.fan == 13):
+            self.zj = 48000
+            self.xj = 16000
+            self.levelrep = "累计役满"
+        else:
+            fanshu = 'fanshu' + str(self.fan)
+            fushu = 'fushu' + str(self.fu)
+            self.zj = data['point'][0][fanshu][0][fushu][0]['defen']
+            self.xj = data['point'][0][fanshu][0][fushu][0]['shifen']
+            self.levelrep = str(self.fan) + "翻"
+
+        
+    
+
 
 #日本麻将胡牌函数
 #hand 为 list[list[(int,int)]],openHand 为 list[list[(int,int)]]
 #lichi为booolean,为了判断Player是否立直
 #zifeng和changfeng均为int,[30--33](表示本场游戏的自风与场风)
-def JapanRon(player):
+def JapanRonZJ(player):
     hand = player.hand
     openHand = player.openHand
     changfeng = player.changfeng
-    a = changfeng(hand,openHand,changfeng)
-    if(a):
-        return True
-    return True
+    lichi = player.lichi
+    fanshu = 0
+    if(lichi):
+        #Player 立直 先判断门前清立直番数
+        #直接役满机会
+        if(sianke(hand)):
+            return 48000,16000,"四暗刻","役满"
+        if(kokusi13machi(hand)):
+            return 48000,16000,"国士无双","役满"
+        if(jiulianbaodeng(hand)):
+            return 48000,16000,"九莲宝灯","役满"
+        if(dasanyuan(hand,openHand)):
+            return 48000, 16000,"大三元","役满"
+    else:
+        #Player 未立直
+        a = 1
+    return fanshu
+
+
+
+def JapanRonXJ(player):
+    hand = player.hand
+    openHand = player.openHand
+    changfeng = player.changfeng
+    lichi = player.lichi
+    fanshu = 0
+    if(lichi):
+        #Player 立直 先判断门前清立直番数
+        #直接役满机会
+         a = 1 
+    else:
+        a = 2
+        #Player 未立直
+    return fanshu
