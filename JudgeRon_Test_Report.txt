@@ -96,6 +96,22 @@ Bug Report from JudgeRonTest.py
 
     Passed all the test cases.
 
+*   qinglaotou(hand,openHand):
+
+    Passed all the test cases.
+
+*   xiaosixi(hand,openHand):
+
+    Passed all the test cases.
+
+*   sigangzi(hang,openHand):
+
+    Passed all the test cases.
+
+*   dasixi(hand,openHand):
+
+    Passed all the test cases.
+
 *   yibeikou(hand):
 
     case[2] should return True since it is 七对子 or 一杯口
@@ -105,7 +121,7 @@ Bug Report from JudgeRonTest.py
 *   chitoi(hand):
 
     case[1] should return True although it is not devided as pair
-    case[2] should return False since it includes two same pair ([('四筒', '四筒'), ('四筒', '四筒')])
+    case[2] should return False since it includes two same pair ([('四筒', '四筒'), ('四筒', '四筒')]) and it is 二杯口
     case[4] should return False since it is not 门前清
     Other test cases are passed.
 

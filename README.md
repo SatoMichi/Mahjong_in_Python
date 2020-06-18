@@ -1,6 +1,12 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/06/07**
+  * Finish writing Unit Tests to JudgeRonTest.py (Tests is completed for existing function for now)
+  * Finish writing results of unit tests to "JudgeRon_Test_Report.txt" (again this is completed for existing function for now)
+
+Sato
+
 **2020/06/06**
   * Added Unit Tests to JudgeRonTest.py (Tests is not yet completed)
   * Added the results of unit tests to "JudgeRon_Test_Report.txt" (again this is not yet completed)
