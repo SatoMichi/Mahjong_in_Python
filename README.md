@@ -4,6 +4,7 @@ Trial for 麻雀 program using Python
 **2020/06/18**
   * Added Unit Tests to JudgeRonTest.py (Pinghe)
   * Added the results of unit tests to "JudgeRon_Test_Report.txt" (Pinghe)
+  * Added the class for Calculating 符数 (HeHand)
 
 Sato
 
