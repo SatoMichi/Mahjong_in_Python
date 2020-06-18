@@ -1,6 +1,6 @@
 from Pai import originalYama,allPai,showHand
 import numpy as np
-import yaml
+#import yaml
 import math
 
 

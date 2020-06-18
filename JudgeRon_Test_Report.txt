@@ -112,6 +112,13 @@ Bug Report from JudgeRonTest.py
 
     Passed all the test cases.
 
+*   pinghe(beforehand,hepai,zifeng,changfeng):
+
+    case[2] (waiting 雀头) produced error.
+    case[0] and case[1] should return True
+    case[5] should not be Pinghe.
+    Other test cases are passed.
+
 *   yibeikou(hand):
 
     case[2] should return True since it is 七对子 or 一杯口
