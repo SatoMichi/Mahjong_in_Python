@@ -25,8 +25,10 @@ class GameManager:
         self.winner = None
         self.playerCounter = np.zeros([4])
         self.minCounter = np.zeros([4,4])
-        self.riichiTurn = np.zeros([4])
+        self.riichiTurn = [(0,False)]*4
+        self.playerTumo = [False,False,False,False]
         self.playerYaku = [""]*4
+        self.rinxian = False
 
     # check yama is empty or not
     def zeroYama(self):
@@ -150,6 +152,8 @@ class GameManager:
 
             # STATE "GIVE_PAI_TO_PLAYER"
             elif self.state == "GIVE_PAI" or self.state == "KAN":
+                if self.state == "KAN":
+                    self.rinxian = True
                 pai = self.yama[0]
                 self.yama = self.yama[1:]
                 player.givePai(pai)
@@ -159,13 +163,16 @@ class GameManager:
                     self.state = "WIN"
                     self.winner = player
                     self.playerYaku[player] = yaku
+                    self.playerTumo[player] = True
                     #self.printWinner(player,yaku)
                     break
                 # check Riici
                 riichi = player.askRiichi()
                 if riichi:
                     self.printRiichi(player)
-                    self.riichiTurn[player] = self.playerCounter[player]
+                    noMin = self.minCounter.sum() == 0
+                    self.riichiTurn[player] = (self.playerCounter[player],noMin)
+                self.rinxian = False
                 self.state = "CUT"
 
             # STATE "PLAYER_CUT_PAI"
@@ -242,86 +249,86 @@ class GameManager:
         
         self.printWinner()    
         print("FINISH GAME")
+    
+    def checkNagashiMangan():
+        player = None
+        for p in self.players:
+            if self.allYaoJiu(p.river) and self.noMined(p):
+                player = p
+        return player
+    
+    def allYaoJiu(self,river):
+        yaojiu = [0,8,9,17,18,26,27,28,29,30,31,32,33]
+        result = True
+        for pai in river:
+            result = result and (pai in yaojiu)
+        return result
 
+    def noMined(self,player):
+        return sum(self.minCounter[:,player]) == 0
+    
+    def checkSpecialYaku(self,p):
+        if self.isYifa(p):
+            self.playerYaku[p] += ",一發"
+        if self.isTianHe(p):
+            self.playerYaku[p] += ",天和"
+        if self.isDiHe(p):
+            self.playerYaku[p] += ",地和"
+        if self.isRenHe(p):
+            self.playerYaku[p] += ",人和"
+        if self.isDoubleRiici(p):
+            self.playerYaku[p] += ",双倍立直"
+        if self.isHaitei(p):
+            self.playerYaku[p] += ",海底撈月"
+        if self.isHoTei(p):
+            self.playerYaku[p] += ",河底撈魚"
+        if self.isRinXiang(p):
+            self.playerYaku[p] += ",嶺上開花"
 
-    """
-    def mainGame():
-        # prepare game
-        self.startGame()
-        
-        # check whether yama is empty or not and winner exist or not
-        while (not self.zeroYama()) and (not self.winner):
-            
-            # STATE SET_PLAYER
-            if self.state == "SET_PLAYER":
-                player = self.players[self.nextPlayer]
-                print("----------------------MAIN PLAYER: ",player.name,"----------------------")
-                self.state = "GIVE_PAI"
-            
-            # STATE GIVE_PAI
-            if self.state == "GIVE_PAI" or self.state == "KAN":
-                pai = self.yama[0]
-                self.yama = self.yama[1:]
-                player.givePai(pai)
-                # check Tumo
-                win, yaku = player.checkTumo()
-                if win:
-                    self.state = "WIN"
-                    self.winner = player
-                    self.printWinner(player,yaku)
-                    break
-                self.printPlayerTurn(player, pai)
-                self.state = "CUT/MIN"
-            
-            # show info and get cut pai from player
-            self.printPlayerTurn(player, pai)
-            
-            # STATE CUT/MIN
-            if self.state == "CUT/MIN" or self.state == "CHI/PON"
-                cut = player.cut()
-                self.playerCutPai(player,cut)
-                
-                # check Ron
-                for p in self.players:
-                    win, yaku = p.checkRon()
-                    if win:
-                        self.state = "WIN"
-                        self.winner = p
-                        self.printWinner(p,yaku)
-                if self.state == "WIN":
-                    break
+    def isYifa(self, p):
+        tumo = self.playerTumo[p] and (self.playerCounter[p]-self.riichiTurn[p][0]) <= 1
+        ron = (self.playerCounter[p]-self.riichiTurn[p][0]) < 1
+        return tumo or ron
 
-                # check the players who want to Min and select player who could Min
-                minPlayers = []
-                for p in self.players:
-                    # player who want to Min have to declear in this stage
-                    # player who want to Kan shoule return ("Kan",minSet)
-                    # player who do not Min should return (None,None)
-                    minType, minSet = p.askMin()
-                    minPlayers.append([p, minType, minSet])
-                
-                # select player with highest priority
-                if not len(minPlayers) == 0:
-                    # player change to MinPlayer
-                    minPlayer = self.selectMinPlayers(minPlayers)
-                    player = minPlayer[0]
-                    if minPlayer[1] == "Kan":
-                        self.playerKan(minPlayer)
-                        continue
-                    else:
-                        self.playerChiPon(minPlayer)
-                        continue
-            
-            # STATE NEXT_TURN
-            self.state = "SET_PLAYER"
-            print("To Next Turn >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    def isTianHe(self,p):
+        isDong = p==0   # is 东家
+        isFirstRound = self.playerCounter[p]==1
+        tumo = self.playerTumo[p]
+        return isDong and isFirstRound and tumo
 
-        # GameEnd
-        if self.winner == None:
-            print("***************************流局***************************")
-        else:
-            pass
-    """
+    def isDiHe(self,p):
+        notDong = not p==0
+        isFirstRound = self.playerCounter[p]==1
+        noMin = self.minCounter.sum() == 0
+        tumo = self.playerTumo[p]
+        return isDong and isFirstRound and noMin and tumo
+
+    def isRenHe(self,p):
+        isFirstRound = self.playerCounter[p]==1
+        noMin = self.minCounter.sum() == 0
+        ron = not self.playerTumo[p]
+        return isDong and isFirstRound and ron
+
+    def isDoubleRiici(self,p):
+        isFirstRound = self.riichiTurn[p][0]==1
+        wasNoMin = self.riichiTurn[p][1]
+        riichi = p.riichi
+        return isFirstRound and wasNoMin and riichi
+
+    def isHaitei(self,p):
+        tumo = self.playerTumo[p]
+        haitei = self.zeroYama()
+        return haitei and tumo
+
+    def isHoTei(self,p):
+        ron = not self.playerTumo[p]
+        haitei = self.zeroYama()
+        return haitei and ron
+
+    def isRinXiang(self,p):
+        rinxian = self.rinxian
+        tumo = self.playerTumo[p]
+        return rinxian and tumo
 
 if __name__ == "__main__":
     p1 = Player("Gundam Exia",25000)
