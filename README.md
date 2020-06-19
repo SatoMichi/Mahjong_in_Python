@@ -5,7 +5,8 @@ Trial for 麻雀 program using Python
   * Debuged RonWayJapan.py (Added line 57,58)
   * Modified GameManager.py so that it can judge special cases  
     一發、嶺上開花、海底撈月、河底撈魚、双倍立直、流局満貫、天和、地和、人和  
-    (槍槓 is not yet implemanted since it will need to interact with other classes)  
+    (槍槓 is not yet implemanted since it will need to interact with other classes)
+
 Sato
 
 **2020/06/18**
