@@ -7,7 +7,7 @@ class HeHand:
         self.openHand = openHand        # [[(int,int)]]: Hand which is Open
         self.hepai = hepai              # (int,int): Pai which lead to 和
         self.zifeng = zifeng            # int: 自风
-        self.changfeng = changfeng      # int: 长风
+        self.changfeng = changfeng      # int: 场风
         self.angang = angang            # [Boolean]: if 1st 杠 in OpenHand is 暗杠 then angang[0] is True 
                                         #            if 2nd 杠 in OpenHand is 明杠 then angang[1] is False
         self.tumo = tumo                # Boolean: if 自摸 then True

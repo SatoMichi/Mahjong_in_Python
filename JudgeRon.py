@@ -1,7 +1,14 @@
 from Pai import originalYama,allPai,showHand
+import RonWayJapan
 import numpy as np
 import yaml
 import math
+
+
+#    label = {'一萬': 0, '二萬': 1, '三萬': 2, '四萬': 3, '五萬': 4, '六萬': 5, '七萬': 6, '八萬': 7, '九萬': 8,
+#             '一筒': 9, '二筒': 10, '三筒': 11, '四筒': 12, '五筒': 13, '六筒': 14, '七筒': 15, '八筒': 16, '九筒': 17,
+#             '一索': 18, '二索': 19, '三索': 20, '四索': 21, '五索': 22, '六索': 23, '七索': 24, '八索': 25, '九索': 26,
+#             '中': 27, '發': 28, '白': 29, '東': 30, '西': 31, '南': 32, '北': 33}
 
 
 #十三幺//国士无双Ron hand and openHand are list[list[(int,int)]]
@@ -566,194 +573,13 @@ def pai2onlyno(hand):
     return honlyno
 
 
-#def num2array(hand):
-#    nums = np.zeros([9])
-#    label = {"一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"七":7,"八":8,"九":9}
-#    for p in hand:
-#        nums[label[str(p)[0]]] += 1
-#    return nums
-
-#def pai2array(hand):
-#    nums = np.zeros([34])
-#    label = {'一萬': 0, '二萬': 1, '三萬': 2, '四萬': 3, '五萬': 4, '六萬': 5, '七萬': 6, '八萬': 7, '九萬': 8,
-#             '一筒': 9, '二筒': 10, '三筒': 11, '四筒': 12, '五筒': 13, '六筒': 14, '七筒': 15, '八筒': 16, '九筒': 17,
-#             '一索': 18, '二索': 19, '三索': 20, '四索': 21, '五索': 22, '六索': 23, '七索': 24, '八索': 25, '九索': 26,
-#             '中': 27, '發': 28, '白': 29, '東': 30, '西': 31, '南': 32, '北': 33}
-#    for p in hand:
-#        nums[label[str(p)]] += 1
-#    return nums
-
-#def existMians(num):
-#    if not sum(num)%3 == 0: # Mians couldnot be constructed
-#        return False
-#    a = num[0]         # Pai currentry concerend
-#    b = num[1]         # next pai tobe concerned
-#    for i in range(7):
-#        r = a % 3      # number of Pai not becoming Mians
-#        if(b>=r and num[i+2]>=r):
-#            a = b - r
-#            b = num[i+2] - r
-#        else:
-#            return False
-#    if(a%3==0 and b%3==0): # last check
-#        return True
-#    else:
-#        return False
-
-#def qinwho(num):
-#    handsum = 0
-#    for i in range(9):
-#        handsum += i*num[i]
-#    i = int(handsum *2 %3)
-#    return backtrack(i,num)
-
-#def backtrack(i,num):
-#    if not i<9:
-#        return False
-#    num[i] -= 2       # try this as head
-#    if num[i] >= 0:
-#        if existMians(num):
-#            num[i] += 2
-#            return True
-#    num[i] += 2
-#    return backtrack(i+3,num)
-
-#def who(hand):
-#    nums = pai2array(hand)
-#    head = -1               # head is not decided yet
-#    # judge each numPais
-#    for i in range(3):
-#        case = sum(nums[i*9:i*9+10])%3
-#        if case == 1:
-#            return False
-#        elif case == 2:
-#            if(head==-1):
-#                head = i
-#            else:
-#                return False
-#
-#    # judge for charPais
-#    for i in range(27,34):
-#        if nums[i]%3 == 1:
-#            return False
-#        elif nums[i]%3 == 2:
-#            if head == -1:
-#                head = i
-#            else:
-#                return False
-#        else:
-#            pass # charPai forms 刻子
-#
-#    # final judge with head check
-#    for i in range(3):
-#        if i==head: # head is nmPai
-#            if not qinwho(nums[9*i:9*i+10]):
-#                return False
-#        else:
-#            if not existMians(nums[9*i:9*i+10]):
-#                return False
-#    return True
-
-class Rondong:
-    def __init__(self):
-        self.zj = 0
-        self.xj = 0
-        self.judgeRon = ""
-        self.fan = 0
-        self.fu = 0
-        self.levelrep = ""
-    def addfan(self,n):
-        self.fan = self.fan + n
-    def setJudgeRon(self,stri):
-        self.judgeRon = self.judgeRon + " " + stri
-    def calcultatefu(self,hand,openHand,wh,zifeng,changfeng):
-        yaojiu = [0,8,9,17,18,26,27,28,29,30,31,32,33]
-        sanyuan = [27,28,29]
-        #符底一定会有二十符
-        self.fu = 20
-        hand_no = pai2onlyno(hand)
-        openHand_no = pai2onlyno(openHand)
-        for oph in openHand_no:
-            if(len(oph)==4):
-                if(oph[2]==oph[3]):
-                    if(oph[0] in yaojiu):
-                        self.fu = self.fu + 16
-                    else:
-                        self.fu = self.fu + 8
-                else:
-                    if(oph[0] in yaojiu):
-                        self.fu = self.fu + 32
-                    else:
-                        self.fu = self.fu + 16
-            if(len(oph)==3 and oph[0]==oph[1] and oph[1]==oph[2]):
-                if(oph[0] in yaojiu):
-                    self.fu = self.fu + 4
-                else:
-                    self.fu = self.fu + 2
-        for hand in hand_no:
-            if(len(hand)==3):
-                if(hand[0]==hand[1] and hand[1]==hand[2]):
-                    if(hand[0] in yaojiu):
-                        self.fu = self.fu + 8
-                    else:
-                        self.fu = self.fu + 4
-            if(len(hand)==2):
-                if(hand[0] in sanyuan):
-                    self.fu = self.fu + 2
-                if(hand[0] == zifeng or hand[0] == changfeng):
-                    self.fu = self.fu + 2
-                    if(zifeng == changfeng):
-                        self.fu = self.fu + 2
-        if(wh == 1):
-            if(not chitoi(hand)):
-                self.fu = self.fu + 2
-        if(wh == 0):
-            if(openHand == None):
-                self.fu = self.fu + 10
-        fus = self.fu / 10
-        fus = math.ceil(fus)
-        self.fu = fus * 10
-    def setallup(self):
-        file = open("roncalculate.yml",'r',encoding="utf-8")
-        file_data = file.read()
-        file.close()
-        data = yaml.load(file_data,Loader=yaml.FullLoader)
-        if(self.fan == 5 or (self.fan == 4 and self.fu>30) or (self.fan == 3 and self.fu>60)):
-            self.zj = 12000
-            self.xj = 4000
-            self.levelrep = "满贯"
-        elif(self.fan == 6 or self.fan == 7):
-            self.zj = 18000
-            self.xj = 6000
-            self.levelrep = "跳满" 
-        elif(self.fan == 8 or self.fan == 9 or self.fan == 10):
-            self.zj = 24000
-            self.xj = 8000
-            self.levelrep = "倍满"
-        elif(self.fan == 11 or self.fan == 12):
-            self.zj = 36000
-            self.xj = 12000
-            self.levelrep = "三倍满"
-        elif(self.fan == 13):
-            self.zj = 48000
-            self.xj = 16000
-            self.levelrep = "累计役满"
-        else:
-            fanshu = 'fanshu' + str(self.fan)
-            fushu = 'fushu' + str(self.fu)
-            self.zj = data['point'][0][fanshu][0][fushu][0]['defen']
-            self.xj = data['point'][0][fanshu][0][fushu][0]['shifen']
-            self.levelrep = str(self.fan) + "翻"
-
-        
-    
-
 
 #日本麻将胡牌函数
 #hand 为 list[list[(int,int)]],openHand 为 list[list[(int,int)]]
 #lichi为booolean,为了判断Player是否立直
 #zifeng和changfeng均为int,[30--33](表示本场游戏的自风与场风)
 def JapanRonZJ(player):
+    ron = RonWayJapan.Rondong()
     hand = player.hand
     openHand = player.openHand
     changfeng = player.changfeng
