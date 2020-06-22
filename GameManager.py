@@ -21,7 +21,6 @@ class GameManager:
             player.setHand(hand)
         self.cutPai = None
         self.state = "SET_PLAYER"
-        print("Prepared\nLet's Start the GAME !!\n")
         self.winner = None
         self.playerCounter = np.zeros([4])
         self.minCounter = np.zeros([4,4])
@@ -29,6 +28,7 @@ class GameManager:
         self.playerTumo = [False,False,False,False]
         self.playerYaku = [""]*4
         self.rinxian = False
+        print("Prepared\nLet's Start the GAME !!\n")
 
     # check yama is empty or not
     def zeroYama(self):
