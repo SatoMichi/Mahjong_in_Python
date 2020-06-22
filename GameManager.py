@@ -84,7 +84,6 @@ class GameManager:
                 content += "WINNER is "+player.name+"\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
             print(content)
 
-
     # these functions will print the info and call the corresponding method in Player class
     def playerChi(self,player):
         minSet = player.chi()
@@ -215,7 +214,7 @@ class GameManager:
             elif self.state == "CUT" or self.state == "CHI/PON":
                 self.printPlayerTurn(player)
 
-                if player.riichi:
+                if player.isRiichi:
                     self.cutPai = player.autoCut()
                 else:
                     target = int(input("Please SELECT the Pai to CUT\n")) -1
@@ -240,9 +239,9 @@ class GameManager:
                 for p in self.players:
                     # player who want to Kan shoule return ("Kan",minSet)
                     # player who do not Min should return (None,None)
-                    minType, minSet = p.askMin(self.cutPai)
+                    minType = p.askMin(self.cutPai)
                     if not minType==None:
-                        minPlayers.append([p, minType, minSet])
+                        minPlayers.append([p, minType])
                 
                 if not len(minPlayers) == 0:
                     # select player with highest priority
@@ -274,12 +273,12 @@ class GameManager:
 
         # GameEnd
         if not self.state == "WIN":
-            print("/n***************************流局***************************\n")
+            print("\n******************************流局******************************\n")
             self.winner = self.checkNagashiMangan()
             if not self.winner == None:
-                self.playerYaku[self.winner] += ",流局満貫"
+                self.playerYaku[self.players.index(self.winner)] += ",流局満貫"
         else:
-            self.checkSpecialYaku(self.winner)
+            self.checkSpecialYaku(self.players.index(self.winner))
         
         self.printWinner()    
         print("FINISH GAME")

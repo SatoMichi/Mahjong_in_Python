@@ -34,7 +34,7 @@ class Player:
     # 30-33: 东西南北
 
     # these function will be called by GameManager, Player do not need to call them
-    
+
     def setHand(self,hand):
         self.hand = hand
 
@@ -42,10 +42,10 @@ class Player:
         self.wind = wind
     
     def givePai(self,pai):
-        # This function is already implemented, but feel free to change
+        # Last line of this function have to be changed since JiaGang could happen
         self.hand.sort()
         self.draw = pai
-        #self.hand.append(p)
+        self.hand.append(pai)
         
     def cut(self, target):
         """
@@ -69,14 +69,15 @@ class Player:
         Args:
         Return: (Boolean, Rondong or Ronxian object in RonWayJapan.py)
         """
-        # if can tumo:
-        num = int(input("Do you want to Tumo? 1:yes/0:no\n"))
-        if num == 1:
-            return True, "Nothing"
+        tumo = 0
+        if tumo:
+            num = int(input(self.name +" Do you want to Tumo? 1:yes/0:no\n"))
+            if num == 1:
+                return True, "Nothing"
+            else:
+                return False, "Nothing"
         else:
             return False, "Nothing"
-        # else:
-        return False, "Nothing"
 
     def checkRon(self,cutPai):
         """
@@ -84,14 +85,15 @@ class Player:
         Args: Pai
         Return: (Boolean, Rondong or Ronxian object in RonWayJapan.py)
         """
-        # if can Ron:
-        num = int(input("Do you want to Ron? 1:yes/0:no\n"))
-        if num == 1:
-            return True, "Nothing"
+        ron = 0
+        if ron:
+            num = int(input(self.name+" Do you want to Ron? 1:yes/0:no\n"))
+            if num == 1:
+                return True, "Nothing"
+            else:
+                return False, "Nothing"
         else:
             return False, "Nothing"
-        # else:
-        return False, "Nothing"
 
     def askRiichi(self):
         """
@@ -99,15 +101,15 @@ class Player:
         Args:
         Return: Boolean 
         """
-        # if 听牌:
-        num = int(input("Do you want to Riichi? 1:yes/0:no\n"))
-        if num == 1:
-            return True
+        tenpai = 0
+        if tenpai:
+            num = int(input(self.name +" Do you want to Riichi? 1:yes/0:no\n"))
+            if num == 1:
+                return True
+            else:
+                return False
         else:
             return False
-
-        # else:
-        return False
 
     def askJiaGang(self):
         """
@@ -115,14 +117,15 @@ class Player:
         Args:
         Return: Boolean
         """
-        # if can 加杠:
-        num = int(input("Do you want to JiaGang? 1:yes/0:no\n"))
-        if num == 1:
-            return True
+        jia = 0
+        if jia:
+            num = int(input("Do you want to JiaGang? 1:yes/0:no\n"))
+            if num == 1:
+                return True
+            else:
+                return False
         else:
             return False
-        # else:
-        return False
 
     def askMin(self,cutPai):
         """
@@ -130,7 +133,7 @@ class Player:
         Args: Pai
         Return: String ("Kan" or "Pon" or "Chi")
         """
-        return None, []
+        return None
 
     def chi(self,cutPai):
         """
