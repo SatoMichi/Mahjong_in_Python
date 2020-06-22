@@ -105,7 +105,7 @@ class GameManager:
         print(content)
 
     def playerKan(self,player):
-        minSet = player.kan()
+        minSet = player.kan(self.cutPai)
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did KAN \n"
@@ -122,7 +122,8 @@ class GameManager:
         content += "#################################################################################################\n"
         print(content)
 
-    def printRiichi(self,player):
+    def playerRiichi(self,player):
+        player.riichi()
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did RIICHI \n"
@@ -182,23 +183,24 @@ class GameManager:
                 # check Riici
                 riichi = player.askRiichi()
                 if riichi:
-                    self.printRiichi(player)
+                    self.playerRiichi(player)
                     noMin = self.minCounter.sum() == 0
                     self.riichiTurn[self.players.index(player)] = (self.playerCounter[player],noMin)
                     self.state = "CUT"
                 else:
                     jiaGang = player.askJiaGang()
                     if jiaGang:
-                        self.playerJiaGangPai = (player,pai)
+                        self.cutPai = pai
                         self.state = "KAKAN"
                     else:
                         self.state = "CUT"
+            
             # STATE "PLAYER KAKAN"
             elif self.state == "KAKAN":
                 self.playerKakan(player)
                 # check Ron of other player (槍槓)
                 for p in self.players:
-                    win, yaku = p.checkRon()
+                    win, yaku = p.checkRon(self.cutPai)
                     if win:
                         self.state = "WIN"
                         self.winner = p
@@ -214,16 +216,14 @@ class GameManager:
                 self.printPlayerTurn(player)
 
                 if player.riichi:
-                    cut = player.autoCut()
+                    self.cutPai = player.autoCut()
                 else:
                     target = int(input("Please SELECT the Pai to CUT\n")) -1
-                    cut = player.cut(target)
-                
-                self.playerCutPai(player,cut)
+                    self.cutPai = player.cut(target)
                 
                 # check Ron
                 for p in self.players:
-                    win, yaku = p.checkRon()
+                    win, yaku = p.checkRon(self.cutPai)
                     if win:
                         self.state = "WIN"
                         self.winner = p
@@ -240,15 +240,15 @@ class GameManager:
                 for p in self.players:
                     # player who want to Kan shoule return ("Kan",minSet)
                     # player who do not Min should return (None,None)
-                    minType, minSet = p.askMin()
+                    minType, minSet = p.askMin(self.cutPai)
                     if not minType==None:
                         minPlayers.append([p, minType, minSet])
                 
                 if not len(minPlayers) == 0:
                     # select player with highest priority
                     minPlayer = self.selectMinPlayers(minPlayers)
+                    self.minCounter[self.players.index(minPlayer[0]),self.players.index(player)] += 1
                     # player change to MinPlayer
-                    self.minCounter[minPlayer[0],player] += 1
                     player = minPlayer[0]
 
                     if minPlayer[1] == "Kan":
