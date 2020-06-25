@@ -62,7 +62,7 @@ class Player:
             paiCut (int): index of Pai cut by other Players.
             order {-1,1}: -1 gets 2 smaller pai. 1 gets 2 bigger pai
         """
-        pass
+        
     
     def pon(self,paiCut):
         """
@@ -72,7 +72,24 @@ class Player:
             paiCut (int): index of Pai cut by other Players.
         
         """
-        pass
+        t,n = paiCut
+        a = Pai.hand2Array(self.hand)
+        assert(np.sum(a[t]) >= 2)
+        # search for tile in hand
+        tile = []
+        for i in range(4):
+            if len(tile) >=2 :
+                break
+
+            if a[t,i] == 1:
+                a[t,i] = 0
+                tile.append((t,i))
+        # add at the end to indicate the pai taken from others
+        tile.append(paiCut)
+        # record in openHand
+        openHand['pon'].append(tile)
+        self.hand = Pai.array2Hand(a)
+        return 'pon'
     def kan():
         pass
     def riichi():
