@@ -54,8 +54,10 @@ def calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
     else:
         pentyan = [[0,1],[7,8],[9,10],[16,17],[18,19],[25,26]]
         shunzi = takeShunzi([paiset for paiset in beforeHand if len(paiset)==2])
+        if shunzi == []: # shunzi could be empty (双碰)
+            pass
         #边张加2符
-        if([pai[0] for pai in shunzi[0]] in pentyan):
+        elif([pai[0] for pai in shunzi[0]] in pentyan):
             fu = fu + 2
         #嵌张加2符
         elif(sum([pai[0] for pai in shunzi[0]])%2==0):

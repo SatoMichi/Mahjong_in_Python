@@ -1,6 +1,21 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/06/22**
+  * Added 槍槓 to GameManager.py
+  * Modified GameManager.py
+  * Modified TestPlayer.py (Now TestPlayer.py can be used as the API for Player class)
+
+Sato
+
+**2020/06/19**
+  * Debuged RonWayJapan.py (Added line 57,58)
+  * Modified GameManager.py so that it can judge special cases  
+    一發、嶺上開花、海底撈月、河底撈魚、双倍立直、流局満貫、天和、地和、人和  
+    (槍槓 is not yet implemanted since it will need to interact with other classes)
+
+Sato
+
 **2020/06/18**
   * Added Unit Tests to JudgeRonTest.py (Pinghe)
   * Added the results of unit tests to "JudgeRon_Test_Report.txt" (Pinghe)
@@ -77,10 +92,11 @@ Sato
 Sato
 
 **2020/02/19 20:11**
-Added function to judge Ron, which is in judgeRon.py
+  * Added function to judge Ron, which is in judgeRon.py
 
 **2020/02/18 00:24**
-added neural network for calcurating expectation of the hand in Mahjong, but since Mahjong Pai is discrete data it will not work without proper pre processing of the data. 但如果得到了Data的话可以试一试。
+  * added neural network for calcurating expectation of the hand in Mahjong, but since Mahjong Pai is discrete data  
+    it will not work without proper pre processing of the data. 但如果得到了Data的话可以试一试。
 
 **2020/02/15 05:00**
-random 切牌function decideCut()　is added. Simulation canbe done from Game_Simulation.py
+  * random 切牌function decideCut()　is added. Simulation canbe done from Game_Simulation.py
