@@ -1,40 +1,28 @@
 Bug Report from JudgeRonTest.py
 
-*   zifeng(hand,openHand,zifeng):
-    
-    Passed All the test cases.
+*   zifeng(hand,openHand,zifeng): Passed All the test cases.
 
-*   changfeng(hand,openHand,changfeng):
+*   changfeng(hand,openHand,changfeng): Passed All the test cases.
 
-    Passed All the test cases.
-
-*   sanyuan_zhong(hand,openHand):
-*   sanyuan_fa(hand,openHand):
-*   sanyuan_bai(hand,openHand):
-
-    Passed all the test cases.
+*   sanyuan_zhong(hand,openHand): Passed all the test cases.
+*   sanyuan_fa(hand,openHand): Passed all the test cases.
+*   sanyuan_bai(hand,openHand): Passed all the test cases.
 
 *   noyaojiu(hand,openHand):
 
     Passed the case with 七对子 (case[7])
     Basically passed all the test cases (Last case[7] with empty input returned True).
 
-*   sansetk(hand,openHand):
+*   sansetk(hand,openHand): Passed all the test cases.
 
-    Passed all the test cases.
-
-*   sangangzi(hand,openHand):
-
-    Passed all the test cases.
+*   sangangzi(hand,openHand): Passed all the test cases.
 
 *   sananke(hand,openHand):
 
     For test case[2] and [3], if they are 暗杠, it should return True, if they are 明杠, it should return False.
     Other test cases are passed.
 
-*   piao(hand,openHand):
-
-    Passes all the test cases.
+*   piao(hand,openHand): Passes all the test cases.
 
 *   xiaosanyuan(hand,openHand):
 
@@ -57,13 +45,9 @@ Bug Report from JudgeRonTest.py
     case[5] should return False since it is 清老頭 (清老頭 != 混全带幺九)
     Other test cases are passed.
 
-*   yiqiguantong(hand,openHand):
+*   yiqiguantong(hand,openHand): Passed all the test cases.
 
-    Passed all the test cases.
-
-*   sansets(hand,openHand):
-
-    Passed all the test cases.
+*   sansets(hand,openHand): Passed all the test cases.
 
 *   hunyise(hand,openHand):
 
@@ -88,36 +72,25 @@ Bug Report from JudgeRonTest.py
     It will not work for case[0] (the case, hand exist and openHand is empty).
     Passed other cases.
 
-*   ziyise(hand,openHand):
+*   ziyise(hand,openHand): Passed all the test cases.
 
-    Passed all the test cases.
+*   lvyise(hand,openHand): Passed all the test cases.
 
-*   lvyise(hand,openHand):
+*   qinglaotou(hand,openHand): Passed all the test cases.
 
-    Passed all the test cases.
+*   xiaosixi(hand,openHand): Passed all the test cases.
 
-*   qinglaotou(hand,openHand):
+*   sigangzi(hang,openHand): Passed all the test cases.
 
-    Passed all the test cases.
+*   dasixi(hand,openHand): Passed all the test cases.
 
-*   xiaosixi(hand,openHand):
+*   pinghe(beforehand,hepai,zifeng,changfeng): Passed all the test cases.
 
-    Passed all the test cases.
+*   jiulianbaodeng(hand): Passed all the test cases.
 
-*   sigangzi(hang,openHand):
+*   czjiulianbaodeng(beforehand):
 
-    Passed all the test cases.
-
-*   dasixi(hand,openHand):
-
-    Passed all the test cases.
-
-*   pinghe(beforehand,hepai,zifeng,changfeng):
-
-    case[2] (waiting 雀头) produced error.
-    case[0] and case[1] should return True
-    case[5] should not be Pinghe.
-    Other test cases are passed.
+    case[0] should return True.
 
 *   yibeikou(hand):
 

@@ -1,6 +1,12 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/06/25**
+  * Updated JudgeRonTest.py for 九莲宝灯 and 纯正九莲宝灯
+  * Updated JudgeRon_Test_Report.txt for 九莲宝灯 and 纯正九莲宝灯
+
+Sato
+
 **2020/06/22**
   * Added 槍槓 to GameManager.py
   * Modified GameManager.py
