@@ -1,8 +1,8 @@
 import yaml
 import math
-from JudgeRon import pai2onlyno,chitoi
+from JudgeRon import pai2onlyno,chitoi,pinghe
 
-def calcultatefu(hand,openHand,beforeHand,tumo,zifeng,changfeng):
+def calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
     yaojiu = [0,8,9,17,18,26,27,28,29,30,31,32,33]
     sanyuan = [27,28,29]
     #符底一定会有二十符
@@ -63,6 +63,12 @@ def calcultatefu(hand,openHand,beforeHand,tumo,zifeng,changfeng):
     fus = fu / 10
     fus = math.ceil(fus)
     fu = fus * 10
+    #七对子的符数一定是25符
+    if(chitoi(hand)):
+        fu = 25
+    #平和自摸的牌一定是20符
+    if(pinghe(beforeHand,hand,hepai,zifeng,changfeng) and tumo):
+        fu = 20
     return fu
 
 def takeShunzi(paisets):
@@ -84,8 +90,11 @@ class Rondong:
         self.fan = self.fan + n
     def setJudgeRon(self,stri):
         self.judgeRon = self.judgeRon + " " + stri
-    def calcultateFu(self,hand,openHand,beforeHand,tumo,zifeng,changfeng):
-        self.fu = calcultatefu(hand,openHand,beforeHand,tumo,zifeng,changfeng)
+    #为了应对因为副露而出现的减番情况
+    def minusfan(self):
+        self.fan = self.fan - 1
+    def calcultateFu(self,hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
+        self.fu = calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng)
     def setallup(self):
         file = open("roncalculatedong.yml",'r',encoding="utf-8")
         file_data = file.read()
@@ -107,7 +116,8 @@ class Rondong:
             self.zj = 36000
             self.xj = 12000
             self.levelrep = "三倍满"
-        elif(self.fan == 13):
+        #累计役满即为Player单次所能获得的最大的牌
+        elif(self.fan >= 13):
             self.zj = 48000
             self.xj = 16000
             self.levelrep = "累计役满"
@@ -131,8 +141,11 @@ class Ronxian:
         self.fan = self.fan + n
     def setJudgeRon(self,stri):
         self.judgeRon = self.judgeRon + " " + stri
-    def calcultateFu(self,hand,openHand,beforeHand,tumo,zifeng,changfeng):
-        self.fu = calcultatefu(hand,openHand,beforeHand,tumo,zifeng,changfeng)
+    #为了应对因为副露而出现的减番情况
+    def minusfan(self):
+        self.fan = self.fan - 1
+    def calcultateFu(self,hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
+        self.fu = calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng)
     def setallup(self):
         file = open("roncalculatedong.yml",'r',encoding="utf-8")
         file_data = file.read()
@@ -158,7 +171,7 @@ class Ronxian:
             self.xj = 6000
             self.dj = 12000
             self.levelrep = "三倍满"
-        elif(self.fan == 13):
+        elif(self.fan >= 13):
             self.zj = 32000
             self.xj = 8000
             self.dj = 16000

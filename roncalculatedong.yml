@@ -40,6 +40,14 @@ point:
               shifen : ~
       fanshu2 :
         -
+          fushu20 :
+            -
+              defen : 2100
+              shifen : 700
+          fushu25 :
+            -
+              defen : 2400
+              shifen : ~
           fushu30 :
             -
               defen : 2900
@@ -77,6 +85,10 @@ point:
               defen : 10600
               shifen : 3600
       fanshu3 :
+          fushu20 :
+            -
+              defen : 3900
+              shifen : 1300
           fushu25 : 
             - 
               defen : 4800
@@ -98,6 +110,10 @@ point:
               defen : 11600
               shifen : 3900
       fanshu4 :
+          fushu20 :
+            -
+              defen : 7800
+              shifen : 2600
           fushu25 :
             -
               defen : 9600

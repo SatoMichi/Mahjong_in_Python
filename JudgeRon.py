@@ -441,7 +441,7 @@ def xiaosixi(hand,openHand):
     return False
 
 #役牌 四杠子 hand and openHand are list[list[(int,int)]]
-def sigangzi(hang,openHand):
+def sigangzi(hand,openHand):
     gz = 0 
     for oph in openHand:
         if(len(oph)==4):
@@ -477,24 +477,26 @@ def dasixi(hand,openHand):
 #役牌 门前清自摸和 门前清的状态下自摸和牌
 
 #役牌 平和 四组顺子+非役牌的雀头+最后是顺子的两面听牌 hand is list[list[(int,int)]] hepai is (int,int)
-def pinghe(beforehand,hepai,zifeng,changfeng):
-    hand_no = pai2onlyno(beforehand)
+def pinghe(beforehand,hand,hepai,zifeng,changfeng):
+    hand_no = pai2onlyno(hand)
+    beforehand_no = pai2onlyno(beforehand)
     shunzi = 0
     liangmian = False
     yipai = True
     sanyuan = [27,28,29]
+    bianzhangxiao = [0,9,18]
+    bianzhangda = [8,17,26]
     for hand in hand_no:
         if(len(hand)==3):
             if(hand[0]==hand[1]-1):
                 shunzi = shunzi + 1
         if(len(hand)==2):
-            if(not hand[0] == hand[1]):
-                if(hepai[0]==hand[0]-1 or hepai[0]==hand[0]+1):
-                    liangmian = True
-                    shunzi = shunzi + 1
-            else:
-                if(hand[0] == zifeng or hand[0] == changfeng or hand[0] in sanyuan):
+            if(hand[0] == zifeng or hand[0] == changfeng or hand[0] in sanyuan):
                     yipai = False
+    for beforehand in beforehand_no:
+        if(len(beforehand)==2):
+            if(beforehand[0]==beforehand[1]-1 and (not beforehand[0] in bianzhangxiao) and (not beforehand[1] in bianzhangda)):
+                liangmian = True
     if(shunzi == 4 and liangmian and yipai):
         return True       
     return False
@@ -551,9 +553,33 @@ def sianke(hand):
     return False
 
 #役牌 九莲宝灯 hand and openHand are list[list[(int,int)]] 
-#unfinished
 def jiulianbaodeng(hand):
-    return True
+    hand_no = pai2onlyno(hand)
+    all_hand = []
+    for bh in hand_no:
+        all_hand = all_hand + bh
+    all_hand.sort()
+    jiul = [[0,0,0,0,1,2,3,4,5,6,7,8,8,8],[0,0,0,1,1,2,3,4,5,6,7,8,8,8],[0,0,0,1,2,2,3,4,5,6,7,8,8,8],[0,0,0,1,2,3,3,4,5,6,7,8,8,8],
+    [0,0,0,1,2,3,4,4,5,6,7,8,8,8],[0,0,0,1,2,3,4,5,5,6,7,8,8,8],[0,0,0,1,2,3,4,5,6,6,7,8,8,8],[0,0,0,1,2,3,4,5,6,7,7,8,8,8],
+    [0,0,0,1,2,3,4,5,6,7,8,8,8,8]]
+    for i in range(3):
+        jiulian = [[j + 9 * i for j in jiu] for jiu in jiul]
+        if(all_hand in jiulian):
+            return True
+    return False
+
+#门前清双倍役满机会
+#役牌 纯正九莲宝灯 hand and openHand are list[list[(int,int)]] 
+def czjiulianbaodeng(beforehand):
+    beforehand_no = pai2onlyno(beforehand)
+    all_beforehand = []
+    for bh in beforehand_no:
+        all_beforehand = all_beforehand + bh
+    for i in range(3):
+        jiulian = [0+9*i,0+9*i,0+9*i,1+9*i,2+9*i,3+9*i,4+9*i,5+9*i,6+9*i,7+9*i,8+9*i,8+9*i,8+9*i]
+        if(all_beforehand == jiulian):
+            return True
+    return False
 
 
 
@@ -565,10 +591,12 @@ def pai2onlyno(hand):
     for h in hand:
         if(len(h)==4):
             new_h = [h[0][0],h[1][0],h[2][0],h[3][0]]
-        if(len(h)==3):
+        elif(len(h)==3):
             new_h = [h[0][0],h[1][0],h[2][0]]
-        if(len(h)==2):
+        elif(len(h)==2):
             new_h = [h[0][0],h[1][0]]
+        else:
+            new_h = [h[0][0]]
         honlyno.append(new_h)
     return honlyno
 
@@ -578,42 +606,178 @@ def pai2onlyno(hand):
 #hand 为 list[list[(int,int)]],openHand 为 list[list[(int,int)]]
 #lichi为booolean,为了判断Player是否立直
 #zifeng和changfeng均为int,[30--33](表示本场游戏的自风与场风)
-def JapanRonZJ(player):
-    ron = RonWayJapan.Rondong()
+def JapanRon(player):
+    ifzhuang = player.ifzhuang
+    if(ifzhuang):
+        ron = RonWayJapan.Rondong()
+    else:
+        ron = RonWayJapan.Ronxian()
     hand = player.hand
     openHand = player.openHand
     changfeng = player.changfeng
     lichi = player.lichi
-    fanshu = 0
-    if(lichi):
-        #Player 立直 先判断门前清立直番数
-        #直接役满机会
+    beforehand = player.beforehand
+    hepai = player.hepai
+    tumo = player.tumo
+    if(openHand == None):
+        #Player 先判断门前清番数
+        #双倍役满机会(目前暂时认为役满即为最大分值,不支持双倍役满翻番)
+        if(czjiulianbaodeng(beforehand)):
+            ron.addfan(13)
+            ron.setJudgeRon("纯正九莲宝灯")
+            ron.setallup()
+            return ron
+        #直接役满机会 此时可以直接return
         if(sianke(hand)):
-            return 48000,16000,"四暗刻","役满"
+            ron.addfan(13)
+            ron.setJudgeRon("四暗刻 哈？这是真实存在的嘛？")
+            ron.setallup()
+            return ron
         if(kokusi13machi(hand)):
-            return 48000,16000,"国士无双","役满"
+            ron.addfan(13)
+            ron.setJudgeRon("国士无双 请速速去买彩票 ")
+            ron.setallup()
+            return ron
         if(jiulianbaodeng(hand)):
-            return 48000,16000,"九莲宝灯","役满"
-        if(dasanyuan(hand,openHand)):
-            return 48000, 16000,"大三元","役满"
-    else:
-        #Player 未立直
-        a = 1
-    return fanshu
-
-
-
-def JapanRonXJ(player):
-    hand = player.hand
-    openHand = player.openHand
-    changfeng = player.changfeng
-    lichi = player.lichi
-    fanshu = 0
-    if(lichi):
-        #Player 立直 先判断门前清立直番数
-        #直接役满机会
-         a = 1 
-    else:
-        a = 2
-        #Player 未立直
-    return fanshu
+            ron.addfan(13)
+            ron.setJudgeRon("九莲宝灯 求求你 我真的没分了呜呜呜")
+            ron.setallup()
+            return ron
+        #三番役机会
+        if(erbeikou(hand)):
+            ron.addfan(3)
+            ron.setJudgeRon("二杯口")
+        #二番役机会
+        if(chitoi(hand)):
+            ron.addfan(2)
+            ron.setJudgeRon("七对子")
+        #一番役机会
+        if(yibeikou(hand)):
+            ron.addfan(1)
+            ron.setJudgeRon("一杯口")
+        if(pinghe(beforehand,hand,hepai,zifeng,changfeng)):
+            ron.addfan(1)
+            ron.setJudgeRon("平和")
+        if(lichi):
+            ron.addfan(1)
+            ron.setJudgeRon("立直")
+        if(tumo):
+            ron.addfan(1)
+            ron.setJudgeRon("门前清自摸和")
+    #所有牌型均需要判断非门前清的情况
+    #双倍役满机会(目前暂时认为役满即为最大分值,不支持双倍役满翻番)
+    if(dasixi(hand,openHand)):
+        ron.addfan(13)
+        ron.setJudgeRon("大四喜 真是丧心病狂的和牌")
+        ron.setallup()
+        return ron
+    #役满机会
+    if(dasanyuan(hand,openHand)):
+        ron.addfan(13)
+        ron.setJudgeRon("大三元 如果是别人给的 那我只能说 天呢 防守简直为零")
+        ron.setallup()
+        return ron
+    if(ziyise(hand,openHand)):
+        ron.addfan(13)
+        ron.setJudgeRon("字一色 世界不是由几何组成的！")
+        ron.setallup()
+        return ron
+    if(lvyise(hand,openHand)):
+        ron.addfan(13)
+        ron.setJudgeRon("绿一色 说出你的故事！")
+        ron.setallup()
+        return ron
+    if(qinglaotou(hand,openHand)):
+        ron.addfan(13)
+        ron.setJudgeRon("清老头 所以为什么叫老头")
+        ron.setallup()
+        return ron
+    if(xiaosixi(hand,openHand)):
+        ron.addfan(13)
+        ron.setJudgeRon("小四喜 笑死 企鹅肉")
+        ron.setallup()
+        return ron
+    if(sigangzi(hand,openHand)):
+        ron.addfan(13)
+        ron.setJudgeRon("四杠子 民那桑 你是杠精吗？这也太能杠了叭")
+        ron.setallup()
+        return ron
+    #六番机会
+    if(qingyise(hand,openHand)):
+        ron.addfan(6)
+        #副露减番
+        if(not openHand == None):
+            ron.minusfan()
+        ron.setJudgeRon("清一色")
+    #三番机会
+    if(cqdyj(hand,openHand)):
+        ron.addfan(3)
+        #副露减番
+        if(not openHand == None):
+            ron.minusfan()
+        ron.setJudgeRon("纯全带幺九")
+    if(hunyise(hand,openHand)):
+        ron.addfan(3)
+        #副露减番
+        if(not openHand == None):
+            ron.minusfan()
+        ron.setJudgeRon("混一色")
+    #二番机会
+    if(sansetk(hand,openHand)):
+        ron.addfan(2)
+        ron.setJudgeRon("三色同刻")
+    if(sangangzi(hand,openHand)):
+        ron.addfan(2)
+        ron.setJudgeRon("三杠子")
+    if(piao(hand,openHand)):
+        ron.addfan(2)
+        ron.setJudgeRon("对对和")
+    if(sananke(hand,openHand)):
+        ron.addfan(2)
+        ron.setJudgeRon("三暗刻")
+    if(xiaosanyuan(hand,openHand)):
+        ron.addfan(2)
+        ron.setJudgeRon("小三元")
+    if(hunlaotou(hand,openHand)):
+        ron.addfan(2)
+        ron.setJudgeRon("混老头")
+    if(hqdyj(hand,openHand)):
+        ron.addfan(2)
+        #副露减番
+        if(not openHand == None):
+            ron.minusfan()
+        ron.setJudgeRon("混全带幺九 做牌的时候有想到这个？")
+    if(yiqiguantong(hand,openHand)):
+        ron.addfan(2)
+        #副露减番
+        if(not openHand == None):
+            ron.minusfan()
+        ron.setJudgeRon("一气贯通")
+    if(sansets(hand,openHand)):
+        ron.addfan(2)
+        #副露减番
+        if(not openHand == None):
+            ron.minusfan()
+        ron.setJudgeRon("三色同顺")
+    #一番机会
+    if(noyaojiu(hand,openHand)):
+        ron.addfan(1)
+        ron.setJudgeRon("断幺九 希望在做国士无双的对家不来打你")
+    if(zifeng(hand,openHand,zifeng)):
+        ron.addfan(1)
+        ron.setJudgeRon("自风")
+    if(changfeng(hand,openHand,changfeng)):
+        ron.addfan(1)
+        ron.setJudgeRon("场风")
+    if(sanyuan_fa(hand,openHand)):
+        ron.addfan(1)
+        ron.setJudgeRon("役牌 发 我恭喜你发财...")
+    if(sanyuan_bai(hand,openHand)):
+        ron.addfan(1)
+        ron.setJudgeRon("役牌 白")
+    if(sanyuan_zhong(hand,openHand)):
+        ron.addfan(1)
+        ron.setJudgeRon("役牌 中")
+    ron.calcultateFu(hand,openHand,beforehand,tumo,hepai,zifeng,changfeng)
+    ron.setallup()
+    return ron
