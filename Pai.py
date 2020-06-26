@@ -27,6 +27,7 @@ class Pai:
             ['p_ji_c_1.gif', 'p_ji_h_1.gif', 'p_no_1.gif', 'p_ji_e_1.gif', 'p_ji_w_1.gif',
             'p_ji_s_1.gif', 'p_ji_n_1.gif']]
 
+        
     def __init__(self,suit,num=-1):
         # self.suit : (0,萬) (1,筒) (2,索) (3,中) (4,發) (5,白) (6,東) (7,西) (8,南) (9,北)
         self.suit = suit

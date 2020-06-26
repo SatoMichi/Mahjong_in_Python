@@ -1,6 +1,7 @@
 import Pai
 import numpy as np
 from collections import Counter
+from util import is_sequence
 
 class Player:
     
@@ -20,7 +21,7 @@ class Player:
         self.hand = None
         self.score = score
         self.draw = None
-        self.openHand = {}
+        self.openHand = {"chi":[], "pon":[], "anKang":[], "minKang":[]}
 
     # name reference:
     # https://www.wikiwand.com/en/Japanese_Mahjong#/General_mahjong_rules
@@ -32,6 +33,9 @@ class Player:
     # 30-33: 东西南北
     def setHand(self,hand):
         self.hand = hand
+        
+    def setWind(self,wind):
+        self.wind = wind
     
     def givePai(self,p):
         self.hand.sort()
@@ -52,17 +56,73 @@ class Player:
     def checkRon(self):
         return False, "Nothing"
 
+    def askRiichi(self):
+        self.riichi = False
+        return False
+
+    def autoCut(self):
+        """
+        cut a Pai given
+        """
+        p = self.hand.pop(-1)
+        return p    
+    
     def askMin(self):
         return None, []
 
-    def chi(self,paiCut,order):
-        """Perform chi. Add with hand and show in openHand
+    
+    def chi(self,paiCut):
+        """Perform chi. Add with hand and show in openHand 
     
         Args:
-            paiCut (int): index of Pai cut by other Players.
-            order {-1,1}: -1 gets 2 smaller pai. 1 gets 2 bigger pai
+            paiCut (int,int): 
         """
-        
+        # record position of possible 副露
+        options = []
+        i , _ = paiCut
+        reduced_hand = [p[0] for p in self.hand]
+        # 嵌张
+        if is_sequence([(i-1,0),(i,0),(i+1,0)]) and i >= 1:
+            try:
+                fst = reduced_hand.index(i-1) 
+                thrd = reduced_hand.index(i+1)
+                options.append([fst,thrd])
+            except ValueError:
+                pass
+        # 大二张
+        if is_sequence([(i,0),(i+1,0),(i+2,0)]):
+            try:
+                snd = reduced_hand.index(i+1)
+                thrd = reduced_hand.index(i+2)
+                options.append([snd,thrd])
+            except ValueError:
+                pass
+        # 小二张
+        if i-2 >= 0 and is_sequence([(i-2,0),(i-1,0),(i,0)]):
+            try:
+                fst = reduced_hand.index(i-2)
+                snd = reduced_hand.index(i-1)
+                options.append([fst,snd])
+            except ValueError:
+                pass
+        # Ask player
+        if options is not []:
+            chi_prompt = "select from: \n"
+            for i, option in enumerate(options):
+                a,b = option[0], option[1]
+                chi_prompt += "{}. {} ".format(i, str(Pai.paiSet[self.hand[a]])+str(Pai.paiSet[self.hand[b]]))
+        print(chi_prompt)
+        select = input()
+        print("You selected {}".format(select))
+        # maintain hand
+        a,b = options[int(select)]
+        self.openHand["chi"].append([self.hand[a],self.hand[b],paiCut])
+        self.hand.pop(b)
+        self.hand.pop(a)
+        return "chi"
+            
+            
+
     
     def pon(self,paiCut):
         """
@@ -95,8 +155,6 @@ class Player:
     def riichi():
         pass
     def checkWin():
-        pass
-    def tenpai():
         pass
     
     

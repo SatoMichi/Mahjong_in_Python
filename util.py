@@ -74,7 +74,7 @@ def tenpai(melds,single,adj_tiles,pairs):
         return single == 1
     return False
 
-def is_sequence(hand,indexs):
+def is_sequence(hand,indexs = [0,1,2]):
     """
     example: is_shuntsu([一万，二万，二万，三万]，[0,2,3]) == True
     """
@@ -130,12 +130,15 @@ def find_sequence(hand,begin):
     else:
         return None
 
+def tenpai(hand):
+    r = []
+    s = []
+    dfs(hand,0,0,0,0,0,s,r)
+    return r
 
 
 
 if __name__ == "__main__":
     hand = [(29,1),(29,2),(31,1),(31,2),(1,0),(1,1),(2,2),(2,3),(8,0),(8,1),(9,2),(0,2),(0,3)]
-    r = []
-    s = []
-    dfs(hand,0,0,0,0,0,s,r)
+    r = tenpai(hand)
     
