@@ -119,6 +119,7 @@ class Player:
         self.openHand["chi"].append([self.hand[a],self.hand[b],paiCut])
         self.hand.pop(b)
         self.hand.pop(a)
+        self.hand.sort()
         return "chi"
             
             
@@ -147,7 +148,7 @@ class Player:
         # add at the end to indicate the pai taken from others
         tile.append(paiCut)
         # record in openHand
-        openHand['pon'].append(tile)
+        self.openHand['pon'].append(tile)
         self.hand = Pai.array2Hand(a)
         return 'pon'
     def kan():
