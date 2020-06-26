@@ -107,7 +107,7 @@ class Player:
                 pass
         # Ask player
         if options is not []:
-            chi_prompt = "select from: \n"
+            chi_prompt = "the current Pai is {}. ".format(str(Pai.paiSet[paiCut]))+ "Select from: \n"
             for i, option in enumerate(options):
                 a,b = option[0], option[1]
                 chi_prompt += "{}. {} ".format(i, str(Pai.paiSet[self.hand[a]])+str(Pai.paiSet[self.hand[b]]))
