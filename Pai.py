@@ -51,6 +51,22 @@ class Pai:
         else:
             return self.num < other.num
     
+    def distance(self,other):
+        """
+        三万，三万： 0
+        三万，四万：1
+        三万，五万：2
+        otherwise: 3 (不可能成为对和牌有利的因素)
+        比如 三万，六万，三万四索，等等
+        """
+        if self.suit != other.suit:
+            return 3
+        else:
+            if self.num == other.num: return 0
+            elif abs(other.num - self.num) == 1: return 1
+            elif abs(other.num - self.num) == 2: return 2
+            else : return 3
+    
     # following methods are for Graphical User Interface (GUI)
     # please ignore for now
     def imgPathU(self):
@@ -137,6 +153,9 @@ def hand2Array(hand):
 def array2Hand(array):
     index = np.argwhere(array == 1)
     return list(map(tuple,index))
+
+def tuple2Object(tuple_hand):
+    return [paiSet[i] for i in tuple_hand]
 
 
 # Helper function for debug

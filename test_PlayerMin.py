@@ -9,7 +9,10 @@ class PlayerTestMin(unittest.TestCase):
         self.player.setHand(self.hand)
     
     @patch('builtins.input', lambda *args: '0')
-    def testChi(self):
+    def testMutipleChi(self):
+        """
+        test multiple chi, select first with @patch
+        """
         r = self.player.chi((3,0))
         self.assertEqual(r,"chi")
         self.hand.pop(7)

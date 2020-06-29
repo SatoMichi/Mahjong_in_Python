@@ -130,7 +130,7 @@ class Player:
         Perform pon.
         
         Args:
-            paiCut (int): index of Pai cut by other Players.
+            paiCut (int,int): index of Pai cut by other Players.
         
         """
         t,n = paiCut
