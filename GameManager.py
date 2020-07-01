@@ -28,6 +28,12 @@ class GameManager:
         self.playerTumo = [False,False,False,False]
         self.playerYaku = [""]*4
         self.rinxian = False
+        self.baopaiCount = -1
+        self.baopai = [self.yama[self.baopaiCount]]
+        self.baopaiCount -= 1
+        self.libaopai = [self.yama[self.baopaiCount]]
+        self.baopaiCount -= 1
+        self.redbaopai = np.random.choice([4,13,22])
         print("Prepared\nLet's Start the GAME !!\n")
 
     # check yama is empty or not
@@ -39,6 +45,7 @@ class GameManager:
     # show information for player playing his turn   
     def printPlayerTurn(self,player):
         content = ""
+        content += "宝牌: "+Pai.showHand(self.baopai)+"\n"
         # print each players River (already cut Pais)
         for p in self.players:
             # player.river is Pais player already cut
@@ -105,6 +112,10 @@ class GameManager:
 
     def playerKan(self,player):
         minSet = player.kan(self.cutPai)
+        self.baopai.append(self.yama[self.baopaiCount])
+        self.baopaiCount -= 1
+        self.libaopai.append(self.yama[self.baopaiCount])
+        self.baopaiCount -= 1
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did KAN \n"
@@ -114,6 +125,10 @@ class GameManager:
 
     def playerKakan(self,player):
         minSet = player.jiagang()
+        self.baopai.append(self.yama[self.baopaiCount])
+        self.baopaiCount -= 1
+        self.libaopai.append(self.yama[self.baopaiCount])
+        self.baopaiCount -= 1
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did JIAKAN \n"
