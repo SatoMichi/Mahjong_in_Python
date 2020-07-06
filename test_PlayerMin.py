@@ -4,6 +4,8 @@ from Player import Player
 
 class PlayerTestMin(unittest.TestCase):
     def setUp(self):
+        self.player_0 = Player("empty",0)
+        
         self.player_1 = Player("a",0)
         self.hand_1 = [(29,1),(29,2),(31,1),(31,2),(1,0),(1,1),(2,2),(4,3),(5,0),(8,1),(9,2),(0,2),(0,3)]
         self.player_1.setHand(self.hand_1)
@@ -60,7 +62,28 @@ class PlayerTestMin(unittest.TestCase):
         self.assertEqual(r,"pon")
         self.assertEqual(self.player_1.hand,sorted(self.hand_1[2:]))
         self.assertEqual(self.player_1.openHand["pon"],[[(29,1),(29,2),(29,0)]])
+    
+    def testGetAllHand(self):
+        hand = [(29,1),(29,2),(1,0),(1,1),(2,2),(2,3),(8,0),(8,1),(0,2),(0,3)]
+        openHand = [(31,1),(31,2),(31,0)]
+        self.player_0.setHand(hand)
+        self.player_0.openHand["pon"] = openHand
+        r = self.player_0.getAllHand()
+        self.assertEqual(r, sorted(hand + openHand))
         
+        
+    def testAskRiichiFalse(self):
+        r = self.player_1.askRiichi()
+        self.assertEqual(r,False)
+        
+    @patch('builtins.input', lambda *args: ' ')
+    def testAskRiichiSelectTrue(self):
+        hand = [(29,1),(29,2),(1,0),(1,1),(2,2),(2,3),(2,0),(0,1),(0,2),(0,3)]
+        openHand = [(31,1),(31,2),(31,0)]
+        self.player_0.setHand(hand)
+        self.player_0.openHand["pon"] = openHand
+        r = self.player_0.askRiichi()
+        self.assertEqual(r, True)
         
 if __name__ == '__main__':
     unittest.main()

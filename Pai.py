@@ -162,6 +162,28 @@ def tuple2Object(tuple_hand):
 def showHand(hand):
     return str([ str(paiSet[p]) for p in hand])
 
+def previous(pai):
+    """
+    take in a tuple, return a position before if 数牌
+    """
+    # 0-8: 一萬 - 九萬
+    # 9-17: 一筒 - 九筒
+    # 18-26: 一索 - 九索
+    n,_ = pai
+    if  1 <= n <= 8 or 10 <= n <= 17 or 19 <= n <= 26:
+        return n-1
+    else: 
+        return None
+
+def next(pai):
+    n,_ = pai
+    if 0 <= n <= 7 or 9 <= 16 or 18 <= n <= 25:
+        return n+1
+    else:
+        return None
+    
+def same(pai):
+    return pai[0]
 """
 def compPai(p1,p2):
     if p1.suit > p2.suit:

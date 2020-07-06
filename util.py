@@ -88,7 +88,7 @@ def is_sequence(hand,indexs = [0,1,2]):
             return True
     return False
 
-def is_3ofakind(hand,indexs):
+def is_3ofakind(hand,indexs=[0,1,2]):
     if len(indexs) != 3:
         return False
     a,b,c = indexs
@@ -96,7 +96,7 @@ def is_3ofakind(hand,indexs):
         return True
     return False
 
-def is_seq2(hand,indexs):
+def is_seq2(hand,indexs = [0,1]):
     if len(indexs) != 2:
         return False
     h = [Pai.paiSet[i] for i in hand]
@@ -109,7 +109,7 @@ def is_seq2(hand,indexs):
         return True
     return False
 
-def is_pair(hand,indexs):
+def is_pair(hand,indexs = [0,1]):
     if len(indexs) != 2:
         return False
     return hand[indexs[0]][0] == hand[indexs[1]][0]
@@ -130,7 +130,7 @@ def find_sequence(hand,begin):
     else:
         return None
 
-def tenpai(hand):
+def breakdown(hand):
     r = []
     s = []
     dfs(hand,0,0,0,0,0,s,r)
@@ -140,5 +140,5 @@ def tenpai(hand):
 
 if __name__ == "__main__":
     hand = [(29,1),(29,2),(31,1),(31,2),(1,0),(1,1),(2,2),(2,3),(8,0),(8,1),(9,2),(0,2),(0,3)]
-    r = tenpai(hand)
+    r = breakdown(hand)
     

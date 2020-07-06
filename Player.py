@@ -1,7 +1,7 @@
 import Pai
 import numpy as np
 from collections import Counter
-from util import is_sequence
+from util import is_sequence, breakdown,is_seq2,is_pair
 
 class Player:
     
@@ -22,6 +22,7 @@ class Player:
         self.score = score
         self.draw = None
         self.openHand = {"chi":[], "pon":[], "anKang":[], "minKang":[]}
+        self.tenpai = None
 
     # name reference:
     # https://www.wikiwand.com/en/Japanese_Mahjong#/General_mahjong_rules
@@ -52,12 +53,67 @@ class Player:
 
     def checkTumo(self):
         return False, "Nothing"
+    
+    def checkWait(self):
+        """
+        check breakdown() -> get a list of list of tenpai, matching index
+        """
+        b = breakdown(self.getAllHand)
+        ten = [[] for i in range(len(b))]
+        # find all ten
+        for i, possibility in enumerate(b):
+            for form in possibility:
+                if len(form) == 2:
+                    if is_seq2(form):
+                        a = Pai.previous(form[0]) 
+                        if a is not None: ten[i].append(a)
+                        b = Pai.next(form[1])
+                    if is_pair(form):
+                        ten[i].append(Pai.same(form[0]))
+                if len(form) == 1:
+                    ten[i].append[Pai.same(form[0])]
+        return ten
+                        
+            
 
+        
     def checkRon(self):
-        return False, "Nothing"
+        """
+        check hand, openHand and draw -> Boolean, String
+        """
+        t = self.checkWait()
+        for wait in t:
+            if self.draw[0] in wait:
+                return True,
+        return False, "nothing"
+    
+    def getOpenHand(self):
+        """
+        return list of list of Pai, omit empty list
+        """
+        r = []
+        for _,value in self.openHand.items():
+            if value != []:
+                r.append(value)
+        return r
+    
+    def getAllHand(self):
+        """
+        combine hand and openHand, return sorted list
+        """
+        all_hand = self.hand[:]
+        for sublist in self.getOpenHand():
+            all_hand += sublist
+        return sorted(all_hand)
 
     def askRiichi(self):
         self.riichi = False
+        if breakdown(self.getAllHand()) != [] :
+            # interaction 
+            i = input("You can riichi! press space to riichi, other key to abort")
+            if i == " ":
+                self.riichi = True
+                return True
         return False
 
     def autoCut(self):
@@ -153,9 +209,6 @@ class Player:
         return 'pon'
     def kan():
         pass
-    def riichi():
-        pass
-    def checkWin():
-        pass
+    
     
     
