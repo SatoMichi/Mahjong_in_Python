@@ -2,6 +2,7 @@ import Pai
 import numpy as np
 from collections import Counter
 from util import is_sequence, breakdown,is_seq2,is_pair
+from RonWayJapan import 
 
 class Player:
     
@@ -23,6 +24,8 @@ class Player:
         self.draw = None
         self.openHand = {"chi":[], "pon":[], "anKang":[], "minKang":[]}
         self.tenpai = None
+        self.dora = None
+        self.akadora = None
 
     # name reference:
     # https://www.wikiwand.com/en/Japanese_Mahjong#/General_mahjong_rules
@@ -52,7 +55,11 @@ class Player:
         return p
 
     def checkTumo(self):
-        return False, "Nothing"
+        t = self.checkWait()
+        for wait in t:
+            if self.draw[0] in wait:
+                return True, 
+        return False, "nothing"
     
     def checkWait(self):
         """
@@ -81,11 +88,7 @@ class Player:
         """
         check hand, openHand and draw -> Boolean, String
         """
-        t = self.checkWait()
-        for wait in t:
-            if self.draw[0] in wait:
-                return True,
-        return False, "nothing"
+
     
     def getOpenHand(self):
         """
