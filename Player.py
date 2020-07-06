@@ -2,7 +2,7 @@ import Pai
 import numpy as np
 from collections import Counter
 from util import is_sequence, breakdown,is_seq2,is_pair
-from RonWayJapan import 
+from JudgeRon import JapanRon
 
 class Player:
     
@@ -58,7 +58,7 @@ class Player:
         t = self.checkWait()
         for wait in t:
             if self.draw[0] in wait:
-                return True, 
+                return True, JapanRon(self)
         return False, "nothing"
     
     def checkWait(self):
