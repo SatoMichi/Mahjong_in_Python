@@ -33,7 +33,7 @@ class GameManager:
         self.baopaiCount -= 1
         self.libaopai = [self.yama[self.baopaiCount]]
         self.baopaiCount -= 1
-        self.redbaopai = np.random.choice([4,13,22])
+        self.redbaopai = [(4,0),(13,0),(13,1),(22,0)]
         print("Prepared\nLet's Start the GAME !!\n")
 
     # check yama is empty or not
@@ -168,7 +168,7 @@ class GameManager:
         self.startGame()
         player = self.players[-1]
 
-        while not self.zeroYama():
+        while not self.zeroYama() and len(self.baopai)<5:
 
             # STATE "SET_NEXT_PLAYER"
             if self.state == "SET_PLAYER":
