@@ -1,6 +1,24 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/07/01**
+  * Added the Concept of 宝牌 to GameManager class
+
+Sato
+
+**2020/06/25**
+  * Updated JudgeRonTest.py for 九莲宝灯 and 纯正九莲宝灯
+  * Updated JudgeRon_Test_Report.txt for 九莲宝灯 and 纯正九莲宝灯
+
+Sato
+
+**2020/06/22**
+  * Added 槍槓 to GameManager.py
+  * Modified GameManager.py
+  * Modified TestPlayer.py (Now TestPlayer.py can be used as the API for Player class)
+
+Sato
+
 **2020/06/19**
   * Debuged RonWayJapan.py (Added line 57,58)
   * Modified GameManager.py so that it can judge special cases  

@@ -49,6 +49,16 @@ point:
               xianshifen : ~
       fanshu2 :
         -
+          fushu20 :
+            -
+              defen : 1500
+              dongshifen : 700
+              xianshifen : 400
+          fushu25 :
+            -
+              defen : 1600
+              dongshifen : ~
+              xianshifen : ~
           fushu30 :
             -
               defen : 2000
@@ -95,6 +105,11 @@ point:
               dongshifen : 3600
               xianshifen : 1800
       fanshu3 :
+          fushu20 :
+            -
+              defen : 2700
+              dongshifen : 1300
+              xianshifen : 700
           fushu25 : 
             - 
               defen : 3200
@@ -121,6 +136,11 @@ point:
               dongshifen : 3900
               xianshifen : 2000
       fanshu4 :
+          fushu20 :
+            -
+              defen : 5200
+              dongshifen : 2600
+              xianshifen : 1300
           fushu25 :
             -
               defen : 6400

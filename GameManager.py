@@ -21,7 +21,6 @@ class GameManager:
             player.setHand(hand)
         self.cutPai = None
         self.state = "SET_PLAYER"
-        print("Prepared\nLet's Start the GAME !!\n")
         self.winner = None
         self.playerCounter = np.zeros([4])
         self.minCounter = np.zeros([4,4])
@@ -29,6 +28,13 @@ class GameManager:
         self.playerTumo = [False,False,False,False]
         self.playerYaku = [""]*4
         self.rinxian = False
+        self.baopaiCount = -1
+        self.baopai = [self.yama[self.baopaiCount]]
+        self.baopaiCount -= 1
+        self.libaopai = [self.yama[self.baopaiCount]]
+        self.baopaiCount -= 1
+        self.redbaopai = [(4,0),(13,0),(13,1),(22,0)]
+        print("Prepared\nLet's Start the GAME !!\n")
 
     # check yama is empty or not
     def zeroYama(self):
@@ -39,6 +45,7 @@ class GameManager:
     # show information for player playing his turn   
     def printPlayerTurn(self,player):
         content = ""
+        content += "宝牌: "+Pai.showHand(self.baopai)+"\n"
         # print each players River (already cut Pais)
         for p in self.players:
             # player.river is Pais player already cut
@@ -65,22 +72,24 @@ class GameManager:
 
     # print winner's information
     def printWinner(self):
-        player = self.winner
-        yaku = self.playerYaku[player]
-        content = ""
-        if player == None:
-            content += "No One Wined" + "\n"
+        if self.winner == None:
+            print("---------------------------NO ONE WIN-------------------------\n")
         else:
-            content += "###############################################################################################\n"
-            content += "Player "+player.name+" Win!!\n"
-            content += "Points: "+str(player.score)+"\n"
-            content += "役: "+yaku+"\n"
-            player.hand.sort()
-            content += str(Pai.showHand(player.hand))+"\n"
-            content += "################################################################################################\n"
-            content += "WINNER is "+player.name+"\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
-        print(content)
-
+            player = self.winner
+            yaku = self.playerYaku[self.players.index(player)]
+            content = ""
+            if player == None:
+                content += "No One Wined" + "\n"
+            else:
+                content += "###############################################################################################\n"
+                content += "Player "+player.name+" Win!!\n"
+                content += "Points: "+str(player.score)+"\n"
+                content += "役: "+yaku+"\n"
+                player.hand.sort()
+                content += str(Pai.showHand(player.hand))+"\n"
+                content += "################################################################################################\n"
+                content += "WINNER is "+player.name+"\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
+            print(content)
 
     # these functions will print the info and call the corresponding method in Player class
     def playerChi(self,player):
@@ -102,7 +111,11 @@ class GameManager:
         print(content)
 
     def playerKan(self,player):
-        minSet = player.kan()
+        minSet = player.kan(self.cutPai)
+        self.baopai.append(self.yama[self.baopaiCount])
+        self.baopaiCount -= 1
+        self.libaopai.append(self.yama[self.baopaiCount])
+        self.baopaiCount -= 1
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did KAN \n"
@@ -110,7 +123,21 @@ class GameManager:
         content += "#################################################################################################\n"
         print(content)
 
-    def printRiichi(self,player):
+    def playerKakan(self,player):
+        minSet = player.jiagang()
+        self.baopai.append(self.yama[self.baopaiCount])
+        self.baopaiCount -= 1
+        self.libaopai.append(self.yama[self.baopaiCount])
+        self.baopaiCount -= 1
+        content = ""
+        content += "################################################################################################\n"
+        content += "Player "+player.name+" did JIAKAN \n"
+        content += "Set is "+str(Pai.showHand(minSet))+"\n"
+        content += "#################################################################################################\n"
+        print(content)
+
+    def playerRiichi(self,player):
+        player.riichi()
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did RIICHI \n"
@@ -141,13 +168,13 @@ class GameManager:
         self.startGame()
         player = self.players[-1]
 
-        while not self.zeroYama():
+        while not self.zeroYama() and len(self.baopai)<5:
 
             # STATE "SET_NEXT_PLAYER"
             if self.state == "SET_PLAYER":
                 player = self.players[(self.players.index(player)+1) % 4]
-                self.playerCounter[player] += 1
-                print("----------------------MAIN PLAYER: ",player.name," | WIND: ",player.wind,"----------------------")
+                self.playerCounter[self.players.index(player)] += 1
+                print("--------------MAIN PLAYER: ",player.name," | WIND: ",player.wind," | Turn:",int(sum(self.playerCounter))," --------------")
                 self.state = "GIVE_PAI"
 
             # STATE "GIVE_PAI_TO_PLAYER"
@@ -162,38 +189,59 @@ class GameManager:
                 if win:
                     self.state = "WIN"
                     self.winner = player
-                    self.playerYaku[player] = yaku
-                    self.playerTumo[player] = True
+                    self.playerYaku[self.players.index(player)] = yaku
+                    self.playerTumo[self.players.index(player)] = True
                     #self.printWinner(player,yaku)
                     break
+                self.rinxian = False
                 # check Riici
                 riichi = player.askRiichi()
                 if riichi:
-                    self.printRiichi(player)
+                    self.playerRiichi(player)
                     noMin = self.minCounter.sum() == 0
-                    self.riichiTurn[player] = (self.playerCounter[player],noMin)
-                self.rinxian = False
-                self.state = "CUT"
+                    self.riichiTurn[self.players.index(player)] = (self.playerCounter[player],noMin)
+                    self.state = "CUT"
+                else:
+                    jiaGang = player.askJiaGang()
+                    if jiaGang:
+                        self.cutPai = pai
+                        self.state = "KAKAN"
+                    else:
+                        self.state = "CUT"
+            
+            # STATE "PLAYER KAKAN"
+            elif self.state == "KAKAN":
+                self.playerKakan(player)
+                # check Ron of other player (槍槓)
+                for p in self.players:
+                    win, yaku = p.checkRon(self.cutPai)
+                    if win:
+                        self.state = "WIN"
+                        self.winner = p
+                        self.playerYaku[self.players.index(p)] = yaku+",槍槓"
+                        #self.printWinner(p,yaku)
+                if self.state == "WIN":
+                    break
+                else:
+                    self.state = "KAN"
 
             # STATE "PLAYER_CUT_PAI"
             elif self.state == "CUT" or self.state == "CHI/PON":
                 self.printPlayerTurn(player)
 
-                if player.riichi:
-                    cut = player.autoCut()
+                if player.isRiichi:
+                    self.cutPai = player.autoCut()
                 else:
                     target = int(input("Please SELECT the Pai to CUT\n")) -1
-                    cut = player.cut(target)
-                
-                self.playerCutPai(player,cut)
+                    self.cutPai = player.cut(target)
                 
                 # check Ron
                 for p in self.players:
-                    win, yaku = p.checkRon()
+                    win, yaku = p.checkRon(self.cutPai)
                     if win:
                         self.state = "WIN"
                         self.winner = p
-                        self.playerYaku[p] = yaku
+                        self.playerYaku[self.players.index(p)] = yaku
                         #self.printWinner(p,yaku)
                 if self.state == "WIN":
                     break
@@ -206,15 +254,15 @@ class GameManager:
                 for p in self.players:
                     # player who want to Kan shoule return ("Kan",minSet)
                     # player who do not Min should return (None,None)
-                    minType, minSet = p.askMin()
+                    minType = p.askMin(self.cutPai)
                     if not minType==None:
-                        minPlayers.append([p, minType, minSet])
+                        minPlayers.append([p, minType])
                 
                 if not len(minPlayers) == 0:
                     # select player with highest priority
                     minPlayer = self.selectMinPlayers(minPlayers)
+                    self.minCounter[self.players.index(minPlayer[0]),self.players.index(player)] += 1
                     # player change to MinPlayer
-                    self.minCounter[minPlayer[0],player] += 1
                     player = minPlayer[0]
 
                     if minPlayer[1] == "Kan":
@@ -240,20 +288,20 @@ class GameManager:
 
         # GameEnd
         if not self.state == "WIN":
-            print("***************************流局***************************")
+            print("\n******************************流局******************************\n")
             self.winner = self.checkNagashiMangan()
             if not self.winner == None:
-                self.playerYaku[self.winner] += ",流局満貫"
+                self.playerYaku[self.players.index(self.winner)] += ",流局満貫"
         else:
-            self.checkSpecialYaku(self.winner)
+            self.checkSpecialYaku(self.players.index(self.winner))
         
         self.printWinner()    
         print("FINISH GAME")
     
-    def checkNagashiMangan():
+    def checkNagashiMangan(self):
         player = None
         for p in self.players:
-            if self.allYaoJiu(p.river) and self.noMined(p):
+            if self.allYaoJiu(p.river) and self.noMined(self.players.index(p)):
                 player = p
         return player
     
