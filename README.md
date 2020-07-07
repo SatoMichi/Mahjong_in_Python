@@ -1,6 +1,11 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/07/07**
+  * Updated the Concept of 宝牌 to GameManager class
+
+Sato
+
 **2020/07/01**
   * Added the Concept of 宝牌 to GameManager class
 
