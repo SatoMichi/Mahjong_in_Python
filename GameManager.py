@@ -13,12 +13,22 @@ class GameManager:
     
     # give 13 pai to each players
     def startGame(self):
+        self.baopaiCount = -1
+        self.baopai = [self.yama[self.baopaiCount]]
+        self.baopaiCount -= 1
+        self.libaopai = [self.yama[self.baopaiCount]]
+        self.baopaiCount -= 1
+        self.redbaopai = [(4,0),(13,0),(13,1),(22,0)]
         for wind, player in zip(["東","南","西","北"], self.players):
             hand = self.yama[:13]
             self.yama = self.yama[13:]
             # call player's method
             player.setWind(wind)
             player.setHand(hand)
+            player.baopai = self.baopai
+            player.libaopai = self.libaopai
+            player.redbaopai = self.redbaopai
+        
         self.cutPai = None
         self.state = "SET_PLAYER"
         self.winner = None
@@ -28,12 +38,6 @@ class GameManager:
         self.playerTumo = [False,False,False,False]
         self.playerYaku = [""]*4
         self.rinxian = False
-        self.baopaiCount = -1
-        self.baopai = [self.yama[self.baopaiCount]]
-        self.baopaiCount -= 1
-        self.libaopai = [self.yama[self.baopaiCount]]
-        self.baopaiCount -= 1
-        self.redbaopai = [(4,0),(13,0),(13,1),(22,0)]
         print("Prepared\nLet's Start the GAME !!\n")
 
     # check yama is empty or not
@@ -116,6 +120,9 @@ class GameManager:
         self.baopaiCount -= 1
         self.libaopai.append(self.yama[self.baopaiCount])
         self.baopaiCount -= 1
+        for p in self.players:
+            p.baopai = self.baopai
+            p.libaopai = self.libaopai
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did KAN \n"
@@ -129,6 +136,9 @@ class GameManager:
         self.baopaiCount -= 1
         self.libaopai.append(self.yama[self.baopaiCount])
         self.baopaiCount -= 1
+        for p in self.players:
+            p.baopai = self.baopai
+            p.libaopai = self.libaopai
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did JIAKAN \n"
