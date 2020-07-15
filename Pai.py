@@ -166,6 +166,11 @@ def showHand(hand):
 def previous(pai):
     """
     take in a tuple, return a position before if 数牌
+    
+    >>> previous((0,0))
+    
+    >>> previous((1,0))
+    0
     """
     # 0-8: 一萬 - 九萬
     # 9-17: 一筒 - 九筒
@@ -177,8 +182,13 @@ def previous(pai):
         return None
 
 def next(pai):
+    """
+    >>> next((8,0))
+    
+    
+    """
     n,_ = pai
-    if 0 <= n <= 7 or 9 <= 16 or 18 <= n <= 25:
+    if 0 <= n <= 7 or 9 <= n <= 16 or 18 <= n <= 25:
         return n+1
     else:
         return None
