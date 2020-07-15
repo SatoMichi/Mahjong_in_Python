@@ -207,10 +207,14 @@ def parsedPai(shorthand):
     
     Note: 
     - Use C(centre) for 中，B(blank) for 白, F(fortune) for 发. Also in accordance with pronounciation.
+    - Also can use tenhou representation: 567z for 白发中
     - m,p,s for 万，筒，索
     - 1234z for 东，南，西，北
     
     >>> parsedPai("1234zbfc")
+    [30, 31, 32, 33, 29, 28, 27]
+
+    >>> parsedPai("1234567z")
     [30, 31, 32, 33, 29, 28, 27]
     
     >>> parsedPai("123m123p123s")
@@ -233,7 +237,7 @@ def parsedPai(shorthand):
         if split[-1] is "s":
             result += [int(p)+17 for p in split[:-1]]
         if split[-1] is "z":
-            result += [int(p)+29 for p in split[:-1]]
+            result += [int(p)+29 if int(p) <=4 else 34 - int(p)  for p in split[:-1]]
             
             
     word_pattern = re.compile(r'[cfb]')
