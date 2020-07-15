@@ -63,7 +63,8 @@ class Player:
     
     def checkWait(self):
         """
-        check breakdown() -> get a list of list of tenpai, matching index
+        [[Int]]
+        return a list of list of tenpai
         """
         b = breakdown(self.getAllHand)
         ten = [[] for i in range(len(b))]
@@ -214,4 +215,6 @@ class Player:
         pass
     
     
-    
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod(extraglobs={'t': Player("a",0)}) 
