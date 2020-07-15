@@ -220,6 +220,9 @@ def parsedPai(shorthand):
     >>> parsedPai("123m123p123s")
     [0, 1, 2, 9, 10, 11, 18, 19, 20]
     
+    >>> parsedPai("111222m333p")
+    [0, 0, 0, 1, 1, 1, 11, 11, 11]
+    
     """
     word_map = {
         "c":27,
@@ -244,6 +247,46 @@ def parsedPai(shorthand):
     word_tiles = word_pattern.findall(shorthand)
     for split in word_tiles:
         result.append(word_map[split])
+    return result
+
+def shorthand(list_pai):
+    """
+    [Int] -> String
+    the opposite of parsedPai. Turn list of pai into shorthand.
+    
+    >>> shorthand([30, 31, 32, 33, 29, 28, 27])
+    '1234zbfc'
+    
+    >>> shorthand([0, 1, 2, 9, 10, 11, 18, 19, 20])
+    '123m123p123s'
+    """
+    mapping = {
+        27: "c",
+        28: "f",
+        29: "b"
+    }
+    m,p,s,z = [],[],[],[]
+    result = ""
+    for pai in list_pai:
+        if pai <= 8:
+            m.append(str(pai+1))
+        if 8 < pai <= 17:
+            p.append(str(pai-8))
+        if 17 < pai <= 26:
+            s.append(str(pai-17))
+        if 29 < pai:
+            z.append(str(pai-29))
+    if m != [] :
+        result += "".join(m) + "m"
+    if p != []:
+        result += "".join(p) + "p"
+    if s != []:
+        result += "".join(s) + "s"
+    if z != []:
+        result += "".join(z) + "z"
+    for pai in list_pai:    
+        if 27 <= pai <= 29:
+            result += mapping[pai]
     return result
     
     
