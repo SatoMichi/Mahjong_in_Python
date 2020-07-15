@@ -2,7 +2,7 @@ import Pai
 import numpy as np
 from collections import Counter
 from util import is_sequence, breakdown,is_seq2,is_pair
-from JudgeRon import JapanRon
+# from JudgeRon import JapanRon
 
 class Player:
     
@@ -66,17 +66,20 @@ class Player:
         [[Int]]
         return a list of list of tenpai
         """
-        b = breakdown(self.getAllHand)
+        b = breakdown(self.getAllHand())
         ten = [[] for i in range(len(b))]
+        seq2_count = 0
         # find all ten
         for i, possibility in enumerate(b):
             for form in possibility:
                 if len(form) == 2:
                     if is_seq2(form):
+                        seq2_count += 1
                         a = Pai.previous(form[0]) 
                         if a is not None: ten[i].append(a)
                         b = Pai.next(form[1])
-                    if is_pair(form):
+                        if b is not None: ten[i].append(b)
+                    if is_pair(form) and seq2_count == 0:
                         ten[i].append(Pai.same(form[0]))
                 if len(form) == 1:
                     ten[i].append[Pai.same(form[0])]
