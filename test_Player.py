@@ -3,6 +3,7 @@ from Player import Player
 from Pai import parsedPai, shorthand
 
 t = Player("a",0)
+# reference: http://arcturus.su/wiki/Machi
 
 def test_checkWait_Ryanmen():
     hand = [(pai,0) for pai in parsedPai("23m112233s11122z")]
