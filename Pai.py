@@ -1,6 +1,7 @@
 import numpy as np
 from collections import Counter 
 from random import shuffle
+import re
 
 """ 
 All Pai are initialized once in this module.
@@ -198,3 +199,52 @@ def compPai(p1,p2):
         else:
             return p2
 """
+
+def parsedPai(shorthand):
+    """
+    String -> [Int]
+    change shorthand to list of Pai index. 
+    
+    Note: 
+    - Use C(centre) for 中，B(blank) for 白, F(fortune) for 发. Also in accordance with pronounciation.
+    - m,p,s for 万，筒，索
+    - 1234z for 东，南，西，北
+    
+    >>> parsedPai("1234zbfc")
+    [30, 31, 32, 33, 29, 28, 27]
+    
+    >>> parsedPai("123m123p123s")
+    [0, 1, 2, 9, 10, 11, 18, 19, 20]
+    
+    """
+    word_map = {
+        "c":27,
+        "f":28,
+        "b":29,
+    }
+    result = []
+    number_pattern = re.compile(r'[1-9]+[mpsz]')
+    number_tiles = number_pattern.findall(shorthand)
+    for split in number_tiles:
+        if split[-1] is "m":
+            result += [int(p)-1 for p in split[:-1]]
+        if split[-1] is "p":
+            result += [int(p)+8 for p in split[:-1]]
+        if split[-1] is "s":
+            result += [int(p)+17 for p in split[:-1]]
+        if split[-1] is "z":
+            result += [int(p)+29 for p in split[:-1]]
+            
+            
+    word_pattern = re.compile(r'[cfb]')
+    word_tiles = word_pattern.findall(shorthand)
+    for split in word_tiles:
+        result.append(word_map[split])
+    return result
+    
+    
+    
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
