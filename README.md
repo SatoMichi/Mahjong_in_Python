@@ -3,6 +3,7 @@ Trial for 麻雀 program using Python
 
 **2020/07/07**
   * Updated the Concept of 宝牌 to GameManager class
+  * Updated the Concept of Red 宝牌
 
 Sato
 
