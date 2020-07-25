@@ -1,13 +1,23 @@
-class GameInfo:
-    self.GM = None
-    self.gameCount = 0
-    self.playerTurn = 0
-    self.yama = []
-    self.baopai = []
-    self.libaopai = []
-    self.redbaopai = []
-    self.playerInfos = []
+import tkinter as tk
 
+class App(tk.Tk):
+    def __init__(self):
+        super(App,self).__init__()
+        self.title("日本麻雀")
+        width,height = 1000, 820
+        self.geometry("{}x{}".format(width, height))
+        self.resizable(False,False)
+        self.iconbitmap("mahjong.ico")
+        self.set_widgets()
+    
+    def run(self):
+        self.mainloop()
+        
+    def set_widgets(self):
+        self.board = tk.Canvas(self,width=1000,height=820,bg="black")
+        self.board.pack()
+
+class GameInfo:
     def __init__(self,GM):
         self.GM = GM
         self.gamecount = sum(GM.playerCounter)
@@ -25,15 +35,7 @@ class GameInfo:
     def draw(self):
         pass
 
-
 class PlayerInfo:
-    self.name = ""
-    self.wind = ""
-    self.drawCard = None
-    self.hand = []
-    self.ophand = []
-    self.river = []
-
     def __init__(self,player):
         self.player = player
         self.name = player.name
@@ -49,3 +51,8 @@ class PlayerInfo:
     def draw(self):
         pass
 
+
+if __name__ == "__main__":
+    app = App()
+    app.run()
+    
