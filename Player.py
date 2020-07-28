@@ -98,7 +98,13 @@ class Player:
         """
         check hand, openHand and cutPai -> Boolean, Ron Class
         """
-        
+        t = self.checkWait()
+        for wait in t:
+            if cutPai in wait:
+                player.tumo = True
+                player.ronHand = sorted(player.hand + [cutPai])
+                return True, JapanRon(self)
+        return False, None
 
     
     def getOpenHand(self):
