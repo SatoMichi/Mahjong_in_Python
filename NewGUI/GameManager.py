@@ -176,15 +176,15 @@ class GameManager:
     def GameFSM(self):
 
         self.startGame()
-        player = self.players[-1]
+        self.player = self.players[-1]
 
         while not self.zeroYama() and len(self.baopai)<5:
 
             # STATE "SET_NEXT_PLAYER"
             if self.state == "SET_PLAYER":
-                player = self.players[(self.players.index(player)+1) % 4]
-                self.playerCounter[self.players.index(player)] += 1
-                print("--------------MAIN PLAYER: ",player.name," | WIND: ",player.wind," | Turn:",int(sum(self.playerCounter))," --------------")
+                self.player = self.players[(self.players.index(self.player)+1) % 4]
+                self.playerCounter[self.players.index(self.player)] += 1
+                print("--------------MAIN PLAYER: ",self.player.name," | WIND: ",self.player.wind," | Turn:",int(sum(self.playerCounter))," --------------")
                 self.state = "GIVE_PAI"
 
             # STATE "GIVE_PAI_TO_PLAYER"
@@ -193,26 +193,26 @@ class GameManager:
                     self.rinxian = True
                 pai = self.yama[0]
                 self.yama = self.yama[1:]
-                player.givePai(pai)
+                self.player.givePai(pai)
                 # check Tumo
                 win, yaku = player.checkTumo()
                 if win:
                     self.state = "WIN"
-                    self.winner = player
-                    self.playerYaku[self.players.index(player)] = yaku
-                    self.playerTumo[self.players.index(player)] = True
+                    self.winner = self.player
+                    self.playerYaku[self.players.index(self.player)] = yaku
+                    self.playerTumo[self.players.index(self.player)] = True
                     #self.printWinner(player,yaku)
                     break
                 self.rinxian = False
                 # check Riici
-                riichi = player.askRiichi()
+                riichi = self.player.askRiichi()
                 if riichi:
-                    self.playerRiichi(player)
+                    self.playerRiichi(self.player)
                     noMin = self.minCounter.sum() == 0
-                    self.riichiTurn[self.players.index(player)] = (self.playerCounter[player],noMin)
+                    self.riichiTurn[self.players.index(self.player)] = (self.playerCounter[self.player],noMin)
                     self.state = "CUT"
                 else:
-                    jiaGang = player.askJiaGang()
+                    jiaGang = self.player.askJiaGang()
                     if jiaGang:
                         self.cutPai = pai
                         self.state = "KAKAN"
@@ -221,7 +221,7 @@ class GameManager:
             
             # STATE "PLAYER KAKAN"
             elif self.state == "KAKAN":
-                self.playerKakan(player)
+                self.playerKakan(self.player)
                 # check Ron of other player (槍槓)
                 for p in self.players:
                     win, yaku = p.checkRon(self.cutPai)
@@ -237,13 +237,13 @@ class GameManager:
 
             # STATE "PLAYER_CUT_PAI"
             elif self.state == "CUT" or self.state == "CHI/PON":
-                self.printPlayerTurn(player)
+                self.printPlayerTurn(self.player)
 
-                if player.isRiichi:
-                    self.cutPai = player.autoCut()
+                if self.player.isRiichi:
+                    self.cutPai = self.player.autoCut()
                 else:
                     target = int(input("Please SELECT the Pai to CUT\n")) -1
-                    self.cutPai = player.cut(target)
+                    self.cutPai = self.player.cut(target)
                 
                 # check Ron
                 for p in self.players:
@@ -273,22 +273,22 @@ class GameManager:
                     minPlayer = self.selectMinPlayers(minPlayers)
                     self.minCounter[self.players.index(minPlayer[0]),self.players.index(player)] += 1
                     # player change to MinPlayer
-                    player = minPlayer[0]
+                    self.player = minPlayer[0]
 
                     if minPlayer[1] == "Kan":
-                        self.playerKan(player)
+                        self.playerKan(self.player)
                         self.state = "Kan"
 
                     elif minPlayer[1] == "Pon":
-                        self.playerPon(player)
+                        self.playerPon(self.player)
                         self.state = "CHI/PON"
 
                     else:
-                        self.playerChi(player)
+                        self.playerChi(self.player)
                         self.state = "CHI/PON"
                 else:
                     # add cutPai to the player's river
-                    player.river.append(self.cutPai)
+                    self.player.river.append(self.cutPai)
                     # Go to Next turn
                     self.state = "SET_PLAYER"
             
