@@ -88,8 +88,8 @@ class GameManager:
             else:
                 content += "###############################################################################################\n"
                 content += "Player "+player.name+" Win!!\n"
-                content += "Points: "+str(player.score)+"\n"
-                content += "役: "+yaku+"\n"
+                #content += "Points: "+str(player.score)+"\n"
+                content += "役: "+yaku.judgeRon+"\n"
                 player.hand.sort()
                 content += str(Pai.showHand(player.hand))+"\n"
                 content += "################################################################################################\n"
@@ -303,7 +303,7 @@ class GameManager:
             self.winner = self.checkNagashiMangan()
             if not self.winner == None:
                 ronInfo = self.playerYaku[self.players.index(self.winner)]
-                roninfo.setJudgeRon(",流局満貫")
+                ronInfo.setJudgeRon(",流局満貫")
                 ronInfo.addfan(5)
                 ronInfo.setallup()
         else:
@@ -330,22 +330,32 @@ class GameManager:
         return sum(self.minCounter[:,player]) == 0
     
     def checkSpecialYaku(self,p):
+        ronInfo = self.playerYaku[self.players.index(p)]
         if self.isYifa(p):
-            self.playerYaku[p] += ",一發"
+            ronInfo.setJudgeRon(",一發")
+            ronInfo.addfan(1)
         if self.isTianHe(p):
-            self.playerYaku[p] += ",天和"
+            roninfo.setJudgeRon(",天和")
+            ronInfo.addfan(7)
         if self.isDiHe(p):
-            self.playerYaku[p] += ",地和"
+            roninfo.setJudgeRon(",地和")
+            ronInfo.addfan(7)
         if self.isRenHe(p):
-            self.playerYaku[p] += ",人和"
+            roninfo.setJudgeRon(",人和")
+            ronInfo.addfan(7)
         if self.isDoubleRiici(p):
-            self.playerYaku[p] += ",双倍立直"
+            roninfo.setJudgeRon(",双倍立直")
+            ronInfo.addfan(2)
         if self.isHaitei(p):
-            self.playerYaku[p] += ",海底撈月"
+            roninfo.setJudgeRon(",海底撈月")
+            ronInfo.addfan(1)
         if self.isHoTei(p):
-            self.playerYaku[p] += ",河底撈魚"
+            roninfo.setJudgeRon(",河底撈魚")
+            roniInfo.addfan(1)
         if self.isRinXiang(p):
-            self.playerYaku[p] += ",嶺上開花"
+            roninfo.setJudgeRon(",嶺上開花")
+            ronInfo.addfan(1)
+        ronInfo.setallup()
 
     def isYifa(self, p):
         tumo = self.playerTumo[p] and (self.playerCounter[p]-self.riichiTurn[p][0]) <= 1
