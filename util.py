@@ -130,10 +130,13 @@ def find_sequence(hand,begin):
     else:
         return None
 
-def breakdown(hand):
+def breakdown(hand,openHand):
+    """
+    [pai] ,[[pai]]
+    """
     r = []
     s = []
-    dfs(hand,0,0,0,0,0,s,r)
+    dfs(hand,0,len(openHand),0,0,0,s,r)
     return r
 
 

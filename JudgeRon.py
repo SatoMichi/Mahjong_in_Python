@@ -795,12 +795,12 @@ def JapanRon(player):
         ron = Rondong()
     else:
         ron = Ronxian()
-    hand = player.hand
-    openHand = player.openHand
+    hand = player.ronhand
+    openHand = player.getOpenHand()
     changfeng = player.changfeng
-    lichi = player.lichi
-    beforehand = player.beforehand
-    hepai = player.hepai
+    lichi = player.riichi
+    beforehand = player.ronHand
+    hepai = player.draw
     tumo = player.tumo
     if(openHand == None):
         #Player 先判断门前清番数

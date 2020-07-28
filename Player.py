@@ -2,7 +2,7 @@ import Pai
 import numpy as np
 from collections import Counter
 from util import is_sequence, breakdown,is_seq2,is_pair
-# from JudgeRon import JapanRon
+from JudgeRon import JapanRon
 
 class Player:
     
@@ -20,6 +20,7 @@ class Player:
         self.name = name
         self.river = []
         self.hand = None
+        self.changfeng = None
         self.score = score
         self.draw = None
         self.openHand = {"chi":[], "pon":[], "anKang":[], "minKang":[]}
@@ -61,15 +62,17 @@ class Player:
         t = self.checkWait()
         for wait in t:
             if self.draw[0] in wait:
+                player.tumo = True
+                player.ronHand = sorted(player.hand + [self.draw])
                 return True, JapanRon(self)
-        return False, "nothing"
+        return False, None
     
     def checkWait(self):
         """
         [[Int]]
         return a list of list of tenpai
         """
-        b = breakdown(self.getAllHand())
+        b = breakdown(self.hand,self.getOpenHand())
         ten = [[] for i in range(len(b))]
         seq2_count = 0
         # find all ten
@@ -91,10 +94,11 @@ class Player:
             
 
         
-    def checkRon(self):
+    def checkRon(self,cutPai):
         """
-        check hand, openHand and draw -> Boolean, Ron Class
+        check hand, openHand and cutPai -> Boolean, Ron Class
         """
+        
 
     
     def getOpenHand(self):
@@ -118,7 +122,7 @@ class Player:
 
     def askRiichi(self):
         self.riichi = False
-        if breakdown(self.getAllHand()) != [] :
+        if breakdown(self.hand,self.getOpenHand()) != [] :
             # interaction 
             i = input("You can riichi! press space to riichi, other key to abort")
             if i == " ":
@@ -223,4 +227,3 @@ class Player:
     
 if __name__ == '__main__':
     import doctest
-    doctest.testmod(extraglobs={'t': Player("a",0)}) 
