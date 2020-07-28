@@ -2,6 +2,11 @@
 Trial for 麻雀 program using Python
 
 **2020/07/25**
+  * Updated the GameManager.py
+
+Sato
+
+**2020/07/25**
   * Updated the GameManager.py in NewGUI for GUI expression
   * Created the GameGUI.py in NewGUI for GUI expression (this is just a test version)
 
