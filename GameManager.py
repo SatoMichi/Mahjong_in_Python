@@ -358,9 +358,10 @@ class GameManager:
         ronInfo.setallup()
 
     def isYifa(self, p):
+        isRiichi = self.winner.isRiichi
         tumo = self.playerTumo[p] and (self.playerCounter[p]-self.riichiTurn[p][0]) <= 1
         ron = (self.playerCounter[p]-self.riichiTurn[p][0]) < 1
-        return tumo or ron
+        return isRiichi and (tumo or ron)
 
     def isTianHe(self,p):
         isDong = p==0   # is 东家
@@ -373,18 +374,18 @@ class GameManager:
         isFirstRound = self.playerCounter[p]==1
         noMin = self.minCounter.sum() == 0
         tumo = self.playerTumo[p]
-        return isDong and isFirstRound and noMin and tumo
+        return notDong and isFirstRound and noMin and tumo
 
     def isRenHe(self,p):
-        isFirstRound = self.playerCounter[p]==1
+        isFirstRound = self.playerCounter[p]==0
         noMin = self.minCounter.sum() == 0
         ron = not self.playerTumo[p]
-        return isDong and isFirstRound and ron
+        return isFirstRound and noMin and ron
 
     def isDoubleRiici(self,p):
         isFirstRound = self.riichiTurn[p][0]==1
         wasNoMin = self.riichiTurn[p][1]
-        riichi = p.riichi
+        riichi = self.winner.isRiichi
         return isFirstRound and wasNoMin and riichi
 
     def isHaitei(self,p):
