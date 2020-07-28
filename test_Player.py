@@ -19,3 +19,13 @@ def test_checkWait_Shanpon():
     hand = [(pai,0) for pai in parsedPai("456789m123s1122z")]
     t.setHand(hand)
     assert t.checkWait() == [parsedPai("12z")]
+
+def test_checkWait_tenpai():
+    hand = [(p,0) for p in parsedPai("112233556677s1z")]
+    t.setHand(hand)
+    assert t.checkWait() == [[parsedPai("1z")]]
+
+def test_checkRon_tenpai():
+    hand = [(p,0) for p in parsedPai("112233556677s1z")]
+    t.setHand(hand)
+    assert t.checkRon((30,0))[0] == True

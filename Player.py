@@ -18,6 +18,7 @@ class Player:
         draw: Pai the one Pai drawn
         """
         self.name = name
+        self.ifzhuang = False
         self.river = []
         self.hand = None
         self.changfeng = None
@@ -88,7 +89,7 @@ class Player:
                     if is_pair(form) and seq2_count == 0:
                         ten[i].append(Pai.same(form[0]))
                 if len(form) == 1:
-                    ten[i].append[Pai.same(form[0])]
+                    ten[i].append([Pai.same(form[0])])
         return ten
                         
             
@@ -99,11 +100,12 @@ class Player:
         check hand, openHand and cutPai -> Boolean, Ron Class
         """
         t = self.checkWait()
-        for wait in t:
-            if cutPai in wait:
-                player.tumo = True
-                player.ronHand = sorted(player.hand + [cutPai])
-                return True, JapanRon(self)
+        for form in t:
+            for wait in form:
+                if cutPai[0] in wait:
+                    self.tumo = True
+                    self.ronHand = sorted(self.hand + [cutPai])
+                    return True, JapanRon(self)
         return False, None
 
     

@@ -24,7 +24,8 @@ class GameManager:
             self.yama = self.yama[13:]
             # call player's method
             player.setWind(wind)
-            player.setHand(hand)
+            # player.setHand(hand)
+            player.setHand([(p,0) for p in Pai.parsedPai("112233556677s1z")])
             player.baopai = self.baopai
             player.libaopai = self.libaopai
             player.redbaopai = self.redbaopai
