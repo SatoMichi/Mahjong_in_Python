@@ -9,6 +9,7 @@ class GameManager:
         self.players = []
         for p in players:
             self.players.append(p)
+        self.players[0].ifzhuang = True
         self.yama = Pai.originalYama
     
     # give 13 pai to each players
@@ -301,7 +302,10 @@ class GameManager:
             print("\n******************************流局******************************\n")
             self.winner = self.checkNagashiMangan()
             if not self.winner == None:
-                self.playerYaku[self.players.index(self.winner)] += ",流局満貫"
+                ronInfo = self.playerYaku[self.players.index(self.winner)]
+                roninfo.setJudgeRon(",流局満貫")
+                ronInfo.addfan(5)
+                ronInfo.setallup()
         else:
             self.checkSpecialYaku(self.players.index(self.winner))
         
