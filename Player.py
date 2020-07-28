@@ -55,6 +55,9 @@ class Player:
         return p
 
     def checkTumo(self):
+        """
+        return Bool, Ron class
+        """
         t = self.checkWait()
         for wait in t:
             if self.draw[0] in wait:
@@ -90,7 +93,7 @@ class Player:
         
     def checkRon(self):
         """
-        check hand, openHand and draw -> Boolean, String
+        check hand, openHand and draw -> Boolean, Ron Class
         """
 
     
