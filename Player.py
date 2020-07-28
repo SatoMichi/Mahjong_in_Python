@@ -19,6 +19,7 @@ class Player:
         """
         self.name = name
         self.ifzhuang = False
+        self.isRiichi = False
         self.river = []
         self.hand = None
         self.changfeng = None
@@ -104,10 +105,25 @@ class Player:
             for wait in form:
                 if cutPai[0] in wait:
                     self.tumo = True
-                    self.ronHand = sorted(self.hand + [cutPai])
+                    self.ronHand = sorted([self.hand + [cutPai]])
                     return True, JapanRon(self)
         return False, None
 
+    def askJiaGang(self):
+        """
+        check Player's 加杠 if player can. self.jiaGang donot have to be called.
+        Args:
+        Return: Boolean
+        """
+        jia = 0
+        if jia:
+            num = int(input("Do you want to JiaGang? 1:yes/0:no\n"))
+            if num == 1:
+                return True
+            else:
+                return False
+        else:
+            return False
     
     def getOpenHand(self):
         """
@@ -129,12 +145,12 @@ class Player:
         return sorted(all_hand)
 
     def askRiichi(self):
-        self.riichi = False
+        self.isRiichi = False
         if breakdown(self.hand,self.getOpenHand()) != [] :
             # interaction 
             i = input("You can riichi! press space to riichi, other key to abort")
             if i == " ":
-                self.riichi = True
+                self.isRiichi = True
                 return True
         return False
 

@@ -795,11 +795,11 @@ def JapanRon(player):
         ron = Rondong()
     else:
         ron = Ronxian()
-    hand = player.ronhand
+    hand = player.ronHand
     openHand = player.getOpenHand()
     changfeng = player.changfeng
-    lichi = player.riichi
-    beforehand = player.ronHand
+    lichi = player.isRiichi
+    beforehand = player.hand
     hepai = player.draw
     tumo = player.tumo
     if(openHand == None):

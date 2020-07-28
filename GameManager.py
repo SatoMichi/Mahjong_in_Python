@@ -1,5 +1,5 @@
 import Pai
-from TestPlayer import Player
+from Player import Player
 import numpy as np
 
 # this class is Finite State Machine
@@ -9,6 +9,7 @@ class GameManager:
         self.players = []
         for p in players:
             self.players.append(p)
+        self.players[0].ifzhuang = True
         self.yama = Pai.originalYama
     
     # give 13 pai to each players
@@ -249,12 +250,14 @@ class GameManager:
                 # check Ron
                 for p in self.players:
                     win, yaku = p.checkRon(self.cutPai)
+                    print(win,self.cutPai,p.hand)
                     if win:
                         self.state = "WIN"
                         self.winner = p
                         self.playerYaku[self.players.index(p)] = yaku
                         #self.printWinner(p,yaku)
                 if self.state == "WIN":
+                    print("breaking")
                     break
                 self.state = "MIN"
             
@@ -302,7 +305,10 @@ class GameManager:
             print("\n******************************流局******************************\n")
             self.winner = self.checkNagashiMangan()
             if not self.winner == None:
-                self.playerYaku[self.players.index(self.winner)] += ",流局満貫"
+                ronInfo = self.playerYaku[self.players.index(self.winner)]
+                roninfo.setJudgeRon(",流局満貫")
+                ronInfo.addfan(5)
+                ronInfo.setallup()
         else:
             self.checkSpecialYaku(self.players.index(self.winner))
         
