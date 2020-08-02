@@ -1,5 +1,5 @@
 import Pai
-from TestPlayer import Player
+from Player import Player
 import numpy as np
 
 # this class is Finite State Machine

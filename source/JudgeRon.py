@@ -1,6 +1,9 @@
+import sys
+path = sys.path[0].replace("\\source","")
+sys.path.append(path)
 from Pai import originalYama,allPai,showHand
 import numpy as np
-import yaml
+#import yaml
 import math
 
 
@@ -697,7 +700,7 @@ class Rondong:
     def calcultateFu(self,hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
         self.fu = calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng)
     def setallup(self):
-        file = open("roncalculatedong.yml",'r',encoding="utf-8")
+        file = open("Data/roncalculatedong.yml",'r',encoding="utf-8")
         file_data = file.read()
         file.close()
         data = yaml.load(file_data,Loader=yaml.FullLoader)
@@ -748,7 +751,7 @@ class Ronxian:
     def calcultateFu(self,hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
         self.fu = calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng)
     def setallup(self):
-        file = open("roncalculatedong.yml",'r',encoding="utf-8")
+        file = open("Data/roncalculatedong.yml",'r',encoding="utf-8")
         file_data = file.read()
         file.close()
         data = yaml.load(file_data,Loader=yaml.FullLoader)

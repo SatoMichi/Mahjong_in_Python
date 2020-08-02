@@ -1,3 +1,7 @@
+import sys
+path = sys.path[0].replace("\\TestCode","\\source")
+sys.path.append(path)
+
 import Pai
 import JudgeRon
 import numpy as np
