@@ -35,5 +35,8 @@ def test_checkJapanRon_pai():
     t.changfeng = 30
     t.zifeng = 31
     t.setHand(hand)
-    assert t.checkRon((parsedPai("2p")[0],0))[1].judgeRon == " 对对和 断幺九"
-    assert t.checkRon((parsedPai("2p")[0],0))[1].zj == 
+    ron = t.checkRon((parsedPai("2p")[0],0))[1]
+    assert ron.judgeRon == " 对对和 断幺九"
+    assert ron.zj == 5200
+    assert ron.dj == 2600
+    assert ron.xj == 1300

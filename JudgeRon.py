@@ -750,7 +750,7 @@ class Ronxian:
     def calcultateFu(self,hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
         self.fu = calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng)
     def setallup(self):
-        file = open("roncalculatedong.yml",'r',encoding="utf-8")
+        file = open("roncalculatexian.yml",'r',encoding="utf-8")
         file_data = file.read()
         file.close()
         data = yaml.load(file_data,Loader=yaml.FullLoader)
@@ -783,8 +783,8 @@ class Ronxian:
             fanshu = 'fanshu' + str(self.fan)
             fushu = 'fushu' + str(self.fu)
             self.zj = data['point'][0][fanshu][fushu][0]['defen']
-            self.dj = data['point'][0][fanshu][fushu][0]['shifen']
-            self.xj =  data['point'][0][fanshu][fushu][0]['shifen']
+            self.dj = data['point'][0][fanshu][fushu][0]['dongshifen']
+            self.xj =  data['point'][0][fanshu][fushu][0]['xianshifen']
             self.levelrep = str(self.fan) + "翻"
 
 #日本麻将胡牌函数
