@@ -1,6 +1,13 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/08/02**
+  * Produced structured File version "Structured"
+  * Adjusted import part in codes
+
+Sato
+
+
 **2020/07/25**
   * Updated the GameManager.py
 
