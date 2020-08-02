@@ -338,32 +338,33 @@ class GameManager:
             ronInfo.setJudgeRon(",一發")
             ronInfo.addfan(1)
         if self.isTianHe(p):
-            roninfo.setJudgeRon(",天和")
+            ronInfo.setJudgeRon(",天和")
             ronInfo.addfan(7)
         if self.isDiHe(p):
-            roninfo.setJudgeRon(",地和")
+            ronInfo.setJudgeRon(",地和")
             ronInfo.addfan(7)
         if self.isRenHe(p):
-            roninfo.setJudgeRon(",人和")
+            ronInfo.setJudgeRon(",人和")
             ronInfo.addfan(7)
         if self.isDoubleRiici(p):
-            roninfo.setJudgeRon(",双倍立直")
+            ronInfo.setJudgeRon(",双倍立直")
             ronInfo.addfan(2)
         if self.isHaitei(p):
-            roninfo.setJudgeRon(",海底撈月")
+            ronInfo.setJudgeRon(",海底撈月")
             ronInfo.addfan(1)
         if self.isHoTei(p):
-            roninfo.setJudgeRon(",河底撈魚")
-            roniInfo.addfan(1)
+            ronInfo.setJudgeRon(",河底撈魚")
+            ronInfo.addfan(1)
         if self.isRinXiang(p):
-            roninfo.setJudgeRon(",嶺上開花")
+            ronInfo.setJudgeRon(",嶺上開花")
             ronInfo.addfan(1)
         ronInfo.setallup()
 
     def isYifa(self, p):
+        isRiichi = self.winner.isRiichi
         tumo = self.playerTumo[p] and (self.playerCounter[p]-self.riichiTurn[p][0]) <= 1
         ron = (self.playerCounter[p]-self.riichiTurn[p][0]) < 1
-        return tumo or ron
+        return isRiichi and (tumo or ron)
 
     def isTianHe(self,p):
         isDong = p==0   # is 东家
@@ -379,10 +380,10 @@ class GameManager:
         return notDong and isFirstRound and noMin and tumo
 
     def isRenHe(self,p):
-        isFirstRound = self.playerCounter[p]==1
+        isFirstRound = self.playerCounter[p]==0
         noMin = self.minCounter.sum() == 0
         ron = not self.playerTumo[p]
-        return noMin and isFirstRound and ron
+        return isFirstRound and noMin and ron
 
     def isDoubleRiici(self,p):
         isFirstRound = self.riichiTurn[p][0]==1
