@@ -23,6 +23,7 @@ class Player:
         self.river = []
         self.hand = None
         self.changfeng = None
+        self.zifeng = None 
         self.score = score
         self.draw = None
         self.openHand = {"chi":[], "pon":[], "anKang":[], "minKang":[]}
@@ -62,10 +63,10 @@ class Player:
         return Bool, Ron class
         """
         t = self.checkWait()
-        for wait in t:
+        for i,wait in enumerate(t):
             if self.draw[0] in wait:
                 player.tumo = True
-                player.ronHand = sorted(player.hand + [self.draw])
+                self.setRonHand(cutPai,i)
                 return True, JapanRon(self)
         return False, None
     
@@ -92,6 +93,38 @@ class Player:
                 if len(form) == 1:
                     ten[i].append([Pai.same(form[0])])
         return ten
+    
+    def setRonHand(self,ronPai,i):
+        """
+        (int,int) int -> [[(int,int)]]
+        i: which form does the ronPai fit
+        return breakdown of Ron hand
+        """
+        b = breakdown(self.hand,self.getOpenHand())
+        target_form = b[i][:]
+        # 孤张
+        for mianzi in target_form:
+            if len(mianzi) == 1:
+                mianzi.append(ronPai)
+                self.ronHand = target_form
+                return
+            # is_seq
+            if len(mianzi) == 2:
+                if is_seq2(mianzi):
+                    mianzi.append(ronPai).sort()
+                    self.ronHand = target_form
+                    return
+                else:
+                    continue
+        # both are pairs
+        for mianzi in target_form:
+            if is_pair(mainzi):
+                if mianzi[0][0] == ronPai[0]:
+                    mianzi.append(ronPai).sort()
+                    self.ronHand = target_form
+                    return 
+        
+        
                         
             
 
@@ -100,12 +133,13 @@ class Player:
         """
         check hand, openHand and cutPai -> Boolean, Ron Class
         """
+        print("from palyer", cutPai)
         t = self.checkWait()
         for form in t:
-            for wait in form:
+            for i, wait in enumerate(form):
                 if cutPai[0] in wait:
                     self.tumo = True
-                    self.ronHand = sorted([self.hand + [cutPai]])
+                    self.setRonHand(cutPai,i)
                     return True, JapanRon(self)
         return False, None
 
@@ -161,8 +195,13 @@ class Player:
         p = self.hand.pop(-1)
         return p    
     
-    def askMin(self):
-        return None, []
+    def askMin(self,cutPai):
+        # interaction
+        selection = input("Do you want to Min? \n 0.chi 1.pon 2. kan \nPress no to select, other keys to abort")
+        if selection ==0: return "Chi"
+        if selection ==1: return "Pon"
+        if selection ==2: return "Kan"
+        return None
 
     
     def chi(self,paiCut):

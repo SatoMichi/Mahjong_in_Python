@@ -130,6 +130,7 @@ def find_sequence(hand,begin):
     else:
         return None
 
+
 def breakdown(hand,openHand):
     """
     [pai] ,[[pai]]
@@ -142,6 +143,6 @@ def breakdown(hand,openHand):
 
 
 if __name__ == "__main__":
-    hand = [(29,1),(29,2),(31,1),(31,2),(1,0),(1,1),(2,2),(2,3),(8,0),(8,1),(9,2),(0,2),(0,3)]
-    r = breakdown(hand)
+    hand = [(18, 0), (18, 0), (19, 0), (19, 0), (20, 0), (20, 0), (22, 0), (22, 0), (23, 0), (23, 0), (24, 0), (24, 0), (30, 0)] 
+    r = breakdown(hand,[])
     

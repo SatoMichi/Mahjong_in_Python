@@ -29,3 +29,11 @@ def test_checkRon_tenpai():
     hand = [(p,0) for p in parsedPai("112233556677s1z")]
     t.setHand(hand)
     assert t.checkRon((30,0))[0] == True
+
+def test_checkJapanRon_pai():
+    hand = [(p,0) for p in parsedPai("222444m333555s2p")]
+    t.changfeng = 30
+    t.zifeng = 31
+    t.setHand(hand)
+    assert t.checkRon((parsedPai("2p")[0],0))[1].judgeRon == " 对对和 断幺九"
+    assert t.checkRon((parsedPai("2p")[0],0))[1].zj == 

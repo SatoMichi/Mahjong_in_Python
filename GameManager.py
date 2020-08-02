@@ -26,7 +26,7 @@ class GameManager:
             # call player's method
             player.setWind(wind)
             # player.setHand(hand)
-            player.setHand([(p,0) for p in Pai.parsedPai("112233556677s1z")])
+            player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
             player.baopai = self.baopai
             player.libaopai = self.libaopai
             player.redbaopai = self.redbaopai
@@ -333,7 +333,7 @@ class GameManager:
         return sum(self.minCounter[:,player]) == 0
     
     def checkSpecialYaku(self,p):
-        ronInfo = self.playerYaku[self.players.index(p)]
+        ronInfo = self.playerYaku[p]
         if self.isYifa(p):
             ronInfo.setJudgeRon(",一發")
             ronInfo.addfan(1)
@@ -376,18 +376,18 @@ class GameManager:
         isFirstRound = self.playerCounter[p]==1
         noMin = self.minCounter.sum() == 0
         tumo = self.playerTumo[p]
-        return isDong and isFirstRound and noMin and tumo
+        return notDong and isFirstRound and noMin and tumo
 
     def isRenHe(self,p):
         isFirstRound = self.playerCounter[p]==1
         noMin = self.minCounter.sum() == 0
         ron = not self.playerTumo[p]
-        return isDong and isFirstRound and ron
+        return noMin and isFirstRound and ron
 
     def isDoubleRiici(self,p):
         isFirstRound = self.riichiTurn[p][0]==1
         wasNoMin = self.riichiTurn[p][1]
-        riichi = p.riichi
+        riichi = self.winner.isRiichi
         return isFirstRound and wasNoMin and riichi
 
     def isHaitei(self,p):
