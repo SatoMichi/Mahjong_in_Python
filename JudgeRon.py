@@ -2,6 +2,7 @@ from Pai import originalYama,allPai,showHand
 import numpy as np
 import yaml
 import math
+import util
 
 
 #    label = {'一萬': 0, '二萬': 1, '三萬': 2, '四萬': 3, '五萬': 4, '六萬': 5, '七萬': 6, '八萬': 7, '九萬': 8,
@@ -24,7 +25,7 @@ def kokusi13machi(hand):
 #一番役(非门前清限定！！！)
 
 #役牌 自风 hand and openHand are list[list[(int,int)]]
-def zifeng(hand,openHand,zifeng):
+def is_zifeng(hand,openHand,zifeng):
     ron = False
     for oph in openHand:
         if(oph[0][0]==zifeng):
@@ -35,7 +36,7 @@ def zifeng(hand,openHand,zifeng):
     return ron
 
 #役牌 场风 hand and openHand are list[list[(int,int)]]
-def changfeng(hand,openHand,changfeng):
+def is_changfeng(hand,openHand,changfeng):
     ron = False
     for oph in openHand:
         if(oph[0][0]==changfeng):
@@ -214,7 +215,7 @@ def xiaosanyuan(hand,openHand):
             if(h[0][0]==27 or h[0][0]==28 or h[0][0]==29):
                 ron[2]=True
         if(len(h)==3):
-            if(oph[0][0]==27 or oph[0][0]==28 or oph[0][0]==29):
+            if(h[0][0]==27 or h[0][0]==28 or h[0][0]==29):
                 if(not ron[0]):
                     ron[0]=True
                 elif(not ron[1]):
@@ -517,6 +518,7 @@ def yibeikou(hand):
 
 #役牌 七对子 hand and openHand are list[list[(int,int)]]
 def chitoi(hand):
+    return False
     ron = True
     for h in hand:
         if(not len(h)==2):
@@ -632,17 +634,17 @@ def calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
                 fu = fu + 4
             else:
                 fu = fu + 2
-    for hand in hand_no:
-        if(len(hand)==3):
-            if(hand[0]==hand[1] and hand[1]==hand[2]):
-                if(hand[0] in yaojiu):
+    for h in hand_no:
+        if(len(h)==3):
+            if(h[0]==h[1] and h[1]==h[2]):
+                if(h[0] in yaojiu):
                     fu = fu + 8
                 else:
                     fu = fu + 4
-        if(len(hand)==2):
-            if(hand[0] in sanyuan):
+        if(len(h)==2):
+            if(h[0] in sanyuan):
                 fu = fu + 2
-            if(hand[0] == zifeng or hand[0] == changfeng):
+            if(h[0] == zifeng or h[0] == changfeng):
                 fu = fu + 2
                 if(zifeng == changfeng):
                     fu = fu + 2
@@ -748,7 +750,7 @@ class Ronxian:
     def calcultateFu(self,hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
         self.fu = calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng)
     def setallup(self):
-        file = open("roncalculatedong.yml",'r',encoding="utf-8")
+        file = open("roncalculatexian.yml",'r',encoding="utf-8")
         file_data = file.read()
         file.close()
         data = yaml.load(file_data,Loader=yaml.FullLoader)
@@ -780,9 +782,9 @@ class Ronxian:
         else:
             fanshu = 'fanshu' + str(self.fan)
             fushu = 'fushu' + str(self.fu)
-            self.zj = data['point'][0][fanshu][0][fushu][0]['defen']
-            self.dj = data['point'][0][fanshu][0][fushu][0]['dongshifen']
-            self.xj =  data['point'][0][fanshu][0][fushu][0]['xianshifen']
+            self.zj = data['point'][0][fanshu][fushu][0]['defen']
+            self.dj = data['point'][0][fanshu][fushu][0]['dongshifen']
+            self.xj =  data['point'][0][fanshu][fushu][0]['xianshifen']
             self.levelrep = str(self.fan) + "翻"
 
 #日本麻将胡牌函数
@@ -795,12 +797,13 @@ def JapanRon(player):
         ron = Rondong()
     else:
         ron = Ronxian()
-    hand = player.hand
-    openHand = player.openHand
+    hand = player.ronHand
+    openHand = player.getOpenHand()
     changfeng = player.changfeng
-    lichi = player.lichi
-    beforehand = player.beforehand
-    hepai = player.hepai
+    zifeng = player.zifeng
+    lichi = player.isRiichi
+    beforehand = util.breakdown(player.hand,openHand)
+    hepai = player.draw
     tumo = player.tumo
     if(openHand == None):
         #Player 先判断门前清番数
@@ -946,10 +949,10 @@ def JapanRon(player):
     if(noyaojiu(hand,openHand)):
         ron.addfan(1)
         ron.setJudgeRon("断幺九")
-    if(zifeng(hand,openHand,zifeng)):
+    if(is_zifeng(hand,openHand,zifeng)):
         ron.addfan(1)
         ron.setJudgeRon("自风")
-    if(changfeng(hand,openHand,changfeng)):
+    if(is_changfeng(hand,openHand,changfeng)):
         ron.addfan(1)
         ron.setJudgeRon("场风")
     if(sanyuan_fa(hand,openHand)):

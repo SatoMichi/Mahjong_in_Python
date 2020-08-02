@@ -1,6 +1,7 @@
 import numpy as np
 from collections import Counter 
 from random import shuffle
+import re
 
 """ 
 All Pai are initialized once in this module.
@@ -27,6 +28,7 @@ class Pai:
             ['p_ji_c_1.gif', 'p_ji_h_1.gif', 'p_no_1.gif', 'p_ji_e_1.gif', 'p_ji_w_1.gif',
             'p_ji_s_1.gif', 'p_ji_n_1.gif']]
 
+        
     def __init__(self,suit,num=-1):
         # self.suit : (0,萬) (1,筒) (2,索) (3,中) (4,發) (5,白) (6,東) (7,西) (8,南) (9,北)
         self.suit = suit
@@ -49,6 +51,22 @@ class Pai:
             return True
         else:
             return self.num < other.num
+    
+    def distance(self,other):
+        """
+        三万，三万： 0
+        三万，四万：1
+        三万，五万：2
+        otherwise: 3 (不可能成为对和牌有利的因素)
+        比如 三万，六万，三万四索，等等
+        """
+        if self.suit != other.suit:
+            return 3
+        else:
+            if self.num == other.num: return 0
+            elif abs(other.num - self.num) == 1: return 1
+            elif abs(other.num - self.num) == 2: return 2
+            else : return 3
     
     # following methods are for Graphical User Interface (GUI)
     # please ignore for now
@@ -137,11 +155,46 @@ def array2Hand(array):
     index = np.argwhere(array == 1)
     return list(map(tuple,index))
 
+def tuple2Object(tuple_hand):
+    return [paiSet[i] for i in tuple_hand]
+
 
 # Helper function for debug
 def showHand(hand):
     return str([ str(paiSet[p]) for p in hand])
 
+def previous(pai):
+    """
+    take in a tuple, return a position before if 数牌
+    
+    >>> previous((0,0))
+    
+    >>> previous((1,0))
+    0
+    """
+    # 0-8: 一萬 - 九萬
+    # 9-17: 一筒 - 九筒
+    # 18-26: 一索 - 九索
+    n,_ = pai
+    if  1 <= n <= 8 or 10 <= n <= 17 or 19 <= n <= 26:
+        return n-1
+    else: 
+        return None
+
+def next(pai):
+    """
+    >>> next((8,0))
+    
+    
+    """
+    n,_ = pai
+    if 0 <= n <= 7 or 9 <= n <= 16 or 18 <= n <= 25:
+        return n+1
+    else:
+        return None
+    
+def same(pai):
+    return pai[0]
 """
 def compPai(p1,p2):
     if p1.suit > p2.suit:
@@ -156,3 +209,99 @@ def compPai(p1,p2):
         else:
             return p2
 """
+
+def parsedPai(shorthand):
+    """
+    String -> [Int]
+    change shorthand to list of Pai index. 
+    
+    Note: 
+    - Use C(centre) for 中，B(blank) for 白, F(fortune) for 发. Also in accordance with pronounciation.
+    - Also can use tenhou representation: 567z for 白发中
+    - m,p,s for 万，筒，索
+    - 1234z for 东，南，西，北
+    
+    >>> parsedPai("1234zbfc")
+    [30, 31, 32, 33, 29, 28, 27]
+
+    >>> parsedPai("1234567z")
+    [30, 31, 32, 33, 29, 28, 27]
+    
+    >>> parsedPai("123m123p123s")
+    [0, 1, 2, 9, 10, 11, 18, 19, 20]
+    
+    >>> parsedPai("111222m333p")
+    [0, 0, 0, 1, 1, 1, 11, 11, 11]
+    
+    """
+    word_map = {
+        "c":27,
+        "f":28,
+        "b":29,
+    }
+    result = []
+    number_pattern = re.compile(r'[1-9]+[mpsz]')
+    number_tiles = number_pattern.findall(shorthand)
+    for split in number_tiles:
+        if split[-1] is "m":
+            result += [int(p)-1 for p in split[:-1]]
+        if split[-1] is "p":
+            result += [int(p)+8 for p in split[:-1]]
+        if split[-1] is "s":
+            result += [int(p)+17 for p in split[:-1]]
+        if split[-1] is "z":
+            result += [int(p)+29 if int(p) <=4 else 34 - int(p)  for p in split[:-1]]
+            
+            
+    word_pattern = re.compile(r'[cfb]')
+    word_tiles = word_pattern.findall(shorthand)
+    for split in word_tiles:
+        result.append(word_map[split])
+    return result
+
+def shorthand(list_pai):
+    """
+    [Int] -> String
+    the opposite of parsedPai. Turn list of pai into shorthand.
+    
+    >>> shorthand([30, 31, 32, 33, 29, 28, 27])
+    '1234zbfc'
+    
+    >>> shorthand([0, 1, 2, 9, 10, 11, 18, 19, 20])
+    '123m123p123s'
+    """
+    mapping = {
+        27: "c",
+        28: "f",
+        29: "b"
+    }
+    m,p,s,z = [],[],[],[]
+    result = ""
+    for pai in list_pai:
+        if pai <= 8:
+            m.append(str(pai+1))
+        if 8 < pai <= 17:
+            p.append(str(pai-8))
+        if 17 < pai <= 26:
+            s.append(str(pai-17))
+        if 29 < pai:
+            z.append(str(pai-29))
+    if m != [] :
+        result += "".join(m) + "m"
+    if p != []:
+        result += "".join(p) + "p"
+    if s != []:
+        result += "".join(s) + "s"
+    if z != []:
+        result += "".join(z) + "z"
+    for pai in list_pai:    
+        if 27 <= pai <= 29:
+            result += mapping[pai]
+    return result
+    
+    
+    
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

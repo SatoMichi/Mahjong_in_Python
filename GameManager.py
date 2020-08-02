@@ -1,5 +1,5 @@
 import Pai
-from TestPlayer import Player
+from Player import Player
 import numpy as np
 
 # this class is Finite State Machine
@@ -25,7 +25,8 @@ class GameManager:
             self.yama = self.yama[13:]
             # call player's method
             player.setWind(wind)
-            player.setHand(hand)
+            # player.setHand(hand)
+            player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
             player.baopai = self.baopai
             player.libaopai = self.libaopai
             player.redbaopai = self.redbaopai
@@ -249,12 +250,14 @@ class GameManager:
                 # check Ron
                 for p in self.players:
                     win, yaku = p.checkRon(self.cutPai)
+                    print(win,self.cutPai,p.hand)
                     if win:
                         self.state = "WIN"
                         self.winner = p
                         self.playerYaku[self.players.index(p)] = yaku
                         #self.printWinner(p,yaku)
                 if self.state == "WIN":
+                    print("breaking")
                     break
                 self.state = "MIN"
             
@@ -330,30 +333,30 @@ class GameManager:
         return sum(self.minCounter[:,player]) == 0
     
     def checkSpecialYaku(self,p):
-        ronInfo = self.playerYaku[self.players.index(p)]
+        ronInfo = self.playerYaku[p]
         if self.isYifa(p):
             ronInfo.setJudgeRon(",一發")
             ronInfo.addfan(1)
         if self.isTianHe(p):
-            roninfo.setJudgeRon(",天和")
+            ronInfo.setJudgeRon(",天和")
             ronInfo.addfan(7)
         if self.isDiHe(p):
-            roninfo.setJudgeRon(",地和")
+            ronInfo.setJudgeRon(",地和")
             ronInfo.addfan(7)
         if self.isRenHe(p):
-            roninfo.setJudgeRon(",人和")
+            ronInfo.setJudgeRon(",人和")
             ronInfo.addfan(7)
         if self.isDoubleRiici(p):
-            roninfo.setJudgeRon(",双倍立直")
+            ronInfo.setJudgeRon(",双倍立直")
             ronInfo.addfan(2)
         if self.isHaitei(p):
-            roninfo.setJudgeRon(",海底撈月")
+            ronInfo.setJudgeRon(",海底撈月")
             ronInfo.addfan(1)
         if self.isHoTei(p):
-            roninfo.setJudgeRon(",河底撈魚")
-            roniInfo.addfan(1)
+            ronInfo.setJudgeRon(",河底撈魚")
+            ronInfo.addfan(1)
         if self.isRinXiang(p):
-            roninfo.setJudgeRon(",嶺上開花")
+            ronInfo.setJudgeRon(",嶺上開花")
             ronInfo.addfan(1)
         ronInfo.setallup()
 
