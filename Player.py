@@ -66,7 +66,7 @@ class Player:
         for i,wait in enumerate(t):
             if self.draw[0] in wait:
                 self.tumo = True
-                self.setRonHand(cutPai,i)
+                self.setRonHand(self.draw,i)
                 return True, JapanRon(self)
         return False, None
     
@@ -109,18 +109,18 @@ class Player:
                 self.ronHand = target_form
                 return
             # is_seq
-            if len(mianzi) == 2:
-                if is_seq2(mianzi):
-                    mianzi.append(ronPai).sort()
-                    self.ronHand = target_form
-                    return
-                else:
-                    continue
+            if is_seq2(mianzi):
+                mianzi.append(ronPai)
+                mianzi.sort()
+                self.ronHand = target_form
+                return
+            else:
+                continue
         # both are pairs
         for mianzi in target_form:
             if is_pair(mianzi):
                 if mianzi[0][0] == ronPai[0]:
-                    mianzi.append(ronPai).sort()
+                    mianzi.append(ronPai)
                     self.ronHand = target_form
                     return 
         
@@ -135,12 +135,11 @@ class Player:
         """
         print("from palyer", cutPai)
         t = self.checkWait()
-        for form in t:
-            for i, wait in enumerate(form):
-                if cutPai[0] in wait:
-                    self.tumo = False
-                    self.setRonHand(cutPai,i)
-                    return True, JapanRon(self)
+        for i, wait in enumerate(t):
+            if cutPai[0] in wait:
+                self.tumo = False
+                self.setRonHand(cutPai,i)
+                return True, JapanRon(self)
         return False, None
 
     def askJiaGang(self):
