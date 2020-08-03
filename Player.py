@@ -65,7 +65,7 @@ class Player:
         t = self.checkWait()
         for i,wait in enumerate(t):
             if self.draw[0] in wait:
-                player.tumo = True
+                self.tumo = True
                 self.setRonHand(cutPai,i)
                 return True, JapanRon(self)
         return False, None
@@ -118,7 +118,7 @@ class Player:
                     continue
         # both are pairs
         for mianzi in target_form:
-            if is_pair(mainzi):
+            if is_pair(mianzi):
                 if mianzi[0][0] == ronPai[0]:
                     mianzi.append(ronPai).sort()
                     self.ronHand = target_form
@@ -138,7 +138,7 @@ class Player:
         for form in t:
             for i, wait in enumerate(form):
                 if cutPai[0] in wait:
-                    self.tumo = True
+                    self.tumo = False
                     self.setRonHand(cutPai,i)
                     return True, JapanRon(self)
         return False, None
