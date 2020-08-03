@@ -48,4 +48,4 @@ def test_checkJapanRon_yiqiguantong():
     t.setHand(hand)
     ron = t.checkRon((parsedPai("1m")[0],0))[1]
     print(ron.judgeRon)
-    assert ron.judgeRon == " 一气贯通"
+    assert ron.judgeRon == " 一气贯通 役牌 中"
