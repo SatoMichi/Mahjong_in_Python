@@ -32,7 +32,7 @@ def test_checkRon_tenpai():
     t.setHand(hand)
     assert t.checkRon((30,0))[0] == True
 
-def test_checkJapanRon_pai():
+def test_checkJapanRon_duiduihe():
     hand = [(p,0) for p in parsedPai("222444m333555s2p")]
     t.setHand(hand)
     ron = t.checkRon((parsedPai("2p")[0],0))[1]
@@ -40,3 +40,12 @@ def test_checkJapanRon_pai():
     assert ron.zj == 5200
     assert ron.dj == 2600
     assert ron.xj == 1300
+
+def test_checkJapanRon_yiqiguantong():
+    hand = [(p,0) for p in parsedPai("23456789m11sccc")]
+    t.changfeng = 30
+    t.zifeng = 31
+    t.setHand(hand)
+    ron = t.checkRon((parsedPai("1m")[0],0))[1]
+    print(ron.judgeRon)
+    assert ron.judgeRon == " 一气贯通"
