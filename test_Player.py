@@ -34,6 +34,8 @@ def test_checkRon_tenpai():
 
 def test_checkJapanRon_duiduihe():
     hand = [(p,0) for p in parsedPai("222444m333555s2p")]
+    t.changfeng = 30
+    t.zifeng = 31
     t.setHand(hand)
     ron = t.checkRon((parsedPai("2p")[0],0))[1]
     assert ron.judgeRon == " 对对和 断幺九"
@@ -49,3 +51,12 @@ def test_checkJapanRon_yiqiguantong():
     ron = t.checkRon((parsedPai("1m")[0],0))[1]
     print(ron.judgeRon)
     assert ron.judgeRon == " 一气贯通 役牌 中"
+
+def test_checkJapanRon_qingyise():
+    #[一筒,二筒,三筒,三筒,五筒,六筒,六筒,六筒,七筒,七筒,九筒,九筒,九筒]
+    hand = [(p,0) for p in parsedPai("1233566677999m")]
+    t.changfeng = 30
+    t.zifeng = 31
+    t.setHand(hand)
+    ron = t.checkRon((parsedPai("4m")[0],0))[1]
+    assert ron.judgeRon == " 清一色"

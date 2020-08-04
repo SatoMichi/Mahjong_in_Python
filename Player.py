@@ -283,7 +283,7 @@ class Player:
         self.openHand['pon'].append(tile)
         self.hand = Pai.array2Hand(a)
         return 'pon'
-    def kan():
+    def kan(self):
         pass
     
     
