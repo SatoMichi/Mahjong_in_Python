@@ -727,8 +727,8 @@ class Rondong:
         else:
             fanshu = 'fanshu' + str(self.fan)
             fushu = 'fushu' + str(self.fu)
-            self.zj = data['point'][0][fanshu][0][fushu][0]['defen']
-            self.xj = data['point'][0][fanshu][0][fushu][0]['shifen']
+            self.zj = data[fanshu][fushu]['defen']
+            self.xj = data[fanshu][fushu]['shifen']
             self.levelrep = str(self.fan) + "翻"
 
 class Ronxian:
