@@ -1,121 +1,120 @@
-point:
-  fanshu1:
-    fushu30:
-      defen: 1000
-      dongshifen: 500
-      xianshifen: 300
-    fushu45:
-      defen: 1300
-      dongshifen: 700
-      xianshifen: 400
-    fushu50:
-      defen: 1600
-      dongshifen: 800
-      xianshifen: 400
-    fushu60:
-      defen: 2000
-      dongshifen: 1000
-      xianshifen: 500
-    fushu70:
-      defen: 2300
-      dongshifen: 1200
-      xianshifen: 600
-    fushu80:
-      defen: 2600
-      dongshifen: 1300
-      xianshifen: 700
-    fushu90:
-      defen: 2900
-      dongshifen: 1500
-      xianshifen: 800
-    fushu100:
-      defen: 3200
-      dongshifen: 1600
-      xianshifen: 800
-    fushu110:
-      defen: 3600
-      dongshifen: ~
-      xianshifen: ~
-  fanshu2:
-    fushu20:
-      defen: 1500
-      dongshifen: 700
-      xianshifen: 400
-    fushu25:
-      defen: 1600
-      dongshifen: ~
-      xianshifen: ~
-    fushu30:
-      defen: 2000
-      dongshifen: 1000
-      xianshifen: 500
-    fushu40:
-      defen: 2600
-      dongshifen: 1300
-      xianshifen: 700
-    fushu50:
-      defen: 3200
-      dongshifen: 1600
-      xianshifen: 800
-    fushu60:
-      defen: 3900
-      dongshifen: 2000
-      xianshifen: 1000
-    fushu70:
-      defen: 4500
-      dongshifen: 2300
-      xianshifen: 1200
-    fushu80:
-      defen: 5200
-      dongshifen: 2600
-      xianshifen: 1300
-    fushu90:
-      defen: 5800
-      dongshifen: 2600
-      xianshifen: 1300
-    fushu100:
-      defen: 6400
-      dongshifen: 3200
-      xianshifen: 1600
-    fushu110:
-      defen: 7100
-      dongshifen: 3600
-      xianshifen: 1800
-  fanshu3:
-    fushu20:
-      defen: 2700
-      dongshifen: 1300
-      xianshifen: 700
-    fushu25:
-      defen: 3200
-      dongshifen: 1600
-      xianshifen: 800
-    fushu30:
-      defen: 3900
-      dongshifen: 2000
-      xianshifen: 1000
-    fushu40:
-      defen: 5200
-      dongshifen: 2600
-      xianshifen: 1300
-    fushu50:
-      defen: 6400
-      dongshifen: 3200
-      xianshifen: 1600
-    fushu60:
-      defen: 7700
-      dongshifen: 3900
-      xianshifen: 2000
-  fanshu4:
-    fushu20:
-      defen: 5200
-      dongshifen: 2600
-      xianshifen: 1300
-    fushu25:
-      defen: 6400
-      dongshifen: 3200
-      xianshifen: 1600
-    fushu30:
-      defen: 7700
-      dongshifen: 3900
-      xianshifen: 2000
+fanshu1:
+  fushu30:
+    defen: 1000
+    dongshifen: 500
+    xianshifen: 300
+  fushu45:
+    defen: 1300
+    dongshifen: 700
+    xianshifen: 400
+  fushu50:
+    defen: 1600
+    dongshifen: 800
+    xianshifen: 400
+  fushu60:
+    defen: 2000
+    dongshifen: 1000
+    xianshifen: 500
+  fushu70:
+    defen: 2300
+    dongshifen: 1200
+    xianshifen: 600
+  fushu80:
+    defen: 2600
+    dongshifen: 1300
+    xianshifen: 700
+  fushu90:
+    defen: 2900
+    dongshifen: 1500
+    xianshifen: 800
+  fushu100:
+    defen: 3200
+    dongshifen: 1600
+    xianshifen: 800
+  fushu110:
+    defen: 3600
+    dongshifen: ~
+    xianshifen: ~
+fanshu2:
+  fushu20:
+    defen: 1500
+    dongshifen: 700
+    xianshifen: 400
+  fushu25:
+    defen: 1600
+    dongshifen: ~
+    xianshifen: ~
+  fushu30:
+    defen: 2000
+    dongshifen: 1000
+    xianshifen: 500
+  fushu40:
+    defen: 2600
+    dongshifen: 1300
+    xianshifen: 700
+  fushu50:
+    defen: 3200
+    dongshifen: 1600
+    xianshifen: 800
+  fushu60:
+    defen: 3900
+    dongshifen: 2000
+    xianshifen: 1000
+  fushu70:
+    defen: 4500
+    dongshifen: 2300
+    xianshifen: 1200
+  fushu80:
+    defen: 5200
+    dongshifen: 2600
+    xianshifen: 1300
+  fushu90:
+    defen: 5800
+    dongshifen: 2600
+    xianshifen: 1300
+  fushu100:
+    defen: 6400
+    dongshifen: 3200
+    xianshifen: 1600
+  fushu110:
+    defen: 7100
+    dongshifen: 3600
+    xianshifen: 1800
+fanshu3:
+  fushu20:
+    defen: 2700
+    dongshifen: 1300
+    xianshifen: 700
+  fushu25:
+    defen: 3200
+    dongshifen: 1600
+    xianshifen: 800
+  fushu30:
+    defen: 3900
+    dongshifen: 2000
+    xianshifen: 1000
+  fushu40:
+    defen: 5200
+    dongshifen: 2600
+    xianshifen: 1300
+  fushu50:
+    defen: 6400
+    dongshifen: 3200
+    xianshifen: 1600
+  fushu60:
+    defen: 7700
+    dongshifen: 3900
+    xianshifen: 2000
+fanshu4:
+  fushu20:
+    defen: 5200
+    dongshifen: 2600
+    xianshifen: 1300
+  fushu25:
+    defen: 6400
+    dongshifen: 3200
+    xianshifen: 1600
+  fushu30:
+    defen: 7700
+    dongshifen: 3900
+    xianshifen: 2000
