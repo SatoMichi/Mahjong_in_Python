@@ -33,7 +33,7 @@ def zifengTest():
         for test in case:
             print("ZhiFeng : ",f)
             print(showTesthand(test))
-            print(JudgeRon.zifeng(test[0],test[1],f))
+            print(JudgeRon.is_zifeng(test[0],test[1],f))
 
 def changfengTest():
     case = [""]*6
@@ -50,7 +50,7 @@ def changfengTest():
         for test in case:
             print("ChangFeng : ",f)
             print(showTesthand(test))
-            print(JudgeRon.changfeng(test[0],test[1],f))
+            print(JudgeRon.is_changfeng(test[0],test[1],f))
 
 def sanyuanTest():
     case = [""]*8

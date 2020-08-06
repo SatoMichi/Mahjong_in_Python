@@ -1,6 +1,12 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+***2020/08/04***
+  * added some new tests in test_Player including yiqiguantong and qingyise
+  * new issues made in GitHub
+
+Jiugeng
+
 **2020/08/02**
   * Produced structured File version "Structured"
   * Adjusted import part in codes
