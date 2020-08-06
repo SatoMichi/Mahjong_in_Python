@@ -91,7 +91,7 @@ class Player:
                     if is_pair(form) and seq2_count == 0:
                         ten[i].append(Pai.same(form[0]))
                 if len(form) == 1:
-                    ten[i].append([Pai.same(form[0])])
+                    ten[i].append(Pai.same(form[0]))
         return ten
     
     def setRonHand(self,ronPai,i):

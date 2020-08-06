@@ -782,9 +782,9 @@ class Ronxian:
         else:
             fanshu = 'fanshu' + str(self.fan)
             fushu = 'fushu' + str(self.fu)
-            self.zj = data['point'][0][fanshu][0][fushu][0]['defen']
-            self.dj = data['point'][0][fanshu][0][fushu][0]['dongshifen']
-            self.xj =  data['point'][0][fanshu][0][fushu][0]['xianshifen']
+            self.zj = data['point'][fanshu][fushu]['defen']
+            self.dj = data['point'][fanshu][fushu]['dongshifen']
+            self.xj =  data['point'][fanshu][fushu]['xianshifen']
             self.levelrep = str(self.fan) + "翻"
 
 #日本麻将胡牌函数
