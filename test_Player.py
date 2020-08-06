@@ -25,7 +25,7 @@ def test_checkWait_Shanpon():
 def test_checkWait_tenpai():
     hand = [(p,0) for p in parsedPai("112233556677s1z")]
     t.setHand(hand)
-    assert t.checkWait() == [[parsedPai("1z")]]
+    assert t.checkWait() == [parsedPai("1z")]
 
 
 def test_checkJapanRon_duiduihe():
