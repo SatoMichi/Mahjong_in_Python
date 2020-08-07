@@ -28,14 +28,14 @@ def test_checkWait_tenpai():
     assert t.checkWait() == [parsedPai("1z")]
 
 
-def test_checkJapanRon_duiduihe():
+def test_checkJapanRon_sianke():
     hand = [(p,0) for p in parsedPai("222444m333555s2p")]
     t.setHand(hand)
     ron = t.checkRon((parsedPai("2p")[0],0))[1]
-    assert ron.judgeRon == " 对对和 断幺九"
-    assert ron.zj == 5200
-    assert ron.dj == 2600
-    assert ron.xj == 1300
+    assert ron.judgeRon == " 四暗刻"
+    assert ron.zj == 32000
+    assert ron.dj == 16000
+    assert ron.xj == 8000
 
 def test_checkJapanRon_yiqiguantong():
     hand = [(p,0) for p in parsedPai("23456789m11sccc")]
@@ -46,7 +46,14 @@ def test_checkJapanRon_yiqiguantong():
 
 def test_checkJapanRon_qingyise():
     #[一筒,二筒,三筒,三筒,五筒,六筒,六筒,六筒,七筒,七筒,九筒,九筒,九筒]
-    hand = [(p,0) for p in parsedPai("1233566677999m")]
+    hand = [(p,0) for p in parsedPai("1234566677999m")]
     t.setHand(hand)
-    ron = t.checkRon((parsedPai("4m")[0],0))[1]
+    ron = t.checkRon((parsedPai("3m")[0],0))[1]
     assert ron.judgeRon == " 清一色"
+
+def test_checkJapanRon_sananke():
+    hand = [(p,0) for p in parsedPai("66m34777pbbb222z")]
+    t.setHand(hand)
+    t.ifzhuang = False
+    ron = t.checkRon((parsedPai("2p")[0],0))[1]
+    assert ron.judgeRon == " 三暗刻 自风 役牌 白"
