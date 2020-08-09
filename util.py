@@ -102,9 +102,14 @@ def is_seq2(hand,indexs = [0,1]):
     h = [Pai.paiSet[i] for i in hand]
     a,b = indexs
     if (
-        h[a].suit == h[b].suit and 
+        # 形如 23
+        (h[a].suit == h[b].suit and 
         h[a].num != -1 and 
-        h[a].num+1 == h[b].num
+        h[a].num+1 == h[b].num) or
+        # 形如 24
+        (h[a].suit == h[b].suit and
+        h[a].num != -1 and
+        h[a].num +2 == h[b].num)
     ):
         return True
     return False
@@ -131,7 +136,7 @@ def find_sequence(hand,begin):
         return None
 
 
-def breakdown(hand,openHand):
+def breakdown(hand,openHand=[]):
     """
     [pai] ,[[pai]]
     """

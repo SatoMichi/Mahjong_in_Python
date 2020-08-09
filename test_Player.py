@@ -50,3 +50,11 @@ def test_checkJapanRon_qingyise():
     t.setHand(hand)
     ron = t.checkRon((parsedPai("4m")[0],0))[1]
     assert ron.judgeRon == " 清一色"
+
+def test_checkJapanRon_duanyao():
+    hand = [(p,0) for p in parsedPai("233445m678s2p")]
+    t.setHand(hand)
+    t.openHand["chi"].append([(p,0) for p in parsedPai("678s")])
+    ron = t.checkRon((parsedPai("2p")[0],0))[1]
+    assert ron.judgeRon == " 断幺九"
+    

@@ -165,7 +165,7 @@ class Player:
         r = []
         for _,value in self.openHand.items():
             if value != []:
-                r.append(value)
+                r += value
         return r
     
     def getAllHand(self):
