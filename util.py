@@ -96,7 +96,7 @@ def has_3ofakind(hand,indexs=[0,1,2]):
         return True
     return False
 
-def has_seq2(hand,indexs = None):
+def has_seq2(hand,indexs = [0,1]):
     """
     if index is None, default to len(hand) == 2
     """
