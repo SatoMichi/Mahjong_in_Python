@@ -18,7 +18,7 @@ def dfs(hand,begin, melds, single, adj_tiles, pairs, split,result):
     if begin + 3 <= len(hand):
         indexs = find_sequence(hand,begin)
         if indexs is not None:
-            if is_sequence(hand,indexs):
+            if has_sequence(hand,indexs):
                 split.append([hand[i] for i in indexs])
                 # copy hand and pop
                 hand_copy = hand[:]
@@ -31,7 +31,7 @@ def dfs(hand,begin, melds, single, adj_tiles, pairs, split,result):
     if begin + 3 <= len(hand):
         indexs = list(range(begin,begin+3))
         if (
-            is_3ofakind(hand,indexs)
+            has_3ofakind(hand,indexs)
         ):
             split.append([hand[begin],hand[begin+1],hand[begin+2]])
             dfs(hand,begin+3,melds+1,single,adj_tiles,pairs,split,result)
@@ -51,13 +51,13 @@ def dfs(hand,begin, melds, single, adj_tiles, pairs, split,result):
         if single == 0 and pairs <= 2 and adj_tiles + pairs <= 2:
             # 搭子
             if (
-                is_seq2(hand,[begin,begin+1])
+                has_seq2(hand,[begin,begin+1])
             ):
                 split.append([hand[begin],hand[begin+1]])
                 dfs(hand,begin+2,melds,single,adj_tiles + 1,pairs,split,result)
                 split.pop()
             if (
-                is_pair(hand,[begin,begin+1])
+                has_pair(hand,[begin,begin+1])
             ):
                 split.append([hand[begin],hand[begin+1]])
                 dfs(hand,begin+2,melds,single,adj_tiles,pairs+1,split,result)
@@ -74,7 +74,7 @@ def tenpai(melds,single,adj_tiles,pairs):
         return single == 1
     return False
 
-def is_sequence(hand,indexs = [0,1,2]):
+def has_sequence(hand,indexs = [0,1,2]):
     """
     example: is_shuntsu([一万，二万，二万，三万]，[0,2,3]) == True
     """
@@ -88,7 +88,7 @@ def is_sequence(hand,indexs = [0,1,2]):
             return True
     return False
 
-def is_3ofakind(hand,indexs=[0,1,2]):
+def has_3ofakind(hand,indexs=[0,1,2]):
     if len(indexs) != 3:
         return False
     a,b,c = indexs
@@ -96,20 +96,29 @@ def is_3ofakind(hand,indexs=[0,1,2]):
         return True
     return False
 
-def is_seq2(hand,indexs = [0,1]):
+def has_seq2(hand,indexs = [0,1]):
+    """
+    if index is None, default to len(hand) == 2
+    """
+    
     if len(indexs) != 2:
         return False
     h = [Pai.paiSet[i] for i in hand]
     a,b = indexs
     if (
-        h[a].suit == h[b].suit and 
+        # 形如 23
+        (h[a].suit == h[b].suit and 
         h[a].num != -1 and 
-        h[a].num+1 == h[b].num
+        h[a].num+1 == h[b].num) or
+        # 形如 24
+        (h[a].suit == h[b].suit and
+        h[a].num != -1 and
+        h[a].num +2 == h[b].num)
     ):
         return True
     return False
 
-def is_pair(hand,indexs = [0,1]):
+def has_pair(hand,indexs = [0,1]):
     if len(indexs) != 2:
         return False
     return hand[indexs[0]][0] == hand[indexs[1]][0]
@@ -125,13 +134,13 @@ def find_sequence(hand,begin):
         if hand[i][0] != hand[b][0]:
             c =i
             break
-    if is_sequence(hand,[a,b,c]):
+    if has_sequence(hand,[a,b,c]):
         return [a,b,c]
     else:
         return None
 
 
-def breakdown(hand,openHand):
+def breakdown(hand,openHand=[]):
     """
     [pai] ,[[pai]]
     """

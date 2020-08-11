@@ -3,6 +3,8 @@ from Player import Player
 from Pai import parsedPai, shorthand
 
 t = Player("a",0)
+t.changfeng = 30
+t.zifeng = 31
 # reference: http://arcturus.su/wiki/Machi
 
 def test_checkWait_Ryanmen():
@@ -23,20 +25,42 @@ def test_checkWait_Shanpon():
 def test_checkWait_tenpai():
     hand = [(p,0) for p in parsedPai("112233556677s1z")]
     t.setHand(hand)
-    assert t.checkWait() == [[parsedPai("1z")]]
+    assert t.checkWait() == [parsedPai("1z")]
 
-def test_checkRon_tenpai():
-    hand = [(p,0) for p in parsedPai("112233556677s1z")]
-    t.setHand(hand)
-    assert t.checkRon((30,0))[0] == True
 
-def test_checkJapanRon_pai():
+def test_checkJapanRon_sianke():
     hand = [(p,0) for p in parsedPai("222444m333555s2p")]
-    t.changfeng = 30
-    t.zifeng = 31
     t.setHand(hand)
     ron = t.checkRon((parsedPai("2p")[0],0))[1]
-    assert ron.judgeRon == " 对对和 断幺九"
-    assert ron.zj == 5200
-    assert ron.dj == 2600
-    assert ron.xj == 1300
+    assert ron.judgeRon == " 四暗刻"
+    assert ron.zj == 32000
+    assert ron.dj == 16000
+    assert ron.xj == 8000
+
+def test_checkJapanRon_yiqiguantong():
+    hand = [(p,0) for p in parsedPai("23456789m11sccc")]
+    t.setHand(hand)
+    ron = t.checkRon((parsedPai("1m")[0],0))[1]
+    print(ron.judgeRon)
+    assert ron.judgeRon == " 一气贯通 役牌 中"
+
+def test_checkJapanRon_qingyise():
+    #[一筒,二筒,三筒,三筒,五筒,六筒,六筒,六筒,七筒,七筒,九筒,九筒,九筒]
+    hand = [(p,0) for p in parsedPai("1234566677999m")]
+    t.setHand(hand)
+    ron = t.checkRon((parsedPai("4m")[0],0))[1]
+    assert ron.judgeRon == " 清一色"
+
+def test_checkJapanRon_duanyao():
+    hand = [(p,0) for p in parsedPai("233445m678s2p")]
+    t.setHand(hand)
+    t.openHand["chi"].append([(p,0) for p in parsedPai("678s")])
+    ron = t.checkRon((parsedPai("2p")[0],0))[1]
+    assert ron.judgeRon == " 断幺九"
+    
+def test_checkJapanRon_sananke():
+    hand = [(p,0) for p in parsedPai("66m34777pbbb222z")]
+    t.setHand(hand)
+    t.ifzhuang = False
+    ron = t.checkRon((parsedPai("2p")[0],0))[1]
+    assert ron.judgeRon == " 三暗刻 自风 役牌 白"
