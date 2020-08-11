@@ -1,7 +1,7 @@
 import Pai
 import numpy as np
 from collections import Counter
-from util import is_sequence, breakdown,is_seq2,is_pair
+from util import has_sequence, breakdown,has_seq2,has_pair
 from JudgeRon import JapanRon
 
 class Player:
@@ -82,13 +82,13 @@ class Player:
         for i, possibility in enumerate(b):
             for form in possibility:
                 if len(form) == 2:
-                    if is_seq2(form):
+                    if has_seq2(form):
                         seq2_count += 1
                         a = Pai.previous(form[0]) 
                         if a is not None: ten[i].append(a)
                         b = Pai.next(form[1])
                         if b is not None: ten[i].append(b)
-                    if is_pair(form) and seq2_count == 0:
+                    if has_pair(form) and seq2_count == 0:
                         ten[i].append(Pai.same(form[0]))
                 if len(form) == 1:
                     ten[i].append(Pai.same(form[0]))
@@ -109,7 +109,7 @@ class Player:
                 self.ronHand = target_form
                 return
             # is_seq
-            if is_seq2(mianzi):
+            if len(mianzi) == 2 and has_seq2(mianzi):
                 mianzi.append(ronPai)
                 mianzi.sort()
                 self.ronHand = target_form
@@ -118,7 +118,7 @@ class Player:
                 continue
         # both are pairs
         for mianzi in target_form:
-            if is_pair(mianzi):
+            if len(mianzi) == 2 and has_pair(mianzi):
                 if mianzi[0][0] == ronPai[0]:
                     mianzi.append(ronPai)
                     self.ronHand = target_form
@@ -214,7 +214,7 @@ class Player:
         i , _ = paiCut
         reduced_hand = [p[0] for p in self.hand]
         # 嵌张
-        if is_sequence([(i-1,0),(i,0),(i+1,0)]) and i >= 1:
+        if has_sequence([(i-1,0),(i,0),(i+1,0)]) and i >= 1:
             try:
                 fst = reduced_hand.index(i-1) 
                 thrd = reduced_hand.index(i+1)
@@ -222,7 +222,7 @@ class Player:
             except ValueError:
                 pass
         # 大二张
-        if is_sequence([(i,0),(i+1,0),(i+2,0)]):
+        if has_sequence([(i,0),(i+1,0),(i+2,0)]):
             try:
                 snd = reduced_hand.index(i+1)
                 thrd = reduced_hand.index(i+2)
@@ -230,7 +230,7 @@ class Player:
             except ValueError:
                 pass
         # 小二张
-        if i-2 >= 0 and is_sequence([(i-2,0),(i-1,0),(i,0)]):
+        if i-2 >= 0 and has_sequence([(i-2,0),(i-1,0),(i,0)]):
             try:
                 fst = reduced_hand.index(i-2)
                 snd = reduced_hand.index(i-1)
