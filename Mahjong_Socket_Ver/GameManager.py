@@ -14,48 +14,43 @@ class GameManager:
         self.players[0].ifzhuang = True
         self.yama = Pai.originalYama
     
-    def setSockets(self)
-        # for socket connections
-        s1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s3 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s4 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # set sockets connection to each player
+    def setSockets(self):
+        # create sockets
+        self.sockets = []
+        for i in range(len(self.players)):
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sockets.append(s)
+        
         # IP address
         localhost = "127.0.0.1"
-        # Enable Port number
-        port1 = 50000
-        port2 = 50001
-        port3 = 50002
-        port4 = 50003
-        # create socket
-        s1.bind((localhost, port1))
-        s2.bind((localhost, port2))
-        s3.bind((localhost, port3))
-        s4.bind((localhost, port4))
-        # only accept one connection
-        s1.listen(1)
-        s2.listen(1)
-        s3.listen(1)
-        s4.listen(1)
-        # accept two client
-        connection1, addr1 = s1.accept()
-        print(addr1," Accepted\n")
-        connection2, addr2 = s2.accept()
-        print(addr2," Accepted\n")
-        connection3, addr3 = s3.accept()
-        print(addr3," Accepted\n")
-        connection4, addr4 = s4.accept()
-        print(addr4," Accepted\n")
+        # Enable Port numbers
+        self.ports = [50000,50001,50002,50003]
+        
+        # bind sockets
+        for i in range(len(self.players)):
+            self.sockets[i].bind((localhost,self.ports[i]))
+        
+        # only accept one connection for each sockets
+        for i in range(len(self.players)):
+            self.sockets[i].listen(1)
+
+        # accept clients
+        self.conns = []
+        self.addrs = []
+        for i in range(len(self.players)):
+            conn,addr = self.sockets[i].accept()
+            self.conns.append(conn)
+            self.addrs.append(addr)
+            print(addr," Accepted\n")
+
         # connect connection with players
-        self.players[0].setConnection(connection1)
-        self.players[1].setConnection(connection2)
-        self.players[2].setConnection(connection3)
-        self.players[3].setConnection(connection4)
+        for i in range(len(self.players)):
+            self.players[i].setConnection(self.conns[i])
+
         # set server(socket) to each Players
-        self.players[0].setServer(s1)
-        self.players[1].setServer(s2)
-        self.players[2].setServer(s3)
-        self.players[3].setServer(s4)
+        for i in range(len(self.players)):
+            self.players[i].setServer(self.sockets[i])
     
     # give 13 pai to each players
     def startGame(self):
@@ -93,6 +88,12 @@ class GameManager:
             return True
         return False
 
+    # print the String to this CommandLine and each Clients
+    def printEveryOne(self,s):
+        print(s)
+        for i in range(len(self.players)):
+            self.conns[i].sendall(s.encode("utf-8"))
+
     # show information for player playing his turn   
     def printPlayerTurn(self,player):
         content = ""
@@ -112,7 +113,7 @@ class GameManager:
                 continue
             content += "Player "+p.name+"'s Hand is "+"SECRET"+"\n"
             content += "Player "+p.name+"'s Min Pai is "+Pai.showHand(Pai.array2Hand(p.openHand))+"\n"
-        print(content)
+        return content
 
     # set state, cutPai and nextPlayer
     def playerCutPai(self,player,cutPai):
@@ -233,7 +234,7 @@ class GameManager:
             if self.state == "SET_PLAYER":
                 player = self.players[(self.players.index(player)+1) % 4]
                 self.playerCounter[self.players.index(player)] += 1
-                print("--------------MAIN PLAYER: ",player.name," | WIND: ",player.wind," | Turn:",int(sum(self.playerCounter))," --------------")
+                self.printEveryOne("--------------MAIN PLAYER: "+player.name+" | WIND: "+player.wind+" | Turn:"+str(int(sum(self.playerCounter)))+" --------------")
                 self.state = "GIVE_PAI"
 
             # STATE "GIVE_PAI_TO_PLAYER"
@@ -251,7 +252,6 @@ class GameManager:
                     self.playerYaku[self.players.index(player)] = yaku
                     self.playerTumo[self.players.index(player)] = True
                     self.lastPai = pai
-                    #self.printWinner(player,yaku)
                     break
                 self.rinxian = False
                 # check Riici

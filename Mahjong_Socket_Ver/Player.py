@@ -40,10 +40,10 @@ class Player:
     # 27，28，29: 中，發，白
     # 30-33: 东西南北
     
-    def setConnection(conn):
+    def setConnection(self,conn):
         self.conn = conn
     
-    def setServer(s):
+    def setServer(self,s):
         self.server = s
 
     def setHand(self,hand):
