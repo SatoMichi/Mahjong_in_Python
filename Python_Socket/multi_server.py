@@ -42,3 +42,6 @@ while not end:
 
 connection1.sendall("Good Team Work".encode("utf-8"))
 connection2.sendall("Good Team Work".encode("utf-8"))
+
+s1.close()
+s2.close()
