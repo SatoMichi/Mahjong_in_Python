@@ -13,7 +13,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # recieve data(1024byte)
         data = s.recv(2048)
         # if "GAMEEND" is sent from server, finish client
-        if data and data == "GAMEEND".encode("utf-8"):
+        if data and data == "FINISH GAME".encode("utf-8"):
             GameEnd = True
         # if server need input, then send the input data
         elif data and data.decode("utf-8")[-1] == "Q":

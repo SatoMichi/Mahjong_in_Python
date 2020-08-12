@@ -42,9 +42,6 @@ class Player:
     
     def setConnection(self,conn):
         self.conn = conn
-    
-    def setServer(self,s):
-        self.server = s
 
     def setHand(self,hand):
         self.hand = hand
@@ -200,7 +197,7 @@ class Player:
     def askMin(self,cutPai):
         # interaction
         self.conn.sendall("Do you want to Min? \n 0.chi 1.pon 2. kan \nPress no to select, other keys to abort\nQ".encode("utf-8"))
-        selection = conn.recv(1024).decode("utf-8")
+        selection = self.conn.recv(1024).decode("utf-8")
         if selection == "0": return "Chi"
         if selection == "1": return "Pon"
         if selection == "2": return "Kan"

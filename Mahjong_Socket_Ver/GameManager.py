@@ -47,10 +47,6 @@ class GameManager:
         # connect connection with players
         for i in range(len(self.players)):
             self.players[i].setConnection(self.conns[i])
-
-        # set server(socket) to each Players
-        for i in range(len(self.players)):
-            self.players[i].setServer(self.sockets[i])
     
     # give 13 pai to each players
     def startGame(self):
@@ -84,7 +80,7 @@ class GameManager:
 
     # check yama is empty or not
     def zeroYama(self):
-        if len(self.yama) <= 14:
+        if len(self.yama) <= 40:
             return True
         return False
 
@@ -115,35 +111,31 @@ class GameManager:
             content += "Player "+p.name+"'s Min Pai is "+Pai.showHand(Pai.array2Hand(p.openHand))+"\n"
         return content
 
-    # Not Used: set state, cutPai and nextPlayer
-    def playerCutPai(self,player,cutPai):
-        self.cutPai = cutPai
-        content = ""
-        content += "Player "+player.name+" cut "+str(Pai.paiSet[self.cutPai])+"\n"
-        print(content)
-
     # print winner's information to every player
     def printWinner(self):
         if self.winner == None:
-            print("---------------------------NO ONE WIN-------------------------\n")
+            self.printEveryOne("---------------------------NO ONE WIN-------------------------\n")
         else:
             player = self.winner
             yaku = self.playerYaku[self.players.index(player)]
             content = ""
-            if player == None:
-                content += "No One Wined" + "\n"
-            else:
-                content += "###############################################################################################\n"
-                content += "Player "+player.name+" Win!!\n"
-                content += "Scores: "+str(player.score)+"\n"
-                content += "役: "+yaku.judgeRon+"\n"
-                player.hand.sort()
-                player.hand.append(self.lastPai)
-                content += str(Pai.showHand(player.hand))+"\n"
-                content += "################################################################################################\n"
-                content += "WINNER is "+player.name+"\n"
-                content += "\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
-            self.printEveryOne(content)
+            content += "###############################################################################################\n"
+            content += "Player "+player.name+" Win!!\n"
+            content += "Scores: "+str(player.score)+"\n"
+            content += "役: "+yaku.judgeRon+"\n"
+            player.hand.sort()
+            player.hand.append(self.lastPai)
+            content += str(Pai.showHand(player.hand))+"\n"
+            content += "################################################################################################\n"
+            content += "WINNER is "+player.name+"\n"
+            content += "\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
+        self.printEveryOne(content)
+
+    # print cut info to every player
+    def playerCutPai(self,player):
+        content = ""
+        content += "Player "+player.name+" cut "+str(Pai.paiSet[self.cutPai])+"\n"
+        self.printEveryOne(content)
 
     # these functions will print the info to every player
     # and call the corresponding method in Player class
@@ -275,6 +267,8 @@ class GameManager:
                 self.playerKakan(player)
                 # check Ron of other player (槍槓)
                 for p in self.players:
+                    if p == player:
+                        continue 
                     win, yaku = p.checkRon(self.cutPai)
                     if win:
                         self.state = "WIN"
@@ -300,7 +294,9 @@ class GameManager:
                     player.conn.sendall("Please SELECT the Pai to CUT\nQ".encode("utf-8"))
                     target = int(player.conn.recv(1024).decode("utf-8")) -1
                     self.cutPai = player.cut(target)
-                
+                # print cut info
+                self.playerCutPai(player)
+
                 # check Ron
                 for p in self.players:
                     win, yaku = p.checkRon(self.cutPai)
@@ -314,7 +310,6 @@ class GameManager:
                     #print("breaking")
                     break
                 self.state = "MIN"
-                self.printEveryOne("GAMEEND")
             
             # STATE "PLAYER_MIN"
             elif self.state == "MIN":
@@ -357,7 +352,7 @@ class GameManager:
 
         # GameEnd
         if not self.state == "WIN":
-            print("\n******************************流局******************************\n")
+            self.printEveryOne("\n******************************流局******************************\n")
             self.winner = self.checkNagashiMangan()
             if not self.winner == None:
                 ronInfo = self.playerYaku[self.players.index(self.winner)]
@@ -388,7 +383,11 @@ class GameManager:
             pass
 
         self.printWinner()    
-        print("FINISH GAME")
+        self.printEveryOne("FINISH GAME")
+
+        # close each socket
+        for i in range(len(self.players)):
+            self.sockets[i].close()
     
     def checkNagashiMangan(self):
         player = None
