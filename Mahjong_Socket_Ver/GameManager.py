@@ -115,14 +115,14 @@ class GameManager:
             content += "Player "+p.name+"'s Min Pai is "+Pai.showHand(Pai.array2Hand(p.openHand))+"\n"
         return content
 
-    # set state, cutPai and nextPlayer
+    # Not Used: set state, cutPai and nextPlayer
     def playerCutPai(self,player,cutPai):
         self.cutPai = cutPai
         content = ""
         content += "Player "+player.name+" cut "+str(Pai.paiSet[self.cutPai])+"\n"
         print(content)
 
-    # print winner's information
+    # print winner's information to every player
     def printWinner(self):
         if self.winner == None:
             print("---------------------------NO ONE WIN-------------------------\n")
@@ -143,9 +143,10 @@ class GameManager:
                 content += "################################################################################################\n"
                 content += "WINNER is "+player.name+"\n"
                 content += "\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
-            print(content)
+            self.printEveryOne(content)
 
-    # these functions will print the info and call the corresponding method in Player class
+    # these functions will print the info to every player
+    # and call the corresponding method in Player class
     def playerChi(self,player):
         minSet = player.chi()
         content = ""
@@ -153,7 +154,7 @@ class GameManager:
         content += "Player "+player.name+" did 吃 \n"
         content += "Set is "+str(Pai.showHand(minSet))+"\n"
         content += "#################################################################################################\n"
-        print(content)
+        self.printEveryOne(content)
     
     def playerPon(self,player):
         minSet = player.pon()
@@ -162,7 +163,7 @@ class GameManager:
         content += "Player "+player.name+" did PON \n"
         content += "Set is "+str(Pai.showHand(minSet))+"\n"
         content += "#################################################################################################\n"
-        print(content)
+        self.printEveryOne(content)
 
     def playerKan(self,player):
         minSet = player.kan(self.cutPai)
@@ -178,7 +179,7 @@ class GameManager:
         content += "Player "+player.name+" did KAN \n"
         content += "Set is "+str(Pai.showHand(minSet))+"\n"
         content += "#################################################################################################\n"
-        print(content)
+        self.printEveryOne(content)
 
     def playerKakan(self,player):
         minSet = player.jiagang()
@@ -194,7 +195,7 @@ class GameManager:
         content += "Player "+player.name+" did JIAKAN \n"
         content += "Set is "+str(Pai.showHand(minSet))+"\n"
         content += "#################################################################################################\n"
-        print(content)
+        self.printEveryOne(content)
 
     def playerRiichi(self,player):
         player.riichi()
@@ -202,7 +203,7 @@ class GameManager:
         content += "################################################################################################\n"
         content += "Player "+player.name+" did RIICHI \n"
         content += "#################################################################################################\n"
-        print(content)
+        self.printEveryOne(content)
 
     # select player with highest priority Min
     def selectMinPlayers(self,minPlayers):
@@ -280,7 +281,6 @@ class GameManager:
                         self.winner = p
                         self.playerYaku[self.players.index(p)] = yaku+",槍槓"
                         self.lastPai = self.cutPai
-                        #self.printWinner(p,yaku)
                 if self.state == "WIN":
                     break
                 else:
@@ -288,28 +288,33 @@ class GameManager:
 
             # STATE "PLAYER_CUT_PAI"
             elif self.state == "CUT" or self.state == "CHI/PON":
-                self.printPlayerTurn(player)
+                # print current information to every player 
+                # some info is hided for some player
+                for p in self.players:
+                    p.conn.sendall((self.printPlayerTurn(p)).encode("utf-8"))
+                print(self.printPlayerTurn(player))
 
                 if player.isRiichi:
                     self.cutPai = player.autoCut()
                 else:
-                    target = int(input("Please SELECT the Pai to CUT\n")) -1
+                    player.conn.sendall("Please SELECT the Pai to CUT\nQ".encode("utf-8"))
+                    target = int(player.conn.recv(1024).decode("utf-8")) -1
                     self.cutPai = player.cut(target)
                 
                 # check Ron
                 for p in self.players:
                     win, yaku = p.checkRon(self.cutPai)
-                    print(win,self.cutPai,p.hand)
+                    #print(win,self.cutPai,p.hand)
                     if win:
                         self.state = "WIN"
                         self.winner = p
                         self.playerYaku[self.players.index(p)] = yaku
                         self.lastPai = self.cutPai
-                        #self.printWinner(p,yaku)
                 if self.state == "WIN":
-                    print("breaking")
+                    #print("breaking")
                     break
                 self.state = "MIN"
+                self.printEveryOne("GAMEEND")
             
             # STATE "PLAYER_MIN"
             elif self.state == "MIN":

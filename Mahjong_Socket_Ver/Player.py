@@ -199,7 +199,8 @@ class Player:
     
     def askMin(self,cutPai):
         # interaction
-        selection = input("Do you want to Min? \n 0.chi 1.pon 2. kan \nPress no to select, other keys to abort")
+        self.conn.sendall("Do you want to Min? \n 0.chi 1.pon 2. kan \nPress no to select, other keys to abort\nQ".encode("utf-8"))
+        selection = conn.recv(1024).decode("utf-8")
         if selection == "0": return "Chi"
         if selection == "1": return "Pon"
         if selection == "2": return "Kan"
@@ -286,7 +287,8 @@ class Player:
         self.openHand['pon'].append(tile)
         self.hand = Pai.array2Hand(a)
         return 'pon'
-    def kan(self):
+    
+    def kan(self,cutpai):
         pass
     
     
