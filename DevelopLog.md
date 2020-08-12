@@ -1,6 +1,12 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/08/12**
+  * Added single socket proggraming example, single_server.py and single_client.py
+  * Added multi sockets proggraming example, multi_server.py and multi_client.py
+
+Sato
+
 ***2020/08/04***
   * added some new tests in test_Player including yiqiguantong and qingyise
   * new issues made in GitHub
