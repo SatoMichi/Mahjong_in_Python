@@ -299,6 +299,8 @@ class GameManager:
 
                 # check Ron
                 for p in self.players:
+                    if p == player:
+                        continue
                     win, yaku = p.checkRon(self.cutPai)
                     #print(win,self.cutPai,p.hand)
                     if win:
@@ -318,6 +320,8 @@ class GameManager:
                 for p in self.players:
                     # player who want to Kan shoule return ("Kan",minSet)
                     # player who do not Min should return (None,None)
+                    if p == player:
+                        continue
                     minType = p.askMin(self.cutPai)
                     if not minType==None:
                         minPlayers.append([p, minType])
