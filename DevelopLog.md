@@ -2,6 +2,13 @@
 Trial for 麻雀 program using Python
 
 **2020/08/12**
+  * Updated some loop in GameManager.py for better efficiency
+  * Changed GameManager.py, Player.py in Python_Socket_Ver for socket programming
+  * Created game_client.py for running game on different Terminal(PC)
+
+Sato
+
+**2020/08/12**
   * Added single socket proggraming example, single_server.py and single_client.py
   * Added multi sockets proggraming example, multi_server.py and multi_client.py
 
