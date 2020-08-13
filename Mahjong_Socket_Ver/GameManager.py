@@ -2,16 +2,17 @@ import Pai
 from Player import Player
 import numpy as np
 import socket
+import logging
 
 # this class is Finite State Machine
 class GameManager:
     # prepared all the Pai and 4 players
     def __init__(self,players):
+        logging.basicConfig(handlers=[logging.FileHandler("gamelog.log",'w','utf-8')], level=logging.DEBUG)
         self.players = []
         for p in players:
             self.players.append(p)
         self.setSockets()
-        self.players[0].ifzhuang = True
         self.yama = Pai.originalYama
     
     # set sockets connection to each player
@@ -42,7 +43,7 @@ class GameManager:
             conn,addr = self.sockets[i].accept()
             self.conns.append(conn)
             self.addrs.append(addr)
-            print(addr," Accepted\n")
+            logging.info(addr," Accepted\n")
 
         # connect connection with players
         for i in range(len(self.players)):
@@ -50,6 +51,7 @@ class GameManager:
     
     # give 13 pai to each players
     def startGame(self):
+        self.players[0].ifzhuang = True
         self.baopaiCount = -1
         self.baopai = [self.yama[self.baopaiCount]]
         self.baopaiCount -= 1
@@ -76,17 +78,18 @@ class GameManager:
         self.playerTumo = [False,False,False,False]
         self.playerYaku = [""]*4
         self.rinxian = False
-        print("Prepared\nLet's Start the GAME !!\n")
+
+        self.printEveryOne("Prepared\nLet's Start the GAME !!\n")
 
     # check yama is empty or not
     def zeroYama(self):
-        if len(self.yama) <= 40:
+        if len(self.yama) <= 14:
             return True
         return False
 
     # print the String to this CommandLine and each Clients
     def printEveryOne(self,s):
-        print(s)
+        logging.info(s)
         for i in range(len(self.players)):
             self.conns[i].sendall(s.encode("utf-8"))
 
@@ -273,7 +276,9 @@ class GameManager:
                     if win:
                         self.state = "WIN"
                         self.winner = p
-                        self.playerYaku[self.players.index(p)] = yaku+",槍槓"
+                        yaku.setJudgeRon("槍槓")
+                        yaku.addfan(1)
+                        self.playerYaku[self.players.index(p)] = yaku
                         self.lastPai = self.cutPai
                 if self.state == "WIN":
                     break
@@ -286,7 +291,7 @@ class GameManager:
                 # some info is hided for some player
                 for p in self.players:
                     p.conn.sendall((self.printPlayerTurn(p)).encode("utf-8"))
-                print(self.printPlayerTurn(player))
+                logging.info(self.printPlayerTurn(player))
 
                 if player.isRiichi:
                     self.cutPai = player.autoCut()
