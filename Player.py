@@ -133,7 +133,7 @@ class Player:
         """
         check hand, openHand and cutPai -> Boolean, Ron Class
         """
-        print("from palyer", cutPai)
+        #print("from palyer", cutPai)
         t = self.checkWait()
         for i, wait in enumerate(t):
             if cutPai[0] in wait:

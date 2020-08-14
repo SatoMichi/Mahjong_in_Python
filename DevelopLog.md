@@ -2,6 +2,14 @@
 Trial for 麻雀 program using Python
 
 **2020/08/12**
+  * Checked socket will work for different computer
+  * Introduced multiProcess to the code for client become server too (main.py).
+  * Refactored game_client.py for main.py
+  * Refactored GameManager.py for main.py
+
+Sato
+
+**2020/08/12**
   * Updated some loop in GameManager.py for better efficiency
   * Changed GameManager.py, Player.py in Python_Socket_Ver for socket programming
   * Created game_client.py for running game on different Terminal(PC)
