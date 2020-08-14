@@ -8,11 +8,10 @@ import logging
 class GameManager:
     # prepared all the Pai and 4 players
     def __init__(self,players):
-        logging.basicConfig(handlers=[logging.FileHandler("gamelog.log",'w','utf-8')], level=logging.DEBUG)
+        #logging.basicConfig(handlers=[logging.FileHandler("gamelog.log",'w','utf-8')], level=logging.DEBUG)
         self.players = []
         for p in players:
             self.players.append(p)
-        self.setSockets()
         self.yama = Pai.originalYama
     
     # set sockets connection to each player
@@ -22,20 +21,16 @@ class GameManager:
         for i in range(len(self.players)):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sockets.append(s)
-        
         # IP address
         localhost = "127.0.0.1"
         # Enable Port numbers
         self.ports = [50000,50001,50002,50003]
-        
         # bind sockets
         for i in range(len(self.players)):
             self.sockets[i].bind((localhost,self.ports[i]))
-        
         # only accept one connection for each sockets
         for i in range(len(self.players)):
             self.sockets[i].listen(1)
-
         # accept clients
         self.conns = []
         self.addrs = []
@@ -43,8 +38,7 @@ class GameManager:
             conn,addr = self.sockets[i].accept()
             self.conns.append(conn)
             self.addrs.append(addr)
-            logging.info(addr," Accepted\n")
-
+            #logging.info(addr," Accepted\n")
         # connect connection with players
         for i in range(len(self.players)):
             self.players[i].setConnection(self.conns[i])
@@ -220,7 +214,7 @@ class GameManager:
 
     # Game modeled by FSM
     def GameFSM(self):
-
+        self.setSockets()
         self.startGame()
         player = self.players[-1]
 
@@ -291,7 +285,7 @@ class GameManager:
                 # some info is hided for some player
                 for p in self.players:
                     p.conn.sendall((self.printPlayerTurn(p)).encode("utf-8"))
-                logging.info(self.printPlayerTurn(player))
+                #logging.info(self.printPlayerTurn(player))
 
                 if player.isRiichi:
                     self.cutPai = player.autoCut()
@@ -398,6 +392,7 @@ class GameManager:
         for i in range(len(self.players)):
             self.sockets[i].close()
     
+    # check "流し満貫"
     def checkNagashiMangan(self):
         player = None
         for p in self.players:
@@ -415,6 +410,7 @@ class GameManager:
     def noMined(self,player):
         return sum(self.minCounter[:,player]) == 0
     
+    # these functions are for checking special score
     def checkSpecialYaku(self,p):
         ronInfo = self.playerYaku[p]
         if self.isYifa(p):
@@ -488,6 +484,7 @@ class GameManager:
         rinxian = self.rinxian
         tumo = self.playerTumo[p]
         return rinxian and tumo
+
 
 if __name__ == "__main__":
     p1 = Player("Gundam Exia",25000)
