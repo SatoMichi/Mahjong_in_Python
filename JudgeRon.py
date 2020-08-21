@@ -815,7 +815,7 @@ def JapanRon(player):
     changfeng = player.changfeng
     zifeng = player.zifeng
     lichi = player.isRiichi
-    beforehand = util.breakdown(player.hand,openHand)
+    beforehand = player.beforehand
     hepai = player.draw
     tumo = player.tumo
     if(if_mq(openHand)):

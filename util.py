@@ -139,6 +139,21 @@ def find_sequence(hand,begin):
     else:
         return None
 
+def find_tenpai_seq2(form):
+    """
+    return a list of tenpai given a Mianzi of 2
+    """
+    p1, p2 = form[0][0], form[1][0]
+    # 嵌张：
+    if Pai.next(Pai.next(p1)) == p2:
+        return [Pai.next(p1)]
+    if Pai.next(p1) == p2:
+        res = []
+        a1, a2 = Pai.previous(p1), Pai.next(p2)
+        if a1 != None: res.append(a1)
+        if a2 != None: res.append(a2)
+        return res
+    
 
 def breakdown(hand,openHand=[]):
     """

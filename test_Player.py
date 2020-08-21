@@ -46,10 +46,11 @@ def test_checkJapanRon_yiqiguantong():
 
 def test_checkJapanRon_qingyise():
     #[一筒,二筒,三筒,三筒,五筒,六筒,六筒,六筒,七筒,七筒,九筒,九筒,九筒]
-    hand = [(p,0) for p in parsedPai("1234566677999m")]
+    hand = [(p,0) for p in parsedPai("1233566677999m")]
     t.setHand(hand)
-    ron = t.checkRon((parsedPai("4m")[0],0))[1]
-    assert ron.judgeRon == " 清一色"
+    ron = t.checkRon((parsedPai("4m")[0],0))
+    print(ron)
+    assert ron[1].judgeRon == " 清一色"
 
 def test_checkJapanRon_duanyao():
     hand = [(p,0) for p in parsedPai("233445m678s2p")]
