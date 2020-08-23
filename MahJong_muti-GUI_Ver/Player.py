@@ -18,7 +18,7 @@ class Player:
         draw: Pai the one Pai drawn
         """
         self.name = name
-        self.ifzhuang = False
+        self.iszhuang = False
         self.isRiichi = False
         self.river = []
         self.hand = None
@@ -40,8 +40,24 @@ class Player:
     # 27，28，29: 中，發，白
     # 30-33: 东西南北
     
+    def state2dict():
+        state = {}
+        state["name"] = self.name
+        state["wind"] = self.wind
+        state["score"] = self.score
+        state["isZhuang"] = self.isZhuang
+        state["isRiichi"] = self.isRiichi
+        state["hand"] = self.hand
+        state["draw"] = self.draw
+        state["openHand"] = self.openHand
+        state["river"] = self.river
+        return state
+
     def setConnection(self,conn):
         self.conn = conn
+
+    def setIdx(self,idx):
+        self.idx = idx
 
     def setHand(self,hand):
         self.hand = hand
