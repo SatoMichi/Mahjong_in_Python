@@ -1,7 +1,7 @@
 import Pai
 import numpy as np
 from collections import Counter
-from util import has_sequence, breakdown,has_seq2,has_pair
+from util import has_sequence, breakdown,has_seq2,has_pair, find_tenpai_seq2
 from JudgeRon import JapanRon
 
 class Player:
@@ -22,6 +22,8 @@ class Player:
         self.isRiichi = False
         self.river = []
         self.hand = None
+        self.beforehand = None
+        self.breakdown = None
         self.changfeng = None
         self.zifeng = None 
         self.score = score
@@ -70,6 +72,7 @@ class Player:
                 return True, JapanRon(self)
         return False, None
     
+    
     def checkWait(self):
         """
         [[Int]]
@@ -83,25 +86,23 @@ class Player:
             for form in possibility:
                 if len(form) == 2:
                     if has_seq2(form):
+                        # fix 嵌张和两面
                         seq2_count += 1
-                        a = Pai.previous(form[0]) 
-                        if a is not None: ten[i].append(a)
-                        b = Pai.next(form[1])
-                        if b is not None: ten[i].append(b)
+                        ten[i] = find_tenpai_seq2(form)
                     if has_pair(form) and seq2_count == 0:
-                        ten[i].append(Pai.same(form[0]))
+                        ten[i].append(form[0][0])
                 if len(form) == 1:
-                    ten[i].append(Pai.same(form[0]))
+                    ten[i].append(form[0][0])
         return ten
     
     def setRonHand(self,ronPai,i):
         """
-        (int,int) int -> [[(int,int)]]
+        (int,int), int -> [[(int,int)]]
         i: which form does the ronPai fit
-        return breakdown of Ron hand
+        set broken down ronHand and beforeHand
         """
         b = breakdown(self.hand,self.getOpenHand())
-        target_form = b[i][:]
+        self.beforehand = target_form = b[i][:]
         # 孤张
         for mianzi in target_form:
             if len(mianzi) == 1:
@@ -123,11 +124,6 @@ class Player:
                     mianzi.append(ronPai)
                     self.ronHand = target_form
                     return 
-        
-        
-                        
-            
-
         
     def checkRon(self,cutPai):
         """
