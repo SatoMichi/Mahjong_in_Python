@@ -1,6 +1,13 @@
 # 麻雀（Try）
 Trial for 麻雀 program using Python
 
+**2020/08/23**
+  * defined data structure for the communication between client and server (json style)
+  * changed GameManager.py for transfering json style data
+  * created explanation file for this data structure
+
+Sato
+
 **2020/08/14**
   * Checked socket will work for different computer
   * Introduced multiProcess to the code for client become server too (main.py).
