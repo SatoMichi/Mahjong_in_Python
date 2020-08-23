@@ -1,0 +1,97 @@
+#:kivy 1.10.0
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+#: import Factory kivy.factory.Factory
+
+ScreenManagement:
+    transition: FadeTransition()
+    MainScreen:
+    Login_Screen:
+    AnotherScreen_2:
+
+<MainScreen>:
+    name: "main"
+    Button:
+        text: "Game on"
+        on_release: app.root.current = "login"
+        font_size: 50
+
+<Login_Screen>:
+    name: "login"
+
+    GridLayout:
+        cols:1
+
+        GridLayout:
+            cols:2
+
+            Label:
+                text: "Host No: "
+
+            TextInput:
+                id: host
+                multiline: False
+
+        GridLayout:
+            cols:2
+
+            Label:
+                text: "Port No: "
+
+            TextInput:
+                id: port
+                multiline: False
+
+        Button:
+            text: "Submit"
+            on_release: root.btn()
+
+
+
+<Login_Success>:
+    Label:
+        text: "Congratulations! You have successfully logined!"
+        size_hint: 0.8,0.5
+        pos_hint: {"x":0.1,"top":1}
+
+    Button:
+        text: "Enter the game"
+        size_hint: 0.8, 0.2
+        pos_hint: {"x":0.1,"y":0.1}  
+        on_release: app.root.current = "other_2"      
+
+<Login_Failure>:
+    Label:
+        text: "Sorry! Either your host or you port is invalid!\n          Click anywhere else to exit."
+        size_hint: 0.8,0.5
+        pos_hint: {"x":0.1,"top":1}
+
+    Button:
+        text: "Enter the game"
+        size_hint: 0.8, 0.2
+        pos_hint: {"x":0.1,"y":0.1}  
+        on_release: app.root.current = "other_2"
+
+<AnotherScreen_2>:
+    name: "other_2"
+    Button:
+        #on_release: app.root.current = "main"
+        background_normal: "/img/imgUp/p_ji_c_1.png"
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0,"y":0}
+    Button:
+         #on_release: app.root.current = "main"
+        background_normal: "p_ji_c_1.png"
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.05,"y":0}
+    Button:
+        color: 0,1,0,1
+        font_size: 25
+        size_hint: 0.3,0.2
+        text:"Back Home"
+        on_release: app.root.current = "main"
+        pos_hint:{"right":1,"top":1}
+    
+
+
