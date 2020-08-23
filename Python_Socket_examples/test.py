@@ -4,7 +4,7 @@ end = False
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # IP address
-    localhost = "185.129.73.15"#"127.0.0.1"
+    localhost = "127.0.0.1"
     # Enable Port number
     port = 50000
     # create socket
