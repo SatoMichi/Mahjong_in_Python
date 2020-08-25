@@ -31,6 +31,13 @@ PlayerState : {
     "isRiichi" : Bool           # if player 立直了 it is True
     "hand" : [(Int,Int)]        # list of Pai to represent player's hand (including draw)
     "draw" : (Int,Int)          # Pai player get from 牌山 (included in hand)
-    "openHand" : [[(Int,Int)]]  # openHand of the player
+    "openHand" : Dictionary     # openHand of the player
     "river" : [(Int,Int)]       # list of Pai that player throw away (切完的牌).
+}
+
+openHand : {
+    "chi" :    [[(Int,Int)]]    # list of (list of Pai) which represent set of pai for 吃
+    "pon" :    [[(Int,Int)]]    # list of (list of Pai) which represent set of pai for 碰
+    "anKang":  [[(Int,Int)]]    # list of (list of Pai) which represent set of pai for 暗杠
+    "minKang": [[(Int,Int)]]    # list of (list of Pai) which represent set of pai for 明杠
 }
