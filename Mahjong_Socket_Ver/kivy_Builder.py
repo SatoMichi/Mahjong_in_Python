@@ -7,16 +7,18 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
 
+
 class MainScreen(Screen):
     pass
 
 class Login_Screen(Screen):
     def btn(self): 
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(3)
         if_show = True
         try:
-            self.s.connect((self.ids.host.text,self.ids.port.text))
-        except:
+            port_no = int(self.ids.port.text)
+            s.connect((self.ids.host.text, port_no))    
+        except socket.timeout :
             if_show = False
             show = Login_Failure()
             popupWindow = Popup(title="Login Result", content=show, size_hint=(0.4,0.4), pos_hint={"x":0.3,"y":0.3})
@@ -40,10 +42,13 @@ class Login_Success(FloatLayout):
 class Login_Failure(FloatLayout):
     pass
 
+
 class MainApp(App):
     def build(self):
         presentation = Builder.load_file("main.kv")
         return presentation
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 if __name__ == "__main__":
     MainApp().run()
