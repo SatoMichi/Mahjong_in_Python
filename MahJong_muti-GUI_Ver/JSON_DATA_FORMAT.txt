@@ -1,0 +1,43 @@
+GameManager will send binary stringed json data to Client
+
+Client will recieve data like;
+data = s.recv(2048)
+
+Then please decode the data to json data by using;
+import json
+data = data.decode("utf-8")
+data = json.loads(data)
+
+Next explain about data(GameState) structure
+
+GameState : {
+    "who" : Int                 # index to tell you who you are.  
+    "mainPlayer" : Int          # index to tell you who is the mainPlayer of the game now.
+    "winner" : Int              # index to tell you who is the winner (if winner does not exist then None)
+    "type" : "print"/"input"    # if it is "print" GameManager only require to display the information
+                                # if it is "input" GameManager require to send input data from Client
+    "action" : String           # tell you what action mainPlayer(GameManager) did
+    "baopai" : [(Int,Int)]      # list of Pai for representing 宝牌. 
+    "cutPai" : (Int,Int)        # Pai cut by main player.
+    "players" : [PlayerState]   # list of player state. players[who] is your information
+    "print" : String            # String need to be printed out
+}
+
+PlayerState : {
+    "name" : String             # name of the player
+    "wind" : String             # player's 风(东南西北).
+    "score" : Int               # player's score
+    "isZhuang" : Bool           # if player is 东家 it is True
+    "isRiichi" : Bool           # if player 立直了 it is True
+    "hand" : [(Int,Int)]        # list of Pai to represent player's hand (including draw)
+    "draw" : (Int,Int)          # Pai player get from 牌山 (included in hand)
+    "openHand" : Dictionary     # openHand of the player
+    "river" : [(Int,Int)]       # list of Pai that player throw away (切完的牌).
+}
+
+openHand : {
+    "chi" :    [[(Int,Int)]]    # list of (list of Pai) which represent set of pai for 吃
+    "pon" :    [[(Int,Int)]]    # list of (list of Pai) which represent set of pai for 碰
+    "anKang":  [[(Int,Int)]]    # list of (list of Pai) which represent set of pai for 暗杠
+    "minKang": [[(Int,Int)]]    # list of (list of Pai) which represent set of pai for 明杠
+}
