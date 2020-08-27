@@ -1,4 +1,4 @@
-#:kivy 1.10.0
+#:kivy 1.11.1
 #: import FadeTransition kivy.uix.screenmanager.FadeTransition
 #: import Factory kivy.factory.Factory
 
@@ -6,16 +6,19 @@ ScreenManagement:
     transition: FadeTransition()
     MainScreen:
     Login_Screen:
-    AnotherScreen_2:
+    GameScreen:
 
 <MainScreen>:
     name: "main"
+
     Button:
         text: "Game on"
         on_release: app.root.current = "login"
         font_size: 50
 
 <Login_Screen>:
+    host: host
+    port: port
     name: "login"
 
     GridLayout:
@@ -57,7 +60,7 @@ ScreenManagement:
         text: "Enter the game"
         size_hint: 0.8, 0.2
         pos_hint: {"x":0.1,"y":0.1}  
-        on_release: app.root.current = "other_2"      
+        on_release: app.root.current = "game_1"      
 
 <Login_Failure>:
     Label:
@@ -69,22 +72,102 @@ ScreenManagement:
         text: "Enter the game"
         size_hint: 0.8, 0.2
         pos_hint: {"x":0.1,"y":0.1}  
-        on_release: app.root.current = "other_2"
+        on_release: app.root.current = "game_1"
 
-<AnotherScreen_2>:
-    name: "other_2"
+<GameScreen>:
+    on_pre_enter: root.setup()
+    name: "game"
     Button:
-        #on_release: app.root.current = "main"
-        background_normal: "../img/imgUp/p_ji_c_1.png" #img/imgUp/p_ji_c_1.png
+        background_normal: root.pais[0] #img/imgUp/p_ji_c_1.png
         font_size: 25
         size_hint: 0.05,0.09
         pos_hint:{"x":0,"y":0}
+        #on_release: app.root.current = "game"
     Button:
-        #on_release: app.root.current = "main"
-        background_normal: "p_ji_c_1.png"
+        background_normal: root.pais[1]
         font_size: 25
         size_hint: 0.05,0.09
         pos_hint:{"x":0.05,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[2]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.1,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[3]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.15,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[4]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.2,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[5]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.25,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[6]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.3,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[7]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.35,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[8]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.4,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[9]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.45,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[10]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.5,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[11]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.55,"y":0}
+        #on_release: app.root.current = "game"
+
+    Button:
+        background_normal: root.pais[12]
+        font_size: 25
+        size_hint: 0.05,0.09
+        pos_hint:{"x":0.6,"y":0}
+        #on_release: app.root.current = "game"
+    
+    
     Button:
         color: 0,1,0,1
         font_size: 25
