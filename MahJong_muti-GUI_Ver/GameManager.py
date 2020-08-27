@@ -15,7 +15,7 @@ class GameManager:
         for p in players:
             self.players.append(p)
         # set idx to each player
-        for i in range(self.players):
+        for i in range(len(self.players)):
             self.players[i].setIdx(i)
         # set yama
         self.yama = Pai.originalYama
