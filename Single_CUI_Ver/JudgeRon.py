@@ -518,6 +518,7 @@ def yibeikou(hand):
 
 #役牌 七对子 hand and openHand are list[list[(int,int)]]
 def chitoi(hand):
+    return False
     ron = True
     for h in hand:
         if(not len(h)==2):
@@ -608,20 +609,6 @@ def takeShunzi(paisets):
                 paisetsCopy.remove(paiset)
         return paisetsCopy
 
-#check 和牌是否为门前清
-def if_mq(openHand):
-    if(openHand == []):
-        return True
-    else:
-        ron = True
-        for oph in openHand:
-            if(len(oph)==3):
-                ron = False
-            if(len(oph)==4):
-                if(oph[2][0]==oph[3][0]):
-                    ron = False
-        return ron
-
 #calculate fu 
 def calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
     yaojiu = [0,8,9,17,18,26,27,28,29,30,31,32,33]
@@ -667,7 +654,7 @@ def calcultatefu(hand,openHand,beforeHand,tumo,hepai,zifeng,changfeng):
             fu = fu + 2
     #门前荣和加10符
     if(not tumo):
-        if(if_mq(openHand)):
+        if(openHand == None):
             fu = fu + 10
     #单钓听牌加2符
     if(1 in [len(bH) for bH in beforeHand]):
@@ -740,8 +727,8 @@ class Rondong:
         else:
             fanshu = 'fanshu' + str(self.fan)
             fushu = 'fushu' + str(self.fu)
-            self.zj = data[fanshu][fushu]['defen']
-            self.xj = data[fanshu][fushu]['shifen']
+            self.zj = data['point'][0][fanshu][0][fushu][0]['defen']
+            self.xj = data['point'][0][fanshu][0][fushu][0]['shifen']
             self.levelrep = str(self.fan) + "翻"
 
 class Ronxian:
@@ -795,9 +782,9 @@ class Ronxian:
         else:
             fanshu = 'fanshu' + str(self.fan)
             fushu = 'fushu' + str(self.fu)
-            self.zj = data[fanshu][fushu]['defen']
-            self.dj = data[fanshu][fushu]['dongshifen']
-            self.xj =  data[fanshu][fushu]['xianshifen']
+            self.zj = data['point'][0][fanshu][fushu][0]['defen']
+            self.dj = data['point'][0][fanshu][fushu][0]['dongshifen']
+            self.xj =  data['point'][0][fanshu][fushu][0]['xianshifen']
             self.levelrep = str(self.fan) + "翻"
 
 #日本麻将胡牌函数
@@ -815,10 +802,10 @@ def JapanRon(player):
     changfeng = player.changfeng
     zifeng = player.zifeng
     lichi = player.isRiichi
-    beforehand = player.beforehand
+    beforehand = util.breakdown(player.hand,openHand)
     hepai = player.draw
     tumo = player.tumo
-    if(if_mq(openHand)):
+    if(openHand == None):
         #Player 先判断门前清番数
         #双倍役满机会(目前暂时认为役满即为最大分值,不支持双倍役满翻番)
         if(czjiulianbaodeng(beforehand)):
@@ -905,21 +892,20 @@ def JapanRon(player):
     if(qingyise(hand,openHand)):
         ron.addfan(6)
         #副露减番
-        if(not if_mq(openHand)):
+        if(not openHand == None):
             ron.minusfan()
         ron.setJudgeRon("清一色")
     #三番机会
     if(cqdyj(hand,openHand)):
         ron.addfan(3)
         #副露减番
-        if(not if_mq(openHand)):
+        if(not openHand == None):
             ron.minusfan()
         ron.setJudgeRon("纯全带幺九")
-    #是混一色的牌不可以是清一色
-    if(hunyise(hand,openHand) and not qingyise(hand,openHand)):
+    if(hunyise(hand,openHand)):
         ron.addfan(3)
         #副露减番
-        if(not if_mq(openHand)):
+        if(not openHand == None):
             ron.minusfan()
         ron.setJudgeRon("混一色")
     #二番机会
@@ -944,19 +930,19 @@ def JapanRon(player):
     if(hqdyj(hand,openHand)):
         ron.addfan(2)
         #副露减番
-        if(not if_mq(openHand)):
+        if(not openHand == None):
             ron.minusfan()
         ron.setJudgeRon("混全带幺九")
     if(yiqiguantong(hand,openHand)):
         ron.addfan(2)
         #副露减番
-        if(not if_mq(openHand)):
+        if(not openHand == None):
             ron.minusfan()
         ron.setJudgeRon("一气贯通")
     if(sansets(hand,openHand)):
         ron.addfan(2)
         #副露减番
-        if(not if_mq(openHand)):
+        if(not openHand == None):
             ron.minusfan()
         ron.setJudgeRon("三色同顺")
     #一番机会

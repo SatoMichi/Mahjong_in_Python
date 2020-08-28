@@ -9,7 +9,7 @@ class GameManager:
         self.players = []
         for p in players:
             self.players.append(p)
-        self.players[0].ifzhuang = True
+        self.players[0].iszhuang = True
         self.yama = Pai.originalYama
     
     # give 13 pai to each players
@@ -24,9 +24,11 @@ class GameManager:
             hand = self.yama[:13]
             self.yama = self.yama[13:]
             # call player's method
+            player.changfeng = 30 # EAST
             player.setWind(wind)
             # player.setHand(hand)
-            player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
+            #player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
+            player.setHand([(p,0) for p in Pai.parsedPai("2224444m33355s2p")])
             player.baopai = self.baopai
             player.libaopai = self.libaopai
             player.redbaopai = self.redbaopai
@@ -40,7 +42,6 @@ class GameManager:
         self.playerTumo = [False,False,False,False]
         self.playerYaku = [""]*4
         self.rinxian = False
-        print("Prepared\nLet's Start the GAME !!\n")
 
     # check yama is empty or not
     def zeroYama(self):
@@ -61,12 +62,12 @@ class GameManager:
             if p == player:
                 content += "----------------------------------------------------\n"
                 content += "Main Player :"+player.name+"\n"
-                content += "Min Pai :"+Pai.showHand(Pai.array2Hand(player.openHand))+"\n"
+                content += "Min Pai :"+player.strOpenHand()+"\n"
                 content += "Player's Hand: "+Pai.showHand(player.hand)+"\n"
                 content += "----------------------------------------------------\n"
                 continue
             content += "Player "+p.name+"'s Hand is "+"SECRET"+"\n"
-            content += "Player "+p.name+"'s Min Pai is "+Pai.showHand(Pai.array2Hand(p.openHand))+"\n"
+            content += "Player "+p.name+"'s Min Pai is "+p.strOpenHand()+"\n"
         print(content)
 
     # set state, cutPai and nextPlayer
@@ -118,8 +119,8 @@ class GameManager:
         content += "#################################################################################################\n"
         print(content)
 
-    def playerKan(self,player):
-        minSet = player.kan(self.cutPai)
+    def playerKan(self,player,anKang=False):
+        minSet = player.kan(self.cutPai,anKang=anKang)
         self.baopai.append(self.yama[self.baopaiCount])
         self.baopaiCount -= 1
         self.libaopai.append(self.yama[self.baopaiCount])
@@ -181,6 +182,7 @@ class GameManager:
 
         self.startGame()
         player = self.players[-1]
+        print("Prepared\nLet's Start the GAME !!\n")
 
         while not self.zeroYama() and len(self.baopai)<5:
 
@@ -198,6 +200,8 @@ class GameManager:
                 pai = self.yama[0]
                 self.yama = self.yama[1:]
                 player.givePai(pai)
+                # print out state
+                self.printPlayerTurn(player)
                 # check Tumo
                 win, yaku = player.checkTumo()
                 if win:
@@ -209,20 +213,26 @@ class GameManager:
                     #self.printWinner(player,yaku)
                     break
                 self.rinxian = False
-                # check Riici
+                # check Riici etc.
+                anKang  = player.askAnKang()
+                #print(anKang)
                 riichi = player.askRiichi()
-                if riichi:
+                #print(riichi)
+                jiaGang = player.askJiaGang()
+                #print(jiaGang)
+                if anKang:
+                    self.playerKan(player,anKang=True)
+                    self.state = "KAN"
+                elif riichi:
                     self.playerRiichi(player)
                     noMin = self.minCounter.sum() == 0
                     self.riichiTurn[self.players.index(player)] = (self.playerCounter[player],noMin)
                     self.state = "CUT"
+                elif jiaGang:
+                    self.cutPai = pai
+                    self.state = "KAKAN"
                 else:
-                    jiaGang = player.askJiaGang()
-                    if jiaGang:
-                        self.cutPai = pai
-                        self.state = "KAKAN"
-                    else:
-                        self.state = "CUT"
+                    self.state = "CUT"
             
             # STATE "PLAYER KAKAN"
             elif self.state == "KAKAN":
@@ -243,8 +253,6 @@ class GameManager:
 
             # STATE "PLAYER_CUT_PAI"
             elif self.state == "CUT" or self.state == "CHI/PON":
-                self.printPlayerTurn(player)
-
                 if player.isRiichi:
                     self.cutPai = player.autoCut()
                 else:

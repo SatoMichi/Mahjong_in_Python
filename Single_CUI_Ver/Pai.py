@@ -5,7 +5,6 @@ import re
 
 """ 
 All Pai are initialized once in this module.
-
 hand and Yama are represented using [tuple(t,n)]. paiSet[t,n] gives the corresponding Pai object.
 """ 
 
@@ -96,27 +95,6 @@ class Pai:
         return "img/imgRight/" + path
     
 
-
-"""
-class charPai(numPai):
-    def __init__(self,suit):
-        self.num = None
-        self.suit = suit-1
-    def __str__(self):
-        return self.s[self.suit]
-    def imgPathU(self):
-        path = self.img[3][self.suit-3]
-        return "img/imgUp/" + path
-    def imgPathD(self):
-        path = self.img[3][self.suit-3][:-5] +"2"+".gif"
-        return "img/imgDown/" + path
-    def imgPathL(self):
-        path = self.img[3][self.suit-3][:-5] +"3"+".gif"
-        return "img/imgLeft/" + path
-    def imgPathR(self):
-        path = self.img[3][self.suit-3][:-5] +"4"+".gif"
-        return "img/imgRight/" + path
-"""
 # all kind of Pai
 allPai = [Pai(suit,num) for suit in range(0,3) for num in range(0,9)] + [Pai(suit) for suit in range(3,10)]
 # create 4x34 matrix with all the Pai objects as a static reference
@@ -158,24 +136,22 @@ def array2Hand(array):
 def tuple2Object(tuple_hand):
     return [paiSet[i] for i in tuple_hand]
 
-
-# Helper function for debug
 def showHand(hand):
     return str([ str(paiSet[p]) for p in hand])
 
 def previous(pai):
     """
-    take in a number, return a position before if 数牌
+    take in a tuple, return a position before if 数牌
     
-    >>> previous(0)
+    >>> previous((0,0))
     
-    >>> previous(1)
+    >>> previous((1,0))
     0
     """
     # 0-8: 一萬 - 九萬
     # 9-17: 一筒 - 九筒
     # 18-26: 一索 - 九索
-    n = pai
+    n,_ = pai
     if  1 <= n <= 8 or 10 <= n <= 17 or 19 <= n <= 26:
         return n-1
     else: 
@@ -183,16 +159,18 @@ def previous(pai):
 
 def next(pai):
     """
-    >>> next(8)
-    
-    
+    >>> next((8,0))
+    >>> 9
     """
-    n = pai
+    n,_ = pai
     if 0 <= n <= 7 or 9 <= n <= 16 or 18 <= n <= 25:
         return n+1
     else:
         return None
     
+def same(pai):
+    return pai[0]
+
 """
 def compPai(p1,p2):
     if p1.suit > p2.suit:
@@ -221,7 +199,6 @@ def parsedPai(shorthand):
     
     >>> parsedPai("1234zbfc")
     [30, 31, 32, 33, 29, 28, 27]
-
     >>> parsedPai("1234567z")
     [30, 31, 32, 33, 29, 28, 27]
     
@@ -249,8 +226,7 @@ def parsedPai(shorthand):
             result += [int(p)+17 for p in split[:-1]]
         if split[-1] is "z":
             result += [int(p)+29 if int(p) <=4 else 34 - int(p)  for p in split[:-1]]
-            
-            
+              
     word_pattern = re.compile(r'[cfb]')
     word_tiles = word_pattern.findall(shorthand)
     for split in word_tiles:
@@ -296,9 +272,7 @@ def shorthand(list_pai):
         if 27 <= pai <= 29:
             result += mapping[pai]
     return result
-    
-    
-    
+
 
 if __name__ == "__main__":
     import doctest
