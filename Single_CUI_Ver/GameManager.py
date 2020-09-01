@@ -71,8 +71,7 @@ class GameManager:
         print(content)
 
     # set state, cutPai and nextPlayer
-    def playerCutPai(self,player,cutPai):
-        self.cutPai = cutPai
+    def playerCutPai(self,player):
         content = ""
         content += "Player "+player.name+" cut "+str(Pai.paiSet[self.cutPai])+"\n"
         print(content)
@@ -102,7 +101,7 @@ class GameManager:
 
     # these functions will print the info and call the corresponding method in Player class
     def playerChi(self,player):
-        minSet = player.chi()
+        minSet = player.chi(self.cutPai)
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did 吃 \n"
@@ -111,7 +110,7 @@ class GameManager:
         print(content)
     
     def playerPon(self,player):
-        minSet = player.pon()
+        minSet = player.pon(self.cutPai)
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did PON \n"
@@ -136,7 +135,7 @@ class GameManager:
         print(content)
 
     def playerKakan(self,player):
-        minSet = player.jiagang()
+        minSet = player.jiagang(self.cutPai)
         self.baopai.append(self.yama[self.baopaiCount])
         self.baopaiCount -= 1
         self.libaopai.append(self.yama[self.baopaiCount])
@@ -243,7 +242,9 @@ class GameManager:
                     if win:
                         self.state = "WIN"
                         self.winner = p
-                        self.playerYaku[self.players.index(p)] = yaku+",槍槓"
+                        yaku.setJudgeRon("槍槓")
+                        ronInfo.addfan(1)
+                        self.playerYaku[self.players.index(p)] = yaku
                         self.lastPai = self.cutPai
                         #self.printWinner(p,yaku)
                 if self.state == "WIN":
@@ -258,11 +259,12 @@ class GameManager:
                 else:
                     target = int(input("Please SELECT the Pai to CUT\n")) -1
                     self.cutPai = player.cut(target)
+                    self.playerCutPai(player)
                 
                 # check Ron
                 for p in self.players:
                     win, yaku = p.checkRon(self.cutPai)
-                    print(win,self.cutPai,p.hand)
+                    #print(win,self.cutPai,p.hand)
                     if win:
                         self.state = "WIN"
                         self.winner = p
@@ -270,7 +272,7 @@ class GameManager:
                         self.lastPai = self.cutPai
                         #self.printWinner(p,yaku)
                 if self.state == "WIN":
-                    print("breaking")
+                    #print("breaking")
                     break
                 self.state = "MIN"
             

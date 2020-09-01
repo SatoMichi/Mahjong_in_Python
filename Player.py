@@ -1,7 +1,7 @@
 import Pai
 import numpy as np
 from collections import Counter
-from util import has_sequence, breakdown, has_seq2, has_pair
+from util import has_sequence, breakdown,has_seq2,has_pair
 from JudgeRon import JapanRon
 
 class Player:
@@ -18,22 +18,18 @@ class Player:
         draw: Pai the one Pai drawn
         """
         self.name = name
-        self.score = score
-        self.changfeng = None
         self.ifzhuang = False
-        self.zifeng = None
         self.isRiichi = False
-        
-        self.baopai = None
-        self.libaopai = None
-        self.redbaopai = None
-        
         self.river = []
         self.hand = None
+        self.changfeng = None
+        self.zifeng = None 
+        self.score = score
         self.draw = None
         self.openHand = {"chi":[], "pon":[], "anKang":[], "minKang":[]}
         self.tenpai = None
-        
+        self.dora = None
+        self.akadora = None
 
     # name reference:
     # https://www.wikiwand.com/en/Japanese_Mahjong#/General_mahjong_rules
@@ -44,7 +40,6 @@ class Player:
     # 27，28，29: 中，發，白
     # 30-33: 东西南北
     
-# functin for set fields
     def setConnection(self,conn):
         self.conn = conn
 
@@ -53,43 +48,13 @@ class Player:
         
     def setWind(self,wind):
         self.wind = wind
-        if self.wind == "東":
-            self.ifzhuang = True
-        ref = {"東":30,"西":31,"南":32,"北":33}
-        self.zifeng = ref[self.wind]
-
+    
     def givePai(self,p):
         self.hand.sort()
         self.draw = p
         self.hand.append(p)
-
-# function for get formatted information
-    def strOpenHand(self):
-        ophand = {}
-        for k,msets in self.openHand.items():
-            ophand[k] = [Pai.showHand(mset) for mset in msets]
-        return str(ophand)
-
-    def getOpenHand(self):
-        """
-        return list of list of Pai, omit empty list
-        """
-        r = []
-        for _,value in self.openHand.items():
-            if value != []:
-                r += value
-        return r
-
-    def getAllHand(self):
-        """
-        combine hand and openHand, return sorted list
-        """
-        all_hand = self.hand[:]
-        for sublist in self.getOpenHand():
-            all_hand += sublist
-        return sorted(all_hand)
-
-# function for cut
+        
+        
     def cut(self, target):
         """
         cut a Pai given the position
@@ -97,14 +62,6 @@ class Player:
         p = self.hand.pop(target)
         return p
 
-    def autoCut(self):
-        """
-        cut a Pai given
-        """
-        p = self.hand.pop(-1)
-        return p
-
-# function for check 和
     def checkTumo(self):
         """
         return Bool, Ron class
@@ -171,6 +128,7 @@ class Player:
                     self.ronHand = target_form
                     return 
         
+
     def checkRon(self,cutPai):
         """
         check hand, openHand and cutPai -> Boolean, Ron Class
@@ -183,47 +141,6 @@ class Player:
                 self.setRonHand(cutPai,i)
                 return True, JapanRon(self)
         return False, None
-    
-
-# function for ask actions to player
-    def askRiichi(self):
-        if breakdown(self.hand,self.getOpenHand()) != [] :
-            # interaction 
-            i = input("You can riichi! press space to riichi, other key to abort")
-            if i == " ":
-                self.isRiichi = True
-        return self.isRiichi
-
-    def askAnKang(self):
-        posibleMinset = self.canAnKang()
-        #print(posibleMinset)
-        if len(posibleMinset)==0:
-            return False
-        elif len(posibleMinset) == 1:
-            ankang = input("Do you want to 暗槓"+Pai.showHand(posibleMinset[0])+"? y/n: ")
-            if ankang == "y":
-                self.minset = posibleMinset[0]
-                return True
-            else:
-                return False
-        else:
-            ankang = input("Do you want to 暗槓? y/n: ")
-            if ankang == "y":
-                idx = int(input("Which set do you want to 暗槓? Please input the number(1~) \n"
-                                +str([Pai.showHand(minset)+"\n" for minset in posibleMinset]))) -1
-                self.minset = possibleMinset[idx]
-                return True
-            else:
-                return False
-                
-    def canAnKang(self):
-        posibility = []
-        nums = list(map(lambda t: t[0], self.hand))
-        numset = dict(Counter(nums))
-        kanPais = [k for k,v in numset.items() if v==4]
-        if kanPais != []:
-           posibility = [[pai for pai in self.hand if pai[0]==i] for i in kanPais]
-        return posibility
 
     def askJiaGang(self):
         """
@@ -241,15 +158,52 @@ class Player:
         else:
             return False
     
+    def getOpenHand(self):
+        """
+        return list of list of Pai, omit empty list
+        """
+        r = []
+        for _,value in self.openHand.items():
+            if value != []:
+                r += value
+        return r
+    
+    def getAllHand(self):
+        """
+        combine hand and openHand, return sorted list
+        """
+        all_hand = self.hand[:]
+        for sublist in self.getOpenHand():
+            all_hand += sublist
+        return sorted(all_hand)
+
+    def askRiichi(self):
+        self.isRiichi = False
+        if breakdown(self.hand,self.getOpenHand()) != [] :
+            # interaction 
+            i = input("You can riichi! press space to riichi, other key to abort")
+            if i == " ":
+                self.isRiichi = True
+                return True
+        return False
+
+    def autoCut(self):
+        """
+        cut a Pai given
+        """
+        p = self.hand.pop(-1)
+        return p    
+    
     def askMin(self,cutPai):
         # interaction
-        selection = input("Do you want to Min? \n 0.chi 1.pon 2. kan \nPress no to select, other keys to abort\n")
+        self.conn.sendall("Do you want to Min? \n 0.chi 1.pon 2. kan \nPress no to select, other keys to abort\nQ".encode("utf-8"))
+        selection = self.conn.recv(1024).decode("utf-8")
         if selection == "0": return "Chi"
         if selection == "1": return "Pon"
         if selection == "2": return "Kan"
         return None
 
-# function for execute min actions 
+    
     def chi(self,paiCut):
         """Perform chi. Add with hand and show in openHand 
     
@@ -301,6 +255,9 @@ class Player:
         self.hand.sort()
         return "chi"
             
+            
+
+    
     def pon(self,paiCut):
         """
         Perform pon.
@@ -328,23 +285,9 @@ class Player:
         self.hand = Pai.array2Hand(a)
         return 'pon'
     
-    def kan(self,cutpai,anKang=False):
-        #print(self.hand)
-        #print(self.minset)
-        for pai in self.minset:
-            self.hand.remove(pai)
-        if anKang:
-            self.openHand["anKang"].append(self.minset)
-        else:
-            self.openHand["minKang"].append(self.minset)
-        return self.minset
-
-    def riichi(self):
-        # put unneeded pai to last
+    def kan(self,cutpai):
         pass
-
-    def jiagang(self,cutpai):
-        pass
+    
     
 if __name__ == '__main__':
     import doctest
