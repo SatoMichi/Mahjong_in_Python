@@ -256,6 +256,7 @@ class Player:
             content = self.name + "\n"
             content += "You can Min. If you Do not want to Min the press 0.\n"
             dontmin = input(content) ==  "0"
+        # put hasMin to first not to evaluate dontmin if hasMin is False
         if hasMin and dontmin:
             return None
         else:
