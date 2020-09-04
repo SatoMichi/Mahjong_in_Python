@@ -210,8 +210,9 @@ class Player:
             ankang = input("Do you want to 暗槓? y/n: ")
             if ankang == "y":
                 idx = int(input("Which set do you want to 暗槓? Please input the number(1~) \n"
-                                +str([Pai.showHand(minset)+"\n" for minset in posibleMinset]))) -1
-                self.minset = possibleMinset[idx]
+                                +str([Pai.showHand(minset) for minset in posibleMinset])
+                                +": ")) -1
+                self.minset = posibleMinset[idx]
                 return True
             else:
                 return False
@@ -231,25 +232,99 @@ class Player:
         Args:
         Return: Boolean
         """
-        jia = 0
-        if jia:
-            num = int(input("Do you want to JiaGang? 1:yes/0:no\n"))
-            if num == 1:
+        canjia = self.canjiagang()
+        if canjia:
+            num = input("Do you want to 加槓? 1:yes/0:no\n")
+            if num == "1":
+                return True
+        return False
+    
+    def canjiagang(self):
+        ponsets = self.openHand["pon"]
+        ponnums = [ponset[0][0] for ponset in ponsets]
+        if self.draw[0] in ponnums:
+            return True
+        else:
+            return False
+
+    def askMin(self,cutPai):
+        chisets = self.canChi(cutPai)
+        ponset = self.canPon(cutPai)
+        kangset = self.canMinKang(cutPai)
+        hasMin = chisets or ponset or kangset
+        if hasMin:
+            content = self.name + "\n"
+            content += "You can Min. If you Do not want to Min the press 0.\n"
+            dontmin = input(content) ==  "0"
+        if hasMin and dontmin:
+            return None
+        else:
+            if kangset:
+                kaned = self.askMinKang(kangset)
+                if kaned: return "Kan"
+            if ponset:
+                poned = self.askPon(ponset)
+                if poned: return "Pon"
+            if chisets:
+                chied = self.askChi(chisets)
+                if chied: return "Chi"
+            return None
+
+    def canChi(self,cutPai):
+        pass
+
+    def canPon(self,cutPai):
+        posibility = []
+        nums = list(map(lambda t: t[0], self.hand))
+        numset = dict(Counter(nums))
+        ponPais = [k for k,v in numset.items() if v==2 and k==cutPai[0]]
+        if ponPais:
+           posibility = [pai for pai in self.hand if pai[0]==cutPai[0]] + [cutPai]
+        return posibility
+
+    def canMinKang(self,cutPai):
+        posibility = []
+        nums = list(map(lambda t: t[0], self.hand))
+        numset = dict(Counter(nums))
+        kanPais = [k for k,v in numset.items() if v==3 and k==cutPai[0]]
+        if kanPais:
+           posibility = [pai for pai in self.hand if pai[0]==cutPai[0]] + [cutPai]
+        return posibility
+    
+    def askChi(self,posibleMinset):
+        pass 
+
+    def askPon(self,posibleMinset):
+        minpon = input("Do you want to 碰"+Pai.showHand(posibleMinset)+"? y/n: ")
+        if minpon == "y":
+            self.minset = posibleMinset
+            return True
+        else:
+            self.minset = []
+            return False
+
+    def askMinKang(self,posibleMinset):
+        #print(posibleMinset)
+        if len(posibleMinset)==0:
+            return False
+        else:
+            minkang = input("Do you want to 槓"+Pai.showHand(posibleMinset)+"? y/n: ")
+            if minkang == "y":
+                self.minset = posibleMinset
                 return True
             else:
                 return False
-        else:
-            return False
-    
-    def askMin(self,cutPai):
-        # interaction
-        selection = input("Do you want to Min? \n 0.chi 1.pon 2. kan \nPress no to select, other keys to abort\n")
-        if selection == "0": return "Chi"
-        if selection == "1": return "Pon"
-        if selection == "2": return "Kan"
-        return None
 
-# function for execute min actions 
+# function for execute min actions
+
+    def jiagang(self,cutpai):
+        jiaPai = self.hand.pop(-1)
+        ponset = [ponset for ponset in self.openHand["pon"] if ponset[0][0]==jiaPai[0]][0]
+        self.openHand["pon"].remove(ponset)
+        ponset.append(jiaPai)
+        self.openHand["minKang"].append(ponset)
+        return ponset
+
     def chi(self,paiCut):
         """Perform chi. Add with hand and show in openHand 
     
@@ -302,49 +377,32 @@ class Player:
         return "chi"
             
     def pon(self,paiCut):
-        """
-        Perform pon.
-        
-        Args:
-            paiCut (int,int): index of Pai cut by other Players.
-        
-        """
-        t,n = paiCut
-        a = Pai.hand2Array(self.hand)
-        assert(np.sum(a[t]) >= 2)
-        # search for tile in hand
-        tile = []
-        for i in range(4):
-            if len(tile) >=2 :
-                break
-
-            if a[t,i] == 1:
-                a[t,i] = 0
-                tile.append((t,i))
-        # add at the end to indicate the pai taken from others
-        tile.append(paiCut)
-        # record in openHand
-        self.openHand['pon'].append(tile)
-        self.hand = Pai.array2Hand(a)
-        return 'pon'
+        self.openHand['pon'].append(self.minset)
+        self.minset.remove(paiCut)
+        for pai in self.minset:
+            self.hand.remove(pai)
+        self.minset.append(paiCut)
+        return self.minset
     
     def kan(self,cutpai,anKang=False):
         #print(self.hand)
         #print(self.minset)
-        for pai in self.minset:
-            self.hand.remove(pai)
         if anKang:
+            for pai in self.minset:
+                self.hand.remove(pai)
             self.openHand["anKang"].append(self.minset)
         else:
             self.openHand["minKang"].append(self.minset)
+            self.minset.remove(cutpai)
+            for pai in self.minset:
+                self.hand.remove(pai)
+            self.minset.append(cutpai)
         return self.minset
 
     def riichi(self):
         # put unneeded pai to last
         pass
 
-    def jiagang(self,cutpai):
-        pass
     
 if __name__ == '__main__':
     import doctest

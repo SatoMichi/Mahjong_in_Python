@@ -1,6 +1,7 @@
 import Pai
 from Player import Player
 import numpy as np
+from functools import reduce
 
 # this class is Finite State Machine
 class GameManager:
@@ -27,8 +28,22 @@ class GameManager:
             player.changfeng = 30 # EAST
             player.setWind(wind)
             # player.setHand(hand)
+
+            # test case 1 tumo and ron and riichi
             #player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
-            player.setHand([(p,0) for p in Pai.parsedPai("2224444m33355s2p")])
+            #self.yama[0] = (10,0)
+
+            # test case 2 AnKang
+            #player.setHand([(p,0) for p in Pai.parsedPai("22224444m33355s")])
+            
+            # test case 3 JiaGang
+            #player.setHand([(p,0) for p in Pai.parsedPai("444m333555s2p")])
+            #player.openHand["pon"].append([(1,0),(1,1),(1,2)])
+            #self.yama[0] = (1,3)
+
+            # test case 4 Pon
+            player.setHand([(p,0) for p in Pai.parsedPai("2244667m333555s")])
+
             player.baopai = self.baopai
             player.libaopai = self.libaopai
             player.redbaopai = self.redbaopai
@@ -93,7 +108,8 @@ class GameManager:
                 content += "役: "+yaku.judgeRon+"\n"
                 player.hand.sort()
                 player.hand.append(self.lastPai)
-                content += str(Pai.showHand(player.hand))+"\n"
+                ophand = reduce(lambda x,y: x+y, list(map(Pai.showHand,player.getOpenHand())),"")
+                content += str(Pai.showHand(player.hand))+ophand+"\n"
                 content += "################################################################################################\n"
                 content += "WINNER is "+player.name+"\n"
                 content += "\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
@@ -257,7 +273,11 @@ class GameManager:
                 if player.isRiichi:
                     self.cutPai = player.autoCut()
                 else:
-                    target = int(input("Please SELECT the Pai to CUT\n")) -1
+                    # show hand
+                    ophand = reduce(lambda x,y: x+y, list(map(Pai.showHand,player.getOpenHand())),"")
+                    content = str(Pai.showHand(player.hand))+ophand+"\n"
+                    print(content)
+                    target = int(input(player.name+" Please SELECT the Pai to CUT\n")) -1
                     self.cutPai = player.cut(target)
                     self.playerCutPai(player)
                 
@@ -281,8 +301,10 @@ class GameManager:
                 # check the players who want to Min and select player who could Min
                 minPlayers = []
                 for p in self.players:
-                    # player who want to Kan shoule return ("Kan",minSet)
-                    # player who do not Min should return (None,None)
+                    # player who want to Kan shoule return "Kan"
+                    # player who do not Min should return None
+                    if p == player:
+                        continue
                     minType = p.askMin(self.cutPai)
                     if not minType==None:
                         minPlayers.append([p, minType])
@@ -295,8 +317,8 @@ class GameManager:
                     player = minPlayer[0]
 
                     if minPlayer[1] == "Kan":
-                        self.playerKan(player)
-                        self.state = "Kan"
+                        self.playerKan(player,anKang=False)
+                        self.state = "KAN"
 
                     elif minPlayer[1] == "Pon":
                         self.playerPon(player)
