@@ -375,7 +375,7 @@ class Player:
             else:
                 return False
 
-# function for execute min actions
+# function for execute actions
 
     def jiagang(self,cutpai):
         jiaPai = self.hand.pop(-1)
