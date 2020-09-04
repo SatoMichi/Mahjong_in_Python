@@ -1,6 +1,7 @@
 import Pai
 import numpy as np
 from collections import Counter
+from functools import reduce
 from util import has_sequence, breakdown, has_seq2, has_pair
 from JudgeRon import JapanRon
 
@@ -203,6 +204,7 @@ class Player:
             ankang = input("Do you want to 暗槓"+Pai.showHand(posibleMinset[0])+"? y/n: ")
             if ankang == "y":
                 self.minset = posibleMinset[0]
+                print("You selected {}".format(Pai.showHand(self.minset)))
                 return True
             else:
                 return False
@@ -213,6 +215,7 @@ class Player:
                                 +str([Pai.showHand(minset) for minset in posibleMinset])
                                 +": ")) -1
                 self.minset = posibleMinset[idx]
+                print("You selected {}".format(Pai.showHand(self.minset)))
                 return True
             else:
                 return False
@@ -254,7 +257,8 @@ class Player:
         hasMin = chisets or ponset or kangset
         if hasMin:
             content = self.name + "\n"
-            content += "You can Min. If you Do not want to Min the press 0.\n"
+            min = reduce(lambda x,y: x+y,[m for m,b in zip(["吃 ","碰 ","槓 "],[chisets,ponset,kangset]) if b])
+            content += "You can "+min+"If you Do not want to Min the press 0.\n"
             dontmin = input(content) ==  "0"
         # put hasMin to first not to evaluate dontmin if hasMin is False
         if hasMin and dontmin:
@@ -272,7 +276,39 @@ class Player:
             return None
 
     def canChi(self,cutPai):
-        pass
+        posibility = []
+        i, n = cutPai
+        isnumpai = i in list(range(27))
+        numhand = [p[0] for p in self.hand]+[i]
+        if i in [0,9,18]:
+            pattern = [i,i+1,i+2]
+            exist = all([pai in numhand for pai in pattern])
+            if exist:
+                snd = self.hand[numhand.index(i+1)]
+                third = self.hand[numhand.index(i+2)]
+                posibility = [[cutPai,snd,third]]
+        elif i in [8,17,26]:
+            patterns = [[i-2,i-1,i]]
+            exist = all([pai in numhand for pai in pattern])
+            if exist:
+                fst = self.hand[numhand.index(i-2)]
+                snd = self.hand[numhand.index(i-1)]
+                posibility = [[fst,snd,cutPai]]
+        elif isnumpai:
+            patterns = [[i,i+1,i+2],[i-1,i,i+1],[i-2,i-1,i]]
+            exists = [all([pai in numhand for pai in pattern]) for pattern in patterns]
+            chisets = [pattern for i,pattern in enumerate(patterns) if exists[i]]
+            hand = self.hand + [cutPai]
+            if chisets:
+                for pattern in chisets:
+                    fst = hand[numhand.index(pattern[0])]
+                    snd = hand[numhand.index(pattern[1])]
+                    third = hand[numhand.index(pattern[2])]
+                    posibility.append([fst,snd,third])
+        else:
+            pass
+
+        return posibility
 
     def canPon(self,cutPai):
         posibility = []
@@ -293,7 +329,18 @@ class Player:
         return posibility
     
     def askChi(self,posibleMinset):
-        pass 
+        minchi = input("Do you want to 吃? y/n: ")
+        if minchi ==  "y":
+            chi_prompt = "Select from: \n"
+            for i, option in enumerate(posibleMinset):
+                chi_prompt += "{}. {} ".format(i+1, Pai.showHand(option))
+            select = input(chi_prompt)
+            print("You selected {}".format(Pai.showHand(posibleMinset[int(select)-1])))
+            self.minset = posibleMinset[int(select)-1]
+            return True
+        else:
+            self.minset = []
+            return False
 
     def askPon(self,posibleMinset):
         minpon = input("Do you want to 碰"+Pai.showHand(posibleMinset)+"? y/n: ")
@@ -327,55 +374,12 @@ class Player:
         return ponset
 
     def chi(self,paiCut):
-        """Perform chi. Add with hand and show in openHand 
-    
-        Args:
-            paiCut (int,int): 
-        """
-        # record position of possible 副露
-        options = []
-        i , _ = paiCut
-        reduced_hand = [p[0] for p in self.hand]
-        # 嵌张
-        if has_sequence([(i-1,0),(i,0),(i+1,0)]) and i >= 1:
-            try:
-                fst = reduced_hand.index(i-1) 
-                thrd = reduced_hand.index(i+1)
-                options.append([fst,thrd])
-            except ValueError:
-                pass
-        # 大二张
-        if has_sequence([(i,0),(i+1,0),(i+2,0)]):
-            try:
-                snd = reduced_hand.index(i+1)
-                thrd = reduced_hand.index(i+2)
-                options.append([snd,thrd])
-            except ValueError:
-                pass
-        # 小二张
-        if i-2 >= 0 and has_sequence([(i-2,0),(i-1,0),(i,0)]):
-            try:
-                fst = reduced_hand.index(i-2)
-                snd = reduced_hand.index(i-1)
-                options.append([fst,snd])
-            except ValueError:
-                pass
-        # Ask player
-        if options is not []:
-            chi_prompt = "the current Pai is {}. ".format(str(Pai.paiSet[paiCut]))+ "Select from: \n"
-            for i, option in enumerate(options):
-                a,b = option[0], option[1]
-                chi_prompt += "{}. {} ".format(i, str(Pai.paiSet[self.hand[a]])+str(Pai.paiSet[self.hand[b]]))
-        print(chi_prompt)
-        select = input()
-        print("You selected {}".format(select))
-        # maintain hand
-        a,b = options[int(select)]
-        self.openHand["chi"].append([self.hand[a],self.hand[b],paiCut])
-        self.hand.pop(b)
-        self.hand.pop(a)
-        self.hand.sort()
-        return "chi"
+        self.openHand["chi"].append(self.minset)
+        self.minset.remove(paiCut)
+        for pai in self.minset:
+            self.hand.remove(pai)
+        self.minset.append(paiCut)
+        return self.minset
             
     def pon(self,paiCut):
         self.openHand['pon'].append(self.minset)

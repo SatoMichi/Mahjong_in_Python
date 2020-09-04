@@ -27,7 +27,7 @@ class GameManager:
             # call player's method
             player.changfeng = 30 # EAST
             player.setWind(wind)
-            player.setHand(hand)
+            #player.setHand(hand)
 
             # test case 1 tumo and ron and riichi
             #player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
@@ -43,6 +43,9 @@ class GameManager:
 
             # test case 4 Pon
             #player.setHand([(p,0) for p in Pai.parsedPai("2244667m333555s")])
+
+            # test case 5 Chi
+            player.setHand([(p,0) for p in Pai.parsedPai("2344555m333555s")])
 
             player.baopai = self.baopai
             player.libaopai = self.libaopai
