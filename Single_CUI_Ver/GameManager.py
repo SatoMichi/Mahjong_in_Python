@@ -179,17 +179,12 @@ class GameManager:
 
     # select player with highest priority Min
     def selectMinPlayers(self,minPlayers):
-            player = None
-            for args in minPlayers:
-                if "Kan" in args:
+            player = minPlayers[0]
+            for args in minPlayers[1:]:
+                if "Kan" in args and player[1] != "Kan":
                     player = args
-                    break
-                elif "Pon" in args:
+                elif "Pon" in args and player[1] == "Chi":
                     player = args
-                    break
-                elif "Chi" in args:
-                    player = args
-                    break
                 else:
                     pass
             return player
@@ -309,12 +304,14 @@ class GameManager:
                     if p == player:
                         continue
                     minType = p.askMin(self.cutPai)
-                    if not minType==None:
+                    if minType:
                         minPlayers.append([p, minType])
                 
                 if not len(minPlayers) == 0:
                     # select player with highest priority
+                    print([p[0].name for p in minPlayers])
                     minPlayer = self.selectMinPlayers(minPlayers)
+                    print(minPlayer[0].name)
                     self.minCounter[self.players.index(minPlayer[0]),self.players.index(player)] += 1
                     # player change to MinPlayer
                     player = minPlayer[0]
