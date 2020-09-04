@@ -171,6 +171,8 @@ class GameManager:
 
     def playerRiichi(self,player):
         player.riichi()
+        noMin = self.minCounter.sum() == 0
+        self.riichiTurn[self.players.index(player)] = (self.playerCounter[self.players.index(player)],noMin)
         content = ""
         content += "################################################################################################\n"
         content += "Player "+player.name+" did RIICHI \n"
@@ -238,8 +240,6 @@ class GameManager:
                     self.state = "KAN"
                 elif riichi:
                     self.playerRiichi(player)
-                    noMin = self.minCounter.sum() == 0
-                    self.riichiTurn[self.players.index(player)] = (self.playerCounter[player],noMin)
                     self.state = "CUT"
                 elif jiaGang:
                     self.cutPai = pai
@@ -371,7 +371,8 @@ class GameManager:
 
         self.printWinner()    
         print("FINISH GAME")
-    
+
+
     def checkNagashiMangan(self):
         player = None
         for p in self.players:

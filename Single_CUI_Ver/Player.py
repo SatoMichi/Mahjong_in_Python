@@ -188,12 +188,24 @@ class Player:
 
 # function for ask actions to player
     def askRiichi(self):
-        if breakdown(self.hand,self.getOpenHand()) != [] :
+        if self.isRiichi:
+            return False
+        cutpais = []
+        for pai in self.hand:
+            hand = self.hand.copy()
+            hand.remove(pai)
+            if breakdown(hand,self.getOpenHand()) != [] :
+                cutpais.append(pai)
+
+        if cutpais != [] :
             # interaction 
-            i = input("You can riichi! press space to riichi, other key to abort")
+            i = int(input("You can 立直! If you Do not want to 立直 Please press Space Key\n Which Pai do you want to cut? (1~) \n"+Pai.showHand(cutpais)+": "))
             if i == " ":
+                self.isRiichi = False
+            else:
                 self.isRiichi = True
-        return self.isRiichi
+                self.riichipai = cutpais[i-1]
+            return self.isRiichi
 
     def askAnKang(self):
         posibleMinset = self.canAnKang()
@@ -288,7 +300,7 @@ class Player:
                 third = self.hand[numhand.index(i+2)]
                 posibility = [[cutPai,snd,third]]
         elif i in [8,17,26]:
-            patterns = [[i-2,i-1,i]]
+            pattern = [[i-2,i-1,i]]
             exist = all([pai in numhand for pai in pattern])
             if exist:
                 fst = self.hand[numhand.index(i-2)]
@@ -405,8 +417,8 @@ class Player:
         return self.minset
 
     def riichi(self):
-        # put unneeded pai to last
-        pass
+        self.hand.remove(self.riichipai)
+        self.hand.append(self.riichipai)
 
     
 if __name__ == '__main__':
