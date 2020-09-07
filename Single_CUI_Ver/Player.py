@@ -20,7 +20,7 @@ class Player:
         """
         self.name = name
         self.score = score
-        self.changfeng = None
+        self.changfeng = 30 # 東
         self.ifzhuang = False
         self.zifeng = None
         self.isRiichi = False
@@ -106,15 +106,17 @@ class Player:
         return p
 
 # function for check 和
-    def checkTumo(self):
+    def checkTumo(self,pai):
         """
         return Bool, Ron class
         """
+        self.draw = pai
         t = self.checkWait()
         for i,wait in enumerate(t):
             if self.draw[0] in wait:
                 self.tumo = True
                 self.setRonHand(self.draw,i)
+                #self.hand.append(self.draw)
                 return True, JapanRon(self)
         return False, None
     
@@ -190,6 +192,8 @@ class Player:
     def askRiichi(self):
         if self.isRiichi:
             return False
+        if self.openHand["chi"] or self.openHand["pon"] or self.openHand["minKang"]:
+            return False
         cutpais = []
         for pai in self.hand:
             hand = self.hand.copy()
@@ -199,8 +203,8 @@ class Player:
 
         if cutpais != [] :
             # interaction 
-            i = int(input("You can 立直! If you Do not want to 立直 Please press Space Key\n Which Pai do you want to cut? (1~) \n"+Pai.showHand(cutpais)+": "))
-            if i == " ":
+            i = int(input("You can 立直! If you Do not want to 立直 Please press '0'\n Which Pai do you want to cut? (1~) \n"+Pai.showHand(cutpais)+": "))
+            if i == 0:
                 self.isRiichi = False
             else:
                 self.isRiichi = True
@@ -263,6 +267,8 @@ class Player:
             return False
 
     def askMin(self,cutPai):
+        if self.isRiichi:
+            return None
         chisets = self.canChi(cutPai)
         ponset = self.canPon(cutPai)
         kangset = self.canMinKang(cutPai)

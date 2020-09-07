@@ -2,6 +2,7 @@ import Pai
 from Player import Player
 import numpy as np
 from functools import reduce
+import re
 
 # this class is Finite State Machine
 class GameManager:
@@ -30,8 +31,9 @@ class GameManager:
             #player.setHand(hand)
 
             # test case 1 tumo and ron and riichi
-            #player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
-            #self.yama[0] = (10,0)
+            player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
+            self.yama[3] = (22,0)
+            self.yama[4] = (10,0)
 
             # test case 2 AnKang
             #player.setHand([(p,0) for p in Pai.parsedPai("22224444m33355s")])
@@ -45,7 +47,12 @@ class GameManager:
             #player.setHand([(p,0) for p in Pai.parsedPai("2244667m333555s")])
 
             # test case 5 Chi
-            player.setHand([(p,0) for p in Pai.parsedPai("2344555m333555s")])
+            #player.setHand([(p,0) for p in Pai.parsedPai("2344555m333555s")])
+
+            # test case 6 九莲宝灯
+            #player.setHand([(p,0) for p in Pai.parsedPai("1112345678999m")])
+            #self.yama[6] = (1,0)
+
 
             player.baopai = self.baopai
             player.libaopai = self.libaopai
@@ -68,7 +75,7 @@ class GameManager:
         return False
 
     # show information for player playing his turn   
-    def printPlayerTurn(self,player):
+    def printPlayerTurn(self,player,pai):
         content = ""
         content += "宝牌: "+Pai.showHand(self.baopai)+"\n"
         # print each players River (already cut Pais)
@@ -82,6 +89,7 @@ class GameManager:
                 content += "Main Player :"+player.name+"\n"
                 content += "Min Pai :"+player.strOpenHand()+"\n"
                 content += "Player's Hand: "+Pai.showHand(player.hand)+"\n"
+                content += "You drawed "+Pai.showHand([pai])+"\n"
                 content += "----------------------------------------------------\n"
                 continue
             content += "Player "+p.name+"'s Hand is "+"SECRET"+"\n"
@@ -214,11 +222,10 @@ class GameManager:
                     self.rinxian = True
                 pai = self.yama[0]
                 self.yama = self.yama[1:]
-                player.givePai(pai)
                 # print out state
-                self.printPlayerTurn(player)
+                self.printPlayerTurn(player,pai)
                 # check Tumo
-                win, yaku = player.checkTumo()
+                win, yaku = player.checkTumo(pai)
                 if win:
                     self.state = "WIN"
                     self.winner = player
@@ -227,18 +234,20 @@ class GameManager:
                     self.lastPai = pai
                     #self.printWinner(player,yaku)
                     break
+                player.givePai(pai)
                 self.rinxian = False
                 # check Riici etc.
                 anKang  = player.askAnKang()
                 #print(anKang)
+                if anKang:
+                    self.playerKan(player,anKang=True)
+                    self.state = "KAN"
+                    continue
                 riichi = player.askRiichi()
                 #print(riichi)
                 jiaGang = player.askJiaGang()
                 #print(jiaGang)
-                if anKang:
-                    self.playerKan(player,anKang=True)
-                    self.state = "KAN"
-                elif riichi:
+                if riichi:
                     self.playerRiichi(player)
                     self.state = "CUT"
                 elif jiaGang:
@@ -309,9 +318,7 @@ class GameManager:
                 
                 if not len(minPlayers) == 0:
                     # select player with highest priority
-                    print([p[0].name for p in minPlayers])
                     minPlayer = self.selectMinPlayers(minPlayers)
-                    print(minPlayer[0].name)
                     self.minCounter[self.players.index(minPlayer[0]),self.players.index(player)] += 1
                     # player change to MinPlayer
                     player = minPlayer[0]
@@ -405,6 +412,10 @@ class GameManager:
             ronInfo.setJudgeRon("人和")
             ronInfo.addfan(7)
         if self.isDoubleRiici(p):
+            # replace 立直 to 双倍立直 if it exist
+            if re.findall(r" 立直",ronInfo.judgeRon):
+                ronInfo.judgeRon = re.sub(r" 立直","",ronInfo.judgeRon)
+                ronInfo.addfan(-1)
             ronInfo.setJudgeRon("双倍立直")
             ronInfo.addfan(2)
         if self.isHaitei(p):

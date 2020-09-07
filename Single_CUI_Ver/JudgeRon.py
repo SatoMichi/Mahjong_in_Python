@@ -802,10 +802,13 @@ def JapanRon(player):
     changfeng = player.changfeng
     zifeng = player.zifeng
     lichi = player.isRiichi
+    #print(player.name,lichi)
     beforehand = util.breakdown(player.hand,openHand)
+    #print(beforehand)
     hepai = player.draw
     tumo = player.tumo
-    if(openHand == None):
+    if not (player.openHand["chi"] or player.openHand["pon"] or player.openHand["minKang"]):
+        #print("entered empty ophand")
         #Player 先判断门前清番数
         #双倍役满机会(目前暂时认为役满即为最大分值,不支持双倍役满翻番)
         if(czjiulianbaodeng(beforehand)):
