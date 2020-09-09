@@ -310,6 +310,7 @@ class GameManager:
             print("\n******************************流局******************************\n")
             self.winner = self.checkNagashiMangan()
             if not self.winner == None:
+                print(self.winner.name+" did 流局満貫")
                 ronInfo = self.playerYaku[self.players.index(self.winner)]
                 ronInfo.setJudgeRon(",流局満貫")
                 ronInfo.addfan(5)

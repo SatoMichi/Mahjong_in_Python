@@ -1,10 +1,13 @@
 import Pai
 from Player import Player
+from JudgeRon import JapanRon
 import numpy as np
 from functools import reduce
-import re
 import socket
 import logging
+import time
+import re
+
 
 # this class is Finite State Machine
 class GameManager:
@@ -17,11 +20,21 @@ class GameManager:
         self.players[0].iszhuang = True
         self.yama = Pai.originalYama
     
-    # (CUI only) print the String to this CommandLine and each Clients
+    # (CUI only) print the String to this CommandLine and each (or one) Clients
     def printEveryOne(self,s):
         logging.info(s)
         for i in range(len(self.players)):
             self.conns[i].sendall(s.encode("utf-8"))
+    
+    def printOnePlayer(self,p,s):
+        logging.info(s)
+        p.conn.sendall(s.encode("utf-8"))
+
+    def inputOnePlayer(self,p,s):
+        s = s + "Q"
+        p.conn.sendall(s.encode('utf-8'))
+        var = p.conn.recv(1024).decode('utf-8')
+        return var
 
     # set sockets connection to each player
     def setSockets(self):
@@ -70,7 +83,7 @@ class GameManager:
 
             # test case 1 tumo and ron and riichi
             player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
-            self.yama[3] = (22,0)
+            #self.yama[3] = (22,0)
             self.yama[4] = (10,0)
 
             # test case 2 AnKang
@@ -108,7 +121,7 @@ class GameManager:
 
     # check yama is empty or not
     def zeroYama(self):
-        if len(self.yama) <= 14:
+        if len(self.yama) <= 80:
             return True
         return False
 
@@ -127,12 +140,11 @@ class GameManager:
                 content += "Main Player :"+player.name+"\n"
                 content += "Min Pai :"+player.strOpenHand()+"\n"
                 content += "Player's Hand: "+Pai.showHand(player.hand)+"\n"
-                content += "You drawed "+Pai.showHand([pai])+"\n"
                 content += "----------------------------------------------------\n"
                 continue
-            content += "Player "+p.name+"'s Hand is "+"SECRET"+"\n"
+            #content += "Player "+p.name+"'s Hand is "+"SECRET"+"\n"
             content += "Player "+p.name+"'s Min Pai is "+p.strOpenHand()+"\n"
-        self.printEveryOne(content)
+        return content
 
     # set state, cutPai and nextPlayer
     def playerCutPai(self,player):
@@ -148,20 +160,17 @@ class GameManager:
             player = self.winner
             yaku = self.playerYaku[self.players.index(player)]
             content = ""
-            if player == None:
-                content += "No One Wined" + "\n"
-            else:
-                content += "###############################################################################################\n"
-                content += "Player "+player.name+" Win!!\n"
-                content += "Scores: "+str(player.score)+"\n"
-                content += "役: "+yaku.judgeRon+"\n"
-                player.hand.sort()
-                player.hand.append(self.lastPai)
-                ophand = reduce(lambda x,y: x+y, list(map(Pai.showHand,player.getOpenHand())),"")
-                content += str(Pai.showHand(player.hand))+ophand+"\n"
-                content += "################################################################################################\n"
-                content += "WINNER is "+player.name+"\n"
-                content += "\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
+            content += "###############################################################################################\n"
+            content += "Player "+player.name+" Win!!\n"
+            content += "Scores: "+str(player.score)+"\n"
+            content += "役: "+yaku.judgeRon+"\n"
+            player.hand.sort()
+            player.hand.append(self.lastPai)
+            ophand = reduce(lambda x,y: x+y, list(map(Pai.showHand,player.getOpenHand())),"")
+            content += str(Pai.showHand(player.hand))+ophand+"\n"
+            content += "################################################################################################\n"
+            content += "WINNER is "+player.name+"\n"
+            content += "\n＼(・ω・＼)"+player.name+"!(/・ω・)/恭喜你!\n"
             self.printEveryOne(content)
 
     # these functions will print the info and call the corresponding method in Player class
@@ -241,6 +250,7 @@ class GameManager:
     # Game modeled by FSM
     def GameFSM(self):
 
+        self.setSockets()
         self.startGame()
         player = self.players[-1]
         self.printEveryOne("Prepared\nLet's Start the GAME !!\n")
@@ -251,7 +261,7 @@ class GameManager:
             if self.state == "SET_PLAYER":
                 player = self.players[(self.players.index(player)+1) % 4]
                 self.playerCounter[self.players.index(player)] += 1
-                self.printEveryOne("--------------MAIN PLAYER: ",player.name," | WIND: ",player.wind," | Turn:",int(sum(self.playerCounter))," --------------")
+                #self.printEveryOne("--------------MAIN PLAYER: "+player.name+" | WIND: "+player.wind+" | Turn:"+str(int(sum(self.playerCounter)))+" --------------\n")
                 self.state = "GIVE_PAI"
 
             # STATE "GIVE_PAI_TO_PLAYER"
@@ -261,7 +271,9 @@ class GameManager:
                 pai = self.yama[0]
                 self.yama = self.yama[1:]
                 # print out state
-                self.printPlayerTurn(player,pai)
+                for p in self.players:
+                    content = self.printPlayerTurn(p,pai)
+                    self.printOnePlayer(p,content)
                 # check Tumo
                 win, yaku = player.checkTumo(pai)
                 if win:
@@ -320,10 +332,10 @@ class GameManager:
                 else:
                     # show hand
                     ophand = reduce(lambda x,y: x+y, list(map(Pai.showHand,player.getOpenHand())),"")
-                    content = str(Pai.showHand(player.hand))+ophand+"\n"
-                    self.printEveryOne(content)
-                    self.printEveryOne(player.name+" Please SELECT the Pai to CUT\n")
-                    target = int(player.conn.recv(1024).decode("utf-8")) -1
+                    self.printOnePlayer(player,"You drawed "+Pai.showHand([pai])+"\n")
+                    content = "\n"+str(Pai.showHand(player.hand))+ophand+"\n"
+                    self.printOnePlayer(player,content)
+                    target = int(self.inputOnePlayer(player,player.name+" Please SELECT the Pai to CUT\n")) -1
                     self.cutPai = player.cut(target)
                 self.playerCutPai(player)
                 
@@ -388,11 +400,14 @@ class GameManager:
             self.printEveryOne("\n******************************流局******************************\n")
             self.winner = self.checkNagashiMangan()
             if not self.winner == None:
-                ronInfo = self.playerYaku[self.players.index(self.winner)]
-                ronInfo.setJudgeRon(",流局満貫")
-                ronInfo.addfan(5)
-                ronInfo.setallup()
+                self.printEveryOne(self.winner.name+" did 流局満貫\n")
+                nagashi = True
+                #ronInfo = JapanRon(self.winner)
+                #ronInfo.setJudgeRon("流局満貫")
+                #ronInfo.addfan(5)
+                #ronInfo.setallup()
         else:
+            nagashi = False
             self.checkSpecialYaku(self.players.index(self.winner))
         # move score to the winner
         if self.state == "WIN" and self.players.index(self.winner) == 0:
@@ -414,8 +429,10 @@ class GameManager:
                     self.players[i].score -= ronInfo.xj
         else:
             pass
-
-        self.printWinner()    
+        
+        if not nagashi:
+            self.printWinner()
+        time.sleep(5) 
         self.printEveryOne("FINISH GAME")
 
 

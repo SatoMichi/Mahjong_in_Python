@@ -353,8 +353,10 @@ class GameManager:
                 ronInfo.setJudgeRon(",流局満貫")
                 ronInfo.addfan(5)
                 ronInfo.setallup()
+                nagashi = True
         else:
             self.checkSpecialYaku(self.players.index(self.winner))
+            nagashi = False
         # move score to the winner
         if self.state == "WIN" and self.players.index(self.winner) == 0:
             # winner is EAST
@@ -376,7 +378,8 @@ class GameManager:
         else:
             pass
 
-        self.printWinner()    
+        if not nagashi:
+            self.printWinner()    
         print("FINISH GAME")
 
 

@@ -52,6 +52,7 @@ class Player:
         self.conn.sendall(s.encode('utf-8'))
 
     def inputS(self,s):
+        s = s + "Q"
         self.conn.sendall(s.encode('utf-8'))
         var = self.conn.recv(1024).decode('utf-8')
         return var

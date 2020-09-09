@@ -14,7 +14,7 @@ def startClient():
             # recieve data(1024byte)
             data = s.recv(2048)
             # if "FINISH GAME" is sent from server, finish client
-            if data and data == "FINISH GAME".encode("utf-8"):
+            if data and data.decode("utf-8") == "FINISH GAME":
                 GameEnd = True
             # if server need input, then send the input data
             elif data and data.decode("utf-8")[-1] == "Q":
