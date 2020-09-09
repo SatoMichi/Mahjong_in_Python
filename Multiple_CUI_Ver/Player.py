@@ -262,7 +262,7 @@ class Player:
         """
         canjia = self.canjiagang()
         if canjia:
-            num = self.inputS("Do you want to 加槓? 1:yes/0:no\n")
+            num = self.inputS("Do you want to 加槓? y/n\n")
             if num == "1":
                 return True
         return False

@@ -1,15 +1,16 @@
 import Pai
 from Player import Player
 import numpy as np
+from functools import reduce
 import socket
-import logging
+import time
+import re
 import json
 
 # this class is Finite State Machine
 class GameManager:
     # prepared all the Pai and 4 players
     def __init__(self,players):
-        #logging.basicConfig(handlers=[logging.FileHandler("gamelog.log",'w','utf-8')], level=logging.DEBUG)
         self.players = []
         # add players
         for p in players:
@@ -17,7 +18,10 @@ class GameManager:
         # set idx to each player
         for i in range(len(self.players)):
             self.players[i].setIdx(i)
-        # set yama
+        # register this GM to each player
+        for i in range(len(self.players)):
+            self.players[i].setGM(self)
+        self.players[0].iszhuang = True
         self.yama = Pai.originalYama
     
     # convert game state to dict
@@ -69,7 +73,6 @@ class GameManager:
     
     # give 13 pai to each players
     def startGame(self):
-        self.players[0].iszhuang = True
         self.baopaiCount = -1
         self.baopai = [self.yama[self.baopaiCount]]
         self.baopaiCount -= 1
@@ -80,9 +83,34 @@ class GameManager:
             hand = self.yama[:13]
             self.yama = self.yama[13:]
             # call player's method
+            player.changfeng = 30 # EAST
             player.setWind(wind)
-            # player.setHand(hand)
-            player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
+            player.setHand(hand)
+
+            # test case 1 tumo and ron and riichi
+            #player.setHand([(p,0) for p in Pai.parsedPai("222444m333555s2p")])
+            #self.yama[3] = (22,0)
+            #self.yama[4] = (10,0)
+
+            # test case 2 AnKang
+            #player.setHand([(p,0) for p in Pai.parsedPai("22224444m33355s")])
+            
+            # test case 3 JiaGang
+            #player.setHand([(p,0) for p in Pai.parsedPai("444m333555s2p")])
+            #player.openHand["pon"].append([(1,0),(1,1),(1,2)])
+            #self.yama[0] = (1,3)
+
+            # test case 4 Pon
+            #player.setHand([(p,0) for p in Pai.parsedPai("2244667m333555s")])
+
+            # test case 5 Chi
+            #player.setHand([(p,0) for p in Pai.parsedPai("2344555m333555s")])
+
+            # test case 6 九莲宝灯
+            #player.setHand([(p,0) for p in Pai.parsedPai("1112345678999m")])
+            #self.yama[6] = (1,0)
+
+
             player.baopai = self.baopai
             player.libaopai = self.libaopai
             player.redbaopai = self.redbaopai
@@ -99,19 +127,11 @@ class GameManager:
 
         self.player = self.players[-1]
 
-        #self.printEveryOne("Prepared\nLet's Start the GAME !!\n")
-
     # check yama is empty or not
     def zeroYama(self):
         if len(self.yama) <= 14:
             return True
         return False
-
-    # (CUI only) print the String to this CommandLine and each Clients
-    def printEveryOne(self,s):
-        logging.info(s)
-        for i in range(len(self.players)):
-            self.conns[i].sendall(s.encode("utf-8"))
     
     # (GUI only) send game state to each Clients
     def sendEveryOne(self,s):
@@ -131,27 +151,6 @@ class GameManager:
         state["who"] = player.idx
         data = json.dumps(state)
         player.conns.sendall(data.encode("utf-8"))
-
-    # (CUI only) show information for player playing his turn   
-    def printPlayerTurn(self,player):
-        content = ""
-        content += "宝牌: "+Pai.showHand(self.baopai)+"\n"
-        # print each players River (already cut Pais)
-        for p in self.players:
-            # player.river is Pais player already cut
-            content += "Player "+p.name+"'s River is "+Pai.showHand(p.river)+"\n"
-        for p in self.players:
-            # player.min is player's min Pai already got
-            if p == player:
-                content += "----------------------------------------------------\n"
-                content += "Main Player :"+player.name+"\n"
-                content += "Min Pai :"+Pai.showHand(Pai.array2Hand(player.openHand))+"\n"
-                content += "Player's Hand: "+Pai.showHand(player.hand)+"\n"
-                content += "----------------------------------------------------\n"
-                continue
-            content += "Player "+p.name+"'s Hand is "+"SECRET"+"\n"
-            content += "Player "+p.name+"'s Min Pai is "+Pai.showHand(Pai.array2Hand(p.openHand))+"\n"
-        return content
 
     # send winner's information to every player
     def printWinner(self):
@@ -179,21 +178,21 @@ class GameManager:
     # these functions will print the info to every player
     # and call the corresponding method in Player class
     def playerChi(self,player):
-        minSet = player.chi()
+        minSet = player.chi(self.cutPai)
         content = ""
         content += "Player "+player.name+" did 吃 \n"
         content += "Set is "+str(Pai.showHand(minSet))+"\n"
         self.sendEveryOne(content)
     
     def playerPon(self,player):
-        minSet = player.pon()
+        minSet = player.pon(self.cutPai)
         content = ""
         content += "Player "+player.name+" did PON \n"
         content += "Set is "+str(Pai.showHand(minSet))+"\n"
         self.sendEveryOne(content)
 
-    def playerKan(self,player):
-        minSet = player.kan(self.cutPai)
+    def playerKan(self,player, anKang=False):
+        minSet = player.kan(self.cutPai,anKang=anKang)
         self.baopai.append(self.yama[self.baopaiCount])
         self.baopaiCount -= 1
         self.libaopai.append(self.yama[self.baopaiCount])
@@ -207,7 +206,7 @@ class GameManager:
         self.sendEveryOne(content)
 
     def playerKakan(self,player):
-        minSet = player.jiagang()
+        minSet = player.jiagang(self.cutPai)
         self.baopai.append(self.yama[self.baopaiCount])
         self.baopaiCount -= 1
         self.libaopai.append(self.yama[self.baopaiCount])
@@ -222,23 +221,20 @@ class GameManager:
 
     def playerRiichi(self,player):
         player.riichi()
+        noMin = self.minCounter.sum() == 0
+        self.riichiTurn[self.players.index(player)] = (self.playerCounter[self.players.index(player)],noMin)
         content = ""
         content += "Player "+player.name+" did RIICHI \n"
         self.sendEveryOne(content)
 
     # select player with highest priority Min
     def selectMinPlayers(self,minPlayers):
-            player = None
-            for args in minPlayers:
-                if "Kan" in args:
+            player = minPlayers[0]
+            for args in minPlayers[1:]:
+                if "Kan" in args and player[1] != "Kan":
                     player = args
-                    break
-                elif "Pon" in args:
+                elif "Pon" in args and player[1] == "Chi":
                     player = args
-                    break
-                elif "Chi" in args:
-                    player = args
-                    break
                 else:
                     pass
             return player
@@ -255,7 +251,7 @@ class GameManager:
             if self.state == "SET_PLAYER":
                 self.player = self.players[(self.player.idx+1) % 4]
                 self.playerCounter[self.player.idx] += 1
-                self.sendEveryOne("MAIN PLAYER: "+self.player.name+" | WIND: "+self.player.wind+" | Turn:"+str(int(sum(self.playerCounter))))
+                #self.sendEveryOne("MAIN PLAYER: "+self.player.name+" | WIND: "+self.player.wind+" | Turn:"+str(int(sum(self.playerCounter))))
                 self.state = "GIVE_PAI"
 
             # STATE "GIVE_PAI_TO_PLAYER"
@@ -264,9 +260,8 @@ class GameManager:
                     self.rinxian = True
                 pai = self.yama[0]
                 self.yama = self.yama[1:]
-                self.player.givePai(pai)
                 # check Tumo
-                win, yaku = self.player.checkTumo()
+                win, yaku = self.player.checkTumo(pai)
                 if win:
                     self.state = "WIN"
                     self.winner = self.player
@@ -274,21 +269,28 @@ class GameManager:
                     self.playerTumo[self.player.idx] = True
                     self.lastPai = pai
                     break
+                self.player.givePai(pai)
                 self.rinxian = False
+                # check ankang
+                anKang  = player.askAnKang()
+                #print(anKang)
+                if anKang:
+                    self.playerKan(player,anKang=True)
+                    self.state = "KAN"
+                    continue
                 # check Riici
-                riichi = self.player.askRiichi()
+                riichi = player.askRiichi()
+                #print(riichi)
+                jiaGang = player.askJiaGang()
+                #print(jiaGang)
                 if riichi:
-                    self.playerRiichi(self.player)
-                    noMin = self.minCounter.sum() == 0
-                    self.riichiTurn[self.player.idx] = (self.playerCounter[self.player.idx],noMin)
+                    self.playerRiichi(player)
                     self.state = "CUT"
+                elif jiaGang:
+                    self.cutPai = pai
+                    self.state = "KAKAN"
                 else:
-                    jiaGang = self.player.askJiaGang()
-                    if jiaGang:
-                        self.cutPai = pai
-                        self.state = "KAKAN"
-                    else:
-                        self.state = "CUT"
+                    self.state = "CUT"
             
             # STATE "PLAYER KAKAN"
             elif self.state == "KAKAN":
@@ -314,12 +316,14 @@ class GameManager:
             elif self.state == "CUT" or self.state == "CHI/PON":
                 # send current information to every player 
                 self.sendEveryOne("")
-                #logging.info(self.printPlayerTurn(player))
 
                 if self.player.isRiichi:
                     self.cutPai = self.player.autoCut()
                 else:
-                    self.sendPlayer(self.player,"Please SELECT the Pai to CUT\n","input")
+                    ophand = reduce(lambda x,y: x+y, list(map(Pai.showHand,player.getOpenHand())),"")
+                    self.sendPlayer(player,"You drawed "+Pai.showHand([pai])+"\n","print")
+                    content = "\n"+str(Pai.showHand(player.hand))+ophand+"\n"
+                    self.sendPlayer(player,content,"print")
                     target = int(self.player.conn.recv(1024).decode("utf-8")) -1
                     self.cutPai = self.player.cut(target)
                 # print cut info
@@ -351,7 +355,7 @@ class GameManager:
                     if p == self.player:
                         continue
                     minType = p.askMin(self.cutPai)
-                    if not minType==None:
+                    if minType:
                         minPlayers.append([p, minType])
                 
                 if not len(minPlayers) == 0:
@@ -362,7 +366,7 @@ class GameManager:
                     self.player = minPlayer[0]
 
                     if minPlayer[1] == "Kan":
-                        self.playerKan(self.player)
+                        self.playerKan(self.player,anKang=False)
                         self.state = "Kan"
 
                     elif minPlayer[1] == "Pon":
@@ -387,11 +391,14 @@ class GameManager:
             self.sendEveryOne("流局\n")
             self.winner = self.checkNagashiMangan()
             if self.winner:
-                ronInfo = self.playerYaku[self.winner.idx]
-                ronInfo.setJudgeRon(",流局満貫")
-                ronInfo.addfan(5)
-                ronInfo.setallup()
+                self.sendEveryOne(self.winner.name+" did 流局満貫\n")
+                nagashi = True
+                #ronInfo = self.playerYaku[self.winner.idx]
+                #ronInfo.setJudgeRon(",流局満貫")
+                #ronInfo.addfan(5)
+                #ronInfo.setallup()
         else:
+            nagashi = False
             self.checkSpecialYaku(self.winner.idx)
         # move score to the winner
         if self.state == "WIN" and self.winner.idx == 0:
@@ -414,7 +421,9 @@ class GameManager:
         else:
             pass
 
-        self.printWinner()    
+        if not nagashi:
+            self.printWinner()
+        time.sleep(5)    
         self.sendEveryOne("FINISH GAME")
 
         # close each socket
@@ -422,7 +431,7 @@ class GameManager:
             self.sockets[i].close()
     
     # check "流し満貫"
-    def checkNagashiMangan(self):
+     def checkNagashiMangan(self):
         player = None
         for p in self.players:
             if self.allYaoJiu(p.river) and self.noMined(self.players.index(p)):
@@ -439,7 +448,6 @@ class GameManager:
     def noMined(self,player):
         return sum(self.minCounter[:,player]) == 0
     
-    # these functions are for checking special score
     def checkSpecialYaku(self,p):
         ronInfo = self.playerYaku[p]
         if self.isYifa(p):
@@ -455,6 +463,10 @@ class GameManager:
             ronInfo.setJudgeRon("人和")
             ronInfo.addfan(7)
         if self.isDoubleRiici(p):
+            # replace 立直 to 双倍立直 if it exist
+            if re.findall(r" 立直",ronInfo.judgeRon):
+                ronInfo.judgeRon = re.sub(r" 立直","",ronInfo.judgeRon)
+                ronInfo.addfan(-1)
             ronInfo.setJudgeRon("双倍立直")
             ronInfo.addfan(2)
         if self.isHaitei(p):
@@ -513,7 +525,6 @@ class GameManager:
         rinxian = self.rinxian
         tumo = self.playerTumo[p]
         return rinxian and tumo
-
 
 if __name__ == "__main__":
     p1 = Player("Gundam Exia",25000)
