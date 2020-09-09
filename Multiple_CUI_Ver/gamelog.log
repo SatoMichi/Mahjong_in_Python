@@ -1,7 +1,7 @@
 INFO:root:Prepared
 Let's Start the GAME !!
 
-INFO:root:宝牌: ['北']
+INFO:root:宝牌: ['西']
 Player Gundam Exia's River is []
 Player Gundam Dynames's River is []
 Player Gundam Kyrios's River is []
@@ -15,7 +15,7 @@ Player Gundam Dynames's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang
 Player Gundam Kyrios's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
 Player Gundam Virtue's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
 
-INFO:root:宝牌: ['北']
+INFO:root:宝牌: ['西']
 Player Gundam Exia's River is []
 Player Gundam Dynames's River is []
 Player Gundam Kyrios's River is []
@@ -29,7 +29,7 @@ Player's Hand: ['二萬', '二萬', '二萬', '四萬', '四萬', '四萬', '三
 Player Gundam Kyrios's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
 Player Gundam Virtue's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
 
-INFO:root:宝牌: ['北']
+INFO:root:宝牌: ['西']
 Player Gundam Exia's River is []
 Player Gundam Dynames's River is []
 Player Gundam Kyrios's River is []
@@ -43,7 +43,7 @@ Player's Hand: ['二萬', '二萬', '二萬', '四萬', '四萬', '四萬', '三
 ----------------------------------------------------
 Player Gundam Virtue's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
 
-INFO:root:宝牌: ['北']
+INFO:root:宝牌: ['西']
 Player Gundam Exia's River is []
 Player Gundam Dynames's River is []
 Player Gundam Kyrios's River is []
@@ -57,14 +57,82 @@ Min Pai :{'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
 Player's Hand: ['二萬', '二萬', '二萬', '四萬', '四萬', '四萬', '三索', '三索', '三索', '五索', '五索', '五索', '二筒']
 ----------------------------------------------------
 
+INFO:root:################################################################################################
+Player Gundam Exia did RIICHI 
+#################################################################################################
+
+INFO:root:Player Gundam Exia cut 九索
+
+INFO:root:宝牌: ['西']
+Player Gundam Exia's River is ['九索']
+Player Gundam Dynames's River is []
+Player Gundam Kyrios's River is []
+Player Gundam Virtue's River is []
+----------------------------------------------------
+Main Player :Gundam Exia
+Min Pai :{'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player's Hand: ['二萬', '二萬', '二萬', '四萬', '四萬', '四萬', '二筒', '三索', '三索', '三索', '五索', '五索', '五索']
+----------------------------------------------------
+Player Gundam Dynames's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player Gundam Kyrios's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player Gundam Virtue's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+
+INFO:root:宝牌: ['西']
+Player Gundam Exia's River is ['九索']
+Player Gundam Dynames's River is []
+Player Gundam Kyrios's River is []
+Player Gundam Virtue's River is []
+Player Gundam Exia's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+----------------------------------------------------
+Main Player :Gundam Dynames
+Min Pai :{'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player's Hand: ['二萬', '二萬', '二萬', '四萬', '四萬', '四萬', '三索', '三索', '三索', '五索', '五索', '五索', '二筒']
+----------------------------------------------------
+Player Gundam Kyrios's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player Gundam Virtue's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+
+INFO:root:宝牌: ['西']
+Player Gundam Exia's River is ['九索']
+Player Gundam Dynames's River is []
+Player Gundam Kyrios's River is []
+Player Gundam Virtue's River is []
+Player Gundam Exia's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player Gundam Dynames's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+----------------------------------------------------
+Main Player :Gundam Kyrios
+Min Pai :{'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player's Hand: ['二萬', '二萬', '二萬', '四萬', '四萬', '四萬', '三索', '三索', '三索', '五索', '五索', '五索', '二筒']
+----------------------------------------------------
+Player Gundam Virtue's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+
+INFO:root:宝牌: ['西']
+Player Gundam Exia's River is ['九索']
+Player Gundam Dynames's River is []
+Player Gundam Kyrios's River is []
+Player Gundam Virtue's River is []
+Player Gundam Exia's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player Gundam Dynames's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player Gundam Kyrios's Min Pai is {'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+----------------------------------------------------
+Main Player :Gundam Virtue
+Min Pai :{'chi': [], 'pon': [], 'anKang': [], 'minKang': []}
+Player's Hand: ['二萬', '二萬', '二萬', '四萬', '四萬', '四萬', '三索', '三索', '三索', '五索', '五索', '五索', '二筒']
+----------------------------------------------------
+
+INFO:root:################################################################################################
+Player Gundam Dynames did RIICHI 
+#################################################################################################
+
+INFO:root:Player Gundam Dynames cut 二筒
+
 INFO:root:###############################################################################################
-Player Gundam Exia Win!!
-Scores: 73000
-役:  四暗刻 天和
+Player Gundam Virtue Win!!
+Scores: 57000
+役:  四暗刻 人和
 ['二萬', '二萬', '二萬', '四萬', '四萬', '四萬', '二筒', '三索', '三索', '三索', '五索', '五索', '五索', '二筒']
 ################################################################################################
-WINNER is Gundam Exia
+WINNER is Gundam Virtue
 
-＼(・ω・＼)Gundam Exia!(/・ω・)/恭喜你!
+＼(・ω・＼)Gundam Virtue!(/・ω・)/恭喜你!
 
 INFO:root:FINISH GAME

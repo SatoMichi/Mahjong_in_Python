@@ -1,124 +1,91 @@
-point:
-   -
-      fanshu1 : 
-        -
-          fushu30 :
-            -
-              defen : 1500
-              shifen : 500 
-          fushu45 :
-            -
-              defen : 2000
-              shifen : 700
-          fushu50 :
-            -
-              defen : 2400
-              shifen : 800
-          fushu60 :
-            -
-              defen : 2900
-              shifen : 1000
-          fushu70 :
-            -
-              defen : 3400
-              shifen : 1200
-          fushu80 :
-            -
-              defen : 3900
-              shifen : 1300
-          fushu90 : 
-            -
-              defen : 4400
-              shifen : 1500
-          fushu100 :
-            -
-              defen : 4800
-              shifen : 1600
-          fushu110 :
-            -
-              defen : 5300
-              shifen : ~
-      fanshu2 :
-        -
-          fushu20 :
-            -
-              defen : 2100
-              shifen : 700
-          fushu25 :
-            -
-              defen : 2400
-              shifen : ~
-          fushu30 :
-            -
-              defen : 2900
-              shifen : 1000
-          fushu40 :
-            -
-              defen : 3900
-              shifen : 1300
-          fushu50 :
-            -
-              defen : 4800
-              shifen : 1600
-          fushu60 :
-            -
-              defen : 5800
-              shifen : 2000
-          fushu70 :
-            -
-              defen : 6800
-              shifen : 2300
-          fushu80 : 
-            -  
-              defen : 7700
-              shifen : 2600
-          fushu90 : 
-            - 
-              defen : 8700
-              shifen : 2600
-          fushu100 : 
-            - 
-              defen : 9600
-              shifen : 3200
-          fushu110 :
-            - 
-              defen : 10600
-              shifen : 3600
-      fanshu3 :
-          fushu20 :
-            -
-              defen : 3900
-              shifen : 1300
-          fushu25 : 
-            - 
-              defen : 4800
-              shifen : 1600
-          fushu30 : 
-            - 
-              defen : 5800
-              shifen : 2000
-          fushu40 : 
-            - 
-              defen : 7700
-              shifen : 2600
-          fushu50 :
-            -
-              defen : 9600
-              shifen : 3200
-          fushu60 :
-            -
-              defen : 11600
-              shifen : 3900
-      fanshu4 :
-          fushu20 :
-            -
-              defen : 7800
-              shifen : 2600
-          fushu25 :
-            -
-              defen : 9600
-              shifen : 3200
-          fushu30 :
-            -
-              defen : 11600
-              shifen : 3900
+fanshu1:
+  fushu30:
+    defen: 1500
+    shifen: 500
+  fushu45:
+    defen: 2000
+    shifen: 700
+  fushu50:
+    defen: 2400
+    shifen: 800
+  fushu60:
+    defen: 2900
+    shifen: 1000
+  fushu70:
+    defen: 3400
+    shifen: 1200
+  fushu80:
+    defen: 3900
+    shifen: 1300
+  fushu90:
+    defen: 4400
+    shifen: 1500
+  fushu100:
+    defen: 4800
+    shifen: 1600
+  fushu110:
+    defen: 5300
+    shifen: ~
+fanshu2:
+  fushu20:
+    defen: 2100
+    shifen: 700
+  fushu25:
+    defen: 2400
+    shifen: ~
+  fushu30:
+    defen: 2900
+    shifen: 1000
+  fushu40:
+    defen: 3900
+    shifen: 1300
+  fushu50:
+    defen: 4800
+    shifen: 1600
+  fushu60:
+    defen: 5800
+    shifen: 2000
+  fushu70:
+    defen: 6800
+    shifen: 2300
+  fushu80:
+    defen: 7700
+    shifen: 2600
+  fushu90:
+    defen: 8700
+    shifen: 2600
+  fushu100:
+    defen: 9600
+    shifen: 3200
+  fushu110:
+    defen: 10600
+    shifen: 3600
+fanshu3:
+  fushu20:
+    defen: 3900
+    shifen: 1300
+  fushu25:
+    defen: 4800
+    shifen: 1600
+  fushu30:
+    defen: 5800
+    shifen: 2000
+  fushu40:
+    defen: 7700
+    shifen: 2600
+  fushu50:
+    defen: 9600
+    shifen: 3200
+  fushu60:
+    defen: 11600
+    shifen: 3900
+fanshu4:
+  fushu20:
+    defen: 7800
+    shifen: 2600
+  fushu25:
+    defen: 9600
+    shifen: 3200
+  fushu30:
+    defen: 11600
+    shifen: 3900
