@@ -35,7 +35,6 @@ class Player:
         self.openHand = {"chi":[], "pon":[], "anKang":[], "minKang":[]}
         self.tenpai = None
         
-
     # name reference:
     # https://www.wikiwand.com/en/Japanese_Mahjong#/General_mahjong_rules
     # array reference: 
